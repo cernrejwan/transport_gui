@@ -18,8 +18,8 @@ default_values = {
     },
 
     'shape': {
-        'circular':{
-            '-r': 1,
+        'circular': {
+            '-r': 0,
             '-R': 1.65,
             '-s': 0.05
         },

@@ -1,5 +1,5 @@
 from BasePage import *
-from Utils.ElementsTools import *
+from Utils.Chemistry import *
 from AtobWidget import AtobWidget
 
 

@@ -1,5 +1,5 @@
 from Tkinter import *
-from Utils.ElementsTools import *
+from Utils.Chemistry import *
 
 
 class AtobWidget(Frame):

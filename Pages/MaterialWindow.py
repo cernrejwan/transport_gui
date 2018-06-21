@@ -1,8 +1,8 @@
 from Tkinter import *
 from Utils.ToolTip import ToolTip
-from IsotopeWindow import IsotopesWindow
-from Utils.ElementsTools import *
+from Utils.Chemistry import *
 from tkFont import Font
+from ElementWindow import Element
 
 
 class MaterialWindow:
@@ -20,6 +20,7 @@ class MaterialWindow:
 
         if material != 'Other':
             formula = default_values['cross_section']['materials'][material]['formula']
+            self.type_var.set("Mass fraction")
             for element, fraction in formula:
                 self.add_element(element, fraction)
         else:
@@ -49,10 +50,10 @@ class MaterialWindow:
             return
 
         if not curr_element['element'] or curr_element['element'].symbol != element_symbol:
-            curr_element['element'] = Element(self.parent, element_symbol)
+            curr_element['element'] = Element(self.parent, self.controller, element_symbol)
 
         isotopes_window = Toplevel(self.controller)
-        IsotopesWindow(isotopes_window, self.controller, curr_element['element'])
+        curr_element['element'].show(isotopes_window)
 
     def finalize(self):
         if not self.elements_dict[1]['symbol'].get():
@@ -73,7 +74,7 @@ class MaterialWindow:
         for i, item in self.elements_dict.iteritems():
             if not item['element']:
                 new_dict[i] = item
-                new_dict[i]['element'] = Element(self.parent, item['symbol'].get())
+                new_dict[i]['element'] = Element(self.parent, self.controller, item['symbol'].get())
         self.elements_dict.update(new_dict)
 
         return True
