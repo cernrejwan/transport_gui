@@ -15,9 +15,11 @@ class MaterialWindow:
         self.curr_row = 1
 
     def set_material(self, material):
+        self.curr_row = 1
+        self.elements_dict = dict()
+
         if material != 'Other':
             formula = default_values['cross_section']['materials'][material]['formula']
-            self.elements_dict = dict()
             for element, fraction in formula:
                 self.add_element(element, fraction)
         else:
