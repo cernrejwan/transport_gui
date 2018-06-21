@@ -2,8 +2,8 @@ import pandas as pd
 from Tkinter import DoubleVar
 from Default import *
 
-symbols = pd.read_csv('elements/symbols.csv')
-abundance = pd.read_csv('elements/abundance.csv')
+symbols = pd.read_csv('./elements/symbols.csv')
+abundance = pd.read_csv('./elements/abundance.csv')
 abundance['fraction'] = abundance['fraction'] / 100
 
 unit_mass = 1.66053904e-24
