@@ -45,8 +45,8 @@ default_values = {
     },
 
     'cross_section': {
-        'path': '/afs/cern.ch/user/m/mbacak/public/ENDFtoPlot/myprog/',
-        'materials': {'Mylar': {'density': 1.36, 'molecular_mass': 192.13, 'formula': [('C',10),('H',12)]},
-                      'Kapton': {'density': 1.42, 'molecular_mass': 382.27, 'formula': [('C',10),('H',12)]}}
+        'path': '/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/',
+        'materials': {'Mylar': {'density': 1.36, 'molecular_mass': 192.13, 'formula': [('H', 0.041959), ('C', 0.625016), ('O', 0.333025)]},
+                      'Kapton': {'density': 1.42, 'molecular_mass': 382.27, 'formula': [('H', 0.026362), ('C', 0.691133), ('N', 0.07327), ('O', 0.209235)]}}
     }
 }

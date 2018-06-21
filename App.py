@@ -10,7 +10,7 @@ class AppManager(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 
-        self.curr_frame = 5
+        self.curr_frame = 0
 
         self.title("Transport Simulation Wizard")
         self.ear = StringVar(self, "EAR1")

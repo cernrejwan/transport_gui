@@ -15,7 +15,7 @@ class SummaryWindow:
         self.frame = Frame(self.parent)
         self.frame.pack()
         font = Font(family='Helvetica', weight="bold", slant="italic")
-        myLabel = lambda col, txt: Label(self.frame, text=txt, relief=RIDGE, width=int(self.widths[col] / 1.4),
+        myLabel = lambda col, txt: Label(self.frame, text=txt, relief=RIDGE, width=int(self.widths[col]),
                                          height=3, font=font).grid(row=0, column=col)
 
         myLabel(0, "Section")

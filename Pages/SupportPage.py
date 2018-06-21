@@ -63,7 +63,7 @@ class SupportPage(BasePage):
         self.show_material_details(self.material_window.get_formula(), self.molecular_mass.get(), allow_change=True)
 
     def get_data(self):
-
+        data = self.material_window.get_data()
         data += "\n" + self.atob_widget.get_data()
         return data
 
