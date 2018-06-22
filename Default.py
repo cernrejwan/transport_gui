@@ -9,12 +9,14 @@ default_values = {
     'EAR1': {
         'const': '-D Z -t 40 -x 0.0 -y 0.0 -z 41.06',
         '-L': 185,
+        '-a': 1,
         'collimation': ['ear1', 'ear1_5cm', 'ear1_capture_2011', 'ear1misalign', 'ear1fission', 'ear1fission_misalign']
     },
 
     'EAR2': {
         'const': '-D Y -t 16 -x -10.8 -y 37.2 -z 9.86',
         '-L': 19.5,
+        '-a': 2.5,
         'collimation': ['ear2', 'ear2_misalign', 'ear2_misalign_fission', 'ear2_misalign_20cmCorr',
                         'ear2_misalign_2015', 'ear2_misalign_revised2018']
     },

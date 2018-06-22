@@ -8,7 +8,7 @@ class SimuParamsPage(BasePage):
         # vars:
         self.particle = StringVar(self, "Neutrons")
         self.length = DoubleVar(self, default_values['EAR1']['-L'])
-        self.angle = DoubleVar(self, default_values['-a'])
+        self.angle = DoubleVar(self, default_values['EAR1']['-a'])
         self.t0 = DoubleVar(self, default_values['--t0'])
         self.sigma = DoubleVar(self, default_values['-S'])
 
@@ -50,3 +50,11 @@ class SimuParamsPage(BasePage):
         data = "Particle = {p}\nLength = {L} [m]\nAngle = {a} [deg]\nBeam RMS = {S} [s]\nTime offset = {t} [s]".format(
                 p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.sigma.get(), t=self.t0.get())
         return data
+
+    def finalize(self):
+        ear = self.controller.ear.get()
+        max_angle = default_values[ear]['-a']
+        if self.angle.get() > max_angle:
+            self.controller.raise_error_message("Angle must be smaller than {} for {}.".format(max_angle, ear))
+            return False
+        return True

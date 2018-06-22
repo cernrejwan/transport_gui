@@ -10,7 +10,7 @@ class AppManager(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 
-        self.curr_frame = 5
+        self.curr_frame = 0
 
         self.title("Transport Simulation Wizard")
         self.ear = StringVar(self, "EAR1")
@@ -62,6 +62,7 @@ class AppManager(Tk):
         self.frames[0].set_collim(ear)
         ear_values = default_values[self.ear.get()]
         self.frames[1].length.set(ear_values['-L'])
+        self.frames[1].angle.set(ear_values['-a'])
 
     def get_cmd(self):
         cmds = [F.get_cmd() for F in self.frames]
