@@ -29,7 +29,8 @@ class MaterialWindow:
     def add_element(self, symbol='', fraction=0.0):
         symbol_var = StringVar(self.controller, symbol)
         fraction_var = DoubleVar(self.controller, fraction)
-        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'element': None}
+        element = Element(self.parent, self.controller, symbol)
+        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'element': element}
         self.curr_row += 1
 
     def show_element(self, frame, row):
@@ -104,7 +105,8 @@ class MaterialWindow:
         return cmd
 
     def get_data(self):
-        data = "Material: {} ({})".format(self.get_formula(), self.material_var.get())
+        material = self.get_formula() if self.material_var.get() == 'Other' else self.material_var.get()
+        data = "Material: " + material
         data += '\nMolecular mass: {} * 1.66e-24 g'.format(self.get_total_mass())
         return data
 

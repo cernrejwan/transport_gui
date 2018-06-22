@@ -10,10 +10,10 @@ class OrderedDict:
             index = self.keys_dict[item]
             return self.items_list[index]
 
-    def add(self, item):
+    def add(self, key, item):
         index = len(self.items_list)
         self.items_list.append(item)
-        self.keys_dict[item.__class__.__name__] = index
+        self.keys_dict[key] = index
 
     def remove(self, key):
         index = self.keys_dict.pop(key)

@@ -4,6 +4,8 @@ default_values = {
     '-a': 5,
     '-p': 8,
 
+    'collimation_path': '/eos/experiment/ntof/simul/transport/input/',
+
     'EAR1': {
         'const': '-D Z -t 40 -x 0.0 -y 0.0 -z 41.06',
         '-L': 185,
@@ -46,7 +48,7 @@ default_values = {
 
     'cross_section': {
         'path': '/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/',
-        'materials': {'Mylar': {'density': 1.36, 'molecular_mass': 192.13, 'formula': [('H', 0.041959), ('C', 0.625016), ('O', 0.333025)]},
-                      'Kapton': {'density': 1.42, 'molecular_mass': 382.27, 'formula': [('H', 0.026362), ('C', 0.691133), ('N', 0.07327), ('O', 0.209235)]}}
+        'materials': {'Mylar': {'density': 1.36, 'formula': [('H', 0.041959), ('C', 0.625016), ('O', 0.333025)]},
+                      'Kapton': {'density': 1.42, 'formula': [('H', 0.026362), ('C', 0.691133), ('N', 0.07327), ('O', 0.209235)]}}
     }
 }

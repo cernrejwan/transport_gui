@@ -35,5 +35,5 @@ def calc_atob_by_density(mass_number, density, thickness):
 
 
 def calc_atob_by_sigma(mass_number, sigma):
-    atob = sigma / (mass_number * unit_mass) * cm2barn
+    atob = sigma / (mass_number * unit_mass) / cm2barn
     return atob

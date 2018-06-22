@@ -3,7 +3,7 @@ import re
 
 
 class HistoPage(BasePage):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Histogram")
 
         # vars:

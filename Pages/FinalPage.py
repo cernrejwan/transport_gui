@@ -2,7 +2,7 @@ from BasePage import *
 
 
 class FinalPage(BasePage):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Almost done...")
         self.frame.pack()
 

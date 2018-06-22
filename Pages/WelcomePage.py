@@ -2,7 +2,7 @@ from BasePage import *
 
 
 class WelcomePage(BasePage):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Welcome", has_prev=False)
 
         # vars:
@@ -60,7 +60,7 @@ class WelcomePage(BasePage):
         if collim == "Other":
             cmd = self.other_collim_file_path.get()
         else:
-            cmd = '-i /eos/experiment/ntof/simul/transport/input/' + collim + '.inp'
+            cmd = '-i ' + default_values['collimation_path'] + collim + '.inp'
         return cmd
 
     def get_output_cmd(self):

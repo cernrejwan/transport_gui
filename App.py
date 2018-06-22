@@ -10,7 +10,7 @@ class AppManager(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 
-        self.curr_frame = 0
+        self.curr_frame = 5
 
         self.title("Transport Simulation Wizard")
         self.ear = StringVar(self, "EAR1")
@@ -22,7 +22,7 @@ class AppManager(Tk):
         self.frames = OrderedDict()
         for F in [WelcomePage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
             frame = F(parent=self.container, controller=self)
-            self.frames.add(frame)
+            self.frames.add(F.__name__, frame)
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.frames[self.curr_frame].tkraise()
@@ -42,24 +42,21 @@ class AppManager(Tk):
         self.curr_frame -= 1
         self.frames[self.curr_frame].tkraise()
 
-    def add_page(self, page):
-        self.frames.add(page)
-        page.grid(row=0, column=0, sticky="nsew")
+    def add_page(self, page_name, count=1):
+        if "FinalPage" in self.frames:
+            self.remove_page("FinalPage")
 
-    def add_page_if_not_exists(self, page_name):
-        if page_name in self.frames:
-            return
+        for i in range(count):
+            cls = eval(page_name)
+            page = cls(parent=self.container, controller=self, index=i+1)
+            index = str(i+1) if count > 1 else ''
+            self.frames.add(page_name + index, page)
+            page.grid(row=0, column=0, sticky="nsew")
 
-        cls = eval(page_name)
-        frame = cls(parent=self.container, controller=self)
-        self.frames.add(frame)
-        frame.grid(row=0, column=0, sticky="nsew")
-
-    def remove_page_by_name(self, page_name):
-        self.frames.remove(page_name)
-
-    def remove_page_by_value(self, page):
-        self.frames.remove(page)
+    def remove_page(self, page_name, count=1):
+        for i in range(count):
+            index = str(i + 1) if count > 1 else ''
+            self.frames.remove(page_name + index)
 
     def set_ear(self, ear):
         self.frames[0].set_collim(ear)
@@ -84,7 +81,7 @@ done
 
     def summarize(self):
         final_page = FinalPage(self.container, self)
-        self.frames.add(final_page)
+        self.frames.add("FinalPage", final_page)
         final_page.grid(row=0, column=0, sticky="nsew")
         final_page.tkraise()
 

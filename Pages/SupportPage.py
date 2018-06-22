@@ -5,8 +5,8 @@ from ttk import Separator
 
 
 class SupportPage(BasePage):
-    def __init__(self, parent, controller, number):
-        BasePage.__init__(self, parent, controller, "Support " + str(number))
+    def __init__(self, parent, controller, **kwargs):
+        BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
 
         # vars:
         self.materials_list = default_values['cross_section']['materials'].keys() + ['Other']

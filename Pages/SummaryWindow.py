@@ -10,7 +10,7 @@ class SummaryWindow:
         title_font = Font(family='Helvetica', size=15, weight="bold", slant="italic")
         Label(self.parent, text='Summary', font=title_font).pack(side="top", fill="x", pady=10)
 
-        self.widths = [15, 30, 50]
+        self.widths = [18, 40, 60]
 
         self.frame = Frame(self.parent)
         self.frame.pack()
