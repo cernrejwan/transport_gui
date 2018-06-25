@@ -9,6 +9,8 @@ class AtobWidget(Frame):
         self.controller = controller
 
         # vars:
+        self.vars_list = ['sigma', 'atob', 'density', 'thickness', 'radio']
+
         self.sigma = DoubleVar(self)
         self.atob = DoubleVar(self)
         self.density = DoubleVar(self)

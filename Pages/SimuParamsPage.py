@@ -9,7 +9,7 @@ class SimuParamsPage(BasePage):
         self.particle = StringVar(self, "Neutrons")
         self.length = DoubleVar(self, default_values['EAR1']['-L'])
         self.angle = DoubleVar(self, default_values['EAR1']['-a'])
-        self.t0 = DoubleVar(self, default_values['--t0'])
+        self.time_offset = DoubleVar(self, default_values['--t0'])
         self.sigma = DoubleVar(self, default_values['-S'])
 
         # gui:
@@ -30,7 +30,7 @@ class SimuParamsPage(BasePage):
         Label(self.frame, text="[s]").grid(row=3, column=2)
 
         Label(self.frame, text="Time offset:").grid(row=4, column=0)
-        Entry(self.frame, textvariable=self.t0).grid(row=4, column=1)
+        Entry(self.frame, textvariable=self.time_offset).grid(row=4, column=1)
         Label(self.frame, text="[s]").grid(row=4, column=2)
 
     def get_cmd(self):
@@ -42,13 +42,13 @@ class SimuParamsPage(BasePage):
         cmd += ' -L ' + str(self.length.get())
         cmd += ' -a ' + str(self.angle.get())
         cmd += ' -S ' + str(self.sigma.get())
-        cmd += ' --t0 ' + str(self.t0.get())
+        cmd += ' --t0 ' + str(self.time_offset.get())
 
         return cmd
 
     def get_data(self):
         data = "Particle = {p}\nLength = {L} [m]\nAngle = {a} [deg]\nBeam RMS = {S} [s]\nTime offset = {t} [s]".format(
-                p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.sigma.get(), t=self.t0.get())
+                p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.sigma.get(), t=self.time_offset.get())
         return data
 
     def finalize(self):

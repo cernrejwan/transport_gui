@@ -9,10 +9,10 @@ class SupportPage(BasePage):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
 
         # vars:
+        self.vars_list = ['material_var']
+
         self.materials_list = default_values['cross_section']['materials'].keys() + ['Other']
         self.material_var = StringVar(self, self.materials_list[0])
-        self.formula = StringVar(self)
-        self.sample_file = StringVar(self)
         self.molecular_mass = DoubleVar(self)
         self.material_window = MaterialWindow(self, self.controller, self.material_var)
 

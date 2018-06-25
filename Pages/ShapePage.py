@@ -6,6 +6,7 @@ class ShapePage(BasePage):
         BasePage.__init__(self, parent, controller, "Target shape")
 
         # vars:
+        self.vars_list = ['shape', 'radius_min', 'radius_max', 'radius_step', 'rect_x1', 'rect_x2', 'rect_y1', 'rect_y2']
         self.shape = StringVar(self, "Circular")
 
         self.radius_min = DoubleVar(self, default_values['shape']['circular']['-r'])

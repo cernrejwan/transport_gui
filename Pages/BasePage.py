@@ -11,6 +11,8 @@ class BasePage(Frame):
         self.controller = controller
         self.use = IntVar(self, 1)
 
+        self.vars_list = list()
+
         self.navigation_bar = Frame(self)
         self.navigation_bar.pack(side=BOTTOM)
 
@@ -32,6 +34,9 @@ class BasePage(Frame):
 
     def get_cmd(self):
         raise NotImplemented
+
+    def get_vars(self):
+        return {var: getattr(self, var).get() for var in self.vars_list}
 
     def finalize(self):
         return True

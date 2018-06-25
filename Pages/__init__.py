@@ -1,5 +1,6 @@
 from BasePage import BasePage
 from WelcomePage import WelcomePage
+from GeneralPage import GeneralPage
 from SimuParamsPage import SimuParamsPage
 from ShapePage import ShapePage
 from HistoPage import HistoPage
@@ -9,5 +10,5 @@ from FinalPage import FinalPage
 from SupportMainPage import SupportMainPage
 from SummaryWindow import SummaryWindow
 
-__all__ = ["BasePage", "WelcomePage", "SimuParamsPage", "ShapePage", "HistoPage", "SamplePage", "SupportPage",
-           "FinalPage", "SupportMainPage", "SummaryWindow"]
+__all__ = ["WelcomePage", "BasePage", "GeneralPage", "SimuParamsPage", "ShapePage", "HistoPage", "SamplePage",
+           "SupportPage", "FinalPage", "SupportMainPage", "SummaryWindow"]

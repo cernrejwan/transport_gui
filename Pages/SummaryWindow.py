@@ -3,7 +3,7 @@ from tkFont import Font
 
 
 class SummaryWindow:
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, frames):
         self.parent = parent
         self.controller = controller
 
@@ -15,9 +15,14 @@ class SummaryWindow:
         self.frame = Frame(self.parent)
         self.frame.pack()
         font = Font(family='Helvetica', weight="bold", slant="italic")
-        myLabel = lambda col, txt: Label(self.frame, text=txt, relief=RIDGE, width=int(self.widths[col]),
-                                         height=3, font=font).grid(row=0, column=col)
 
-        myLabel(0, "Section")
-        myLabel(1, "Parameters")
-        myLabel(2, "cmd")
+        for col, txt in enumerate(["Section", "Parameters", "cmd"]):
+            Label(self.frame, text=txt, relief=RIDGE, width=int(self.widths[col]), height=3, font=font).grid(row=0, column=col)
+
+        curr_row = 1
+        for F in frames:
+            num_rows = F.get_summary(self.frame, curr_row, self.widths)
+            curr_row += num_rows
+
+        Button(self.parent, text="Save", command=self.controller.save_configs).pack()
+        Button(self.parent, text="OK", command=self.parent.destroy).pack()

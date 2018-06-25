@@ -8,6 +8,8 @@ class SamplePage(BasePage):
         BasePage.__init__(self, parent, controller, "Sample")
 
         # vars:
+        self.vars_list = ['element', 'isotope', 'sample_file']
+
         self.element = StringVar(self)
         self.isotope = IntVar(self)
         self.sample_file = StringVar(self)

@@ -7,6 +7,8 @@ class HistoPage(BasePage):
         BasePage.__init__(self, parent, controller, "Histogram")
 
         # vars:
+        self.vars_list = ['hist_dim', 'hist_type', 'bins_x', 'bins_y', 'min_x', 'min_y', 'max_x', 'max_y']
+
         self.hist_dim = StringVar(self, '1D')
         self.types_list = default_values['histogram'][self.hist_dim.get()]
         self.hist_type = StringVar(self, self.types_list[0])

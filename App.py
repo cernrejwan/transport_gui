@@ -4,6 +4,7 @@ import tkFileDialog
 from Default import *
 from Pages import *
 from Utils.OrderedDict import OrderedDict
+import pandas as pd
 
 
 class AppManager(Tk):
@@ -14,26 +15,40 @@ class AppManager(Tk):
 
         self.title("Transport Simulation Wizard")
         self.ear = StringVar(self, "EAR1")
-        self.use_default = IntVar(self, 0)
 
         self.container = Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
 
         self.frames = OrderedDict()
-        for F in [WelcomePage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
-            frame = F(parent=self.container, controller=self)
-            self.frames.add(F.__name__, frame)
-            frame.grid(row=0, column=0, sticky="nsew")
+        frame = WelcomePage(parent=self.container, controller=self)
+        self.frames.add("WelcomePage", frame)
+        frame.grid(row=0, column=0, sticky="nsew")
 
         self.frames[self.curr_frame].tkraise()
+
+    def load_configs(self):
+        config_file = self.frames["WelcomePage"].get_config_file()
+        if not config_file:
+            return default_values
+
+        configs_dict = pd.read_csv(config_file, index_col=0, squeeze=True).to_dict()
+        return configs_dict
 
     def next_frame(self):
         finalized = self.frames[self.curr_frame].finalize()
         if not finalized:
             return
 
+        if self.curr_frame == 0:
+            configs_dict = self.load_configs()
+
+            for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
+                frame = F(parent=self.container, controller=self)
+                self.frames.add(F.__name__, frame)
+                frame.grid(row=0, column=0, sticky="nsew")
+
         self.curr_frame += 1
-        if self.use_default.get() or self.curr_frame == len(self.frames):
+        if self.curr_frame == len(self.frames): # or self.use_default.get()
             self.summarize()
         else:
             self.frames[self.curr_frame].tkraise()
@@ -59,10 +74,10 @@ class AppManager(Tk):
             self.frames.remove(page_name + index)
 
     def set_ear(self, ear):
-        self.frames[0].set_collim(ear)
+        self.frames["GeneralPage"].set_collim(ear)
         ear_values = default_values[self.ear.get()]
-        self.frames[1].length.set(ear_values['-L'])
-        self.frames[1].angle.set(ear_values['-a'])
+        self.frames["SimuParamsPage"].length.set(ear_values['-L'])
+        self.frames["SimuParamsPage"].angle.set(ear_values['-a'])
 
     def get_cmd(self):
         cmds = [F.get_cmd() for F in self.frames]
@@ -87,14 +102,18 @@ done
         final_page.tkraise()
 
         summary_window = Toplevel(self)
-        summary = SummaryWindow(summary_window, self)
-        master = summary.frame
-        curr_row = 1
-        for F in self.frames:
-            num_rows = F.get_summary(master, curr_row, summary.widths)
-            curr_row += num_rows
+        SummaryWindow(summary_window, self, self.frames)
 
-        Button(summary_window, text="OK", command=summary_window.destroy).pack(side=BOTTOM)
+    def save_configs(self):
+        save_path = tkFileDialog.asksaveasfilename(initialdir="~", filetypes=(("CSV", "*.csv"),))
+        if not save_path.endswith('.csv'):
+            save_path += '.csv'
+
+        configs_dict = dict()
+        for F in self.frames:
+            configs_dict.update(F.get_vars())
+
+        pd.Series(configs_dict).to_csv(save_path)
 
     def raise_error_message(self, message):
         error_window = Toplevel(self)
