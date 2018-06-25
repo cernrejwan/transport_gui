@@ -6,16 +6,24 @@ class SupportMainPage(BasePage):
         BasePage.__init__(self, parent, controller, "Support")
 
         # vars
-        self.vars_list = ['support_layers']
-
-        self.support_layers = IntVar(self, kwargs['support_layers'])
+        self.support_layers = IntVar(self, kwargs.get('support_layers', 1))
         self.support_pages_exist = 0
 
+        if 'support_layers' not in kwargs:
+            self.use.set(0)
+        else:
+            self.self_kwargs = {key: value for key, value in kwargs.iteritems() if key.startswith("support")}
+
         # gui
-        self.use.set(0)
         Checkbutton(self, text="Use support layer(s)", variable=self.use, command=self.show).pack(side=TOP)
+        self.show()
         Label(self.frame, text="Number of support layers:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.support_layers).grid(row=1, column=1)
+
+    def get_vars_list(self):
+        if self.use.get():
+            return ['support_layers']
+        return []
 
     def finalize(self):
         if not self.use.get():
@@ -31,6 +39,6 @@ class SupportMainPage(BasePage):
             return True
 
         self.controller.remove_page("SupportPage", count=self.support_pages_exist)
-        self.controller.add_page("SupportPage", count=num_layers)
+        self.controller.add_page("SupportPage", count=num_layers, **self.self_kwargs)
         self.support_pages_exist = num_layers
         return True

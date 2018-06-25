@@ -30,7 +30,7 @@ class AppManager(Tk):
         config_file = self.frames["WelcomePage"].get_config_file()
         if config_file:
             extra_configs = pd.read_csv(config_file, index_col=0, header=None, squeeze=True).to_dict()
-            configs_dict = configs_dict.update(extra_configs)
+            configs_dict.update(extra_configs)
         return configs_dict
 
     def next_frame(self):
@@ -56,13 +56,13 @@ class AppManager(Tk):
         self.curr_frame -= 1
         self.frames[self.curr_frame].tkraise()
 
-    def add_page(self, page_name, count=1):
+    def add_page(self, page_name, count=1, **kwargs):
         if "FinalPage" in self.frames:
             self.remove_page("FinalPage")
 
         for i in range(count):
             cls = eval(page_name)
-            page = cls(parent=self.container, controller=self, index=i+1)
+            page = cls(parent=self.container, controller=self, index=i+1, **kwargs)
             index = str(i+1) if count > 1 else ''
             self.frames.add(page_name + index, page)
             page.grid(row=0, column=0, sticky="nsew")

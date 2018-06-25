@@ -20,6 +20,7 @@ class Element:
 
         if isotopes and isotopes != 'Natural':
             iso_abundance[:] = 0
+            isotopes = eval(isotopes)
             for iso_num, fraction in isotopes:
                 iso_abundance[iso_num] = fraction
 

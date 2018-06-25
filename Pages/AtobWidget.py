@@ -103,8 +103,9 @@ class AtobWidget(Frame):
         if self.radio.get() == 0:
             vars_dict['density'] = self.density.get()
             vars_dict['thickness'] = self.thickness.get()
+            vars_dict['sigma'] = self.sigma.get()
         elif self.radio.get() == 1:
-            vars_dict['aerial_density'] = self.sigma.get()
+            vars_dict['sigma'] = self.sigma.get()
         vars_dict['atob'] = self.atob.get()
         return vars_dict
 

@@ -18,7 +18,7 @@ class WelcomePage(BasePage):
                     command=lambda: self.loader_button.grid(sticky="w", row=1, column=1)).grid(sticky="w", row=1, column=0)
 
         self.loader_button = Button(self.frame, text="Load",
-                                    command=lambda: self.controller.open_file_dialog(self.config_file, file_type='pkl'))
+                                    command=lambda: self.controller.open_file_dialog(self.config_file, file_type='csv'))
         self.loader_button.grid(sticky="w", row=1, column=1)
 
         Radiobutton(self.frame, variable=self.config_set, value=1, text="Configure manually",

@@ -14,25 +14,30 @@ class MaterialWindow:
         self.type_var = StringVar(self.parent, "Number of atoms")
         self.elements_dict = dict()
         self.curr_row = 1
-        self.formula = kwargs.get('composition', [])
+        self.formula = eval(kwargs.get('composition', '[]'))
         self.set_material(self.material_var.get())
 
     def set_material(self, material):
         self.curr_row = 1
         self.elements_dict = dict()
+        self.type_var.set("Number of atoms")
 
         if material != 'Other':
             self.init_material_by_formula(support_materials[material]['formula'])
-            self.type_var.set("Mass fraction")
+
         elif self.formula:
             self.init_material_by_formula(self.formula)
-            self.type_var.set("Number of atoms")
         else:
             self.add_element()
 
     def init_material_by_formula(self, formula):
+        total_fraction = 0
         for element, fraction, isotopes in formula:
             self.add_element(element, fraction, isotopes)
+            total_fraction += fraction
+
+        if total_fraction == 1:
+            self.type_var.set("Mass fraction")
 
     def add_element(self, symbol='', fraction=0.0, isotopes=None):
         symbol_var = StringVar(self.controller, symbol)

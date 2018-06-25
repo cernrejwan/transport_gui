@@ -9,17 +9,16 @@ class SupportPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
         self.index = kwargs['index']
+        prefix = "support{}".format(self.index)
+        self_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith(prefix)}
 
         # vars:
         self.vars_list = ['material', 'composition']
 
         self.materials_list = support_materials.keys() + ['Other']
-        self.material = StringVar(self, kwargs.get('material', self.materials_list[0]))
+        self.material = StringVar(self, self_kwargs.get('material', self.materials_list[0]))
         self.molecular_mass = DoubleVar(self)
-        self.material_composition = MaterialWindow(self, self.controller, self.material)
-
-        prefix = "support{}".format(self.index)
-        atob_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith(prefix)}
+        self.material_composition = MaterialWindow(self, self.controller, self.material, **self_kwargs)
 
         # gui:
         self.frame.pack()
@@ -27,20 +26,27 @@ class SupportPage(BasePage):
         OptionMenu(self.frame, self.material, *self.materials_list,
                    command=self.set_material).grid(row=1, column=2)
 
-        self.atob_widget = AtobWidget(self.frame, self.controller, self.molecular_mass, **atob_kwargs)
+        self.atob_widget = AtobWidget(self.frame, self.controller, self.molecular_mass, **self_kwargs)
         self.atob_widget.grid(row=5, columnspan=3)
 
         self.material_details = Frame(self.frame)
-        self.set_material(self.material.get())
+        self.set_material(self.material.get(), popup=False)
 
-    def set_material(self, material):
+    def set_material(self, material, popup=True):
         self.material_composition.set_material(material)
         if material != "Other":
             self.atob_widget.density.set(support_materials[material]['density'])
-            self.molecular_mass.set(self.material_composition.get_total_mass())
-            self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get(), allow_change=False)
-        else:
+        elif popup:
             self.open_material_window()
+
+        try:
+            mass = self.material_composition.get_total_mass()
+        except AttributeError:
+            mass = 0
+
+        self.molecular_mass.set(mass)
+        self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get(),
+                                   allow_change=(self.material.get() == 'Other'))
 
     def open_material_window(self):
         self.atob_widget.density.set(0.0)

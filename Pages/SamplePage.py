@@ -14,14 +14,14 @@ class SamplePage(BasePage):
         self.sample_isotope = IntVar(self, kwargs.get('sample_isotope', 0))
         self.sample_xs_file = StringVar(self, kwargs.get('sample_xs_file', ''))
 
-        atob_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith("sample")}
+        self_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith("sample")}
+        if not self_kwargs:
+            self.use.set(0)
 
         # gui:
-        self.use.set(0)
-        self.atob_widget = AtobWidget(self.frame, self.controller, self.sample_isotope, **atob_kwargs)
-
         Checkbutton(self, text="Use sample", variable=self.use, command=self.show).pack(side=TOP)
 
+        self.show()
         Label(self.frame, text="Please specify the sample's properties").grid(row=0, columnspan=3)
         Label(self.frame, text="Element:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.sample_element).grid(row=1, column=1)
@@ -34,6 +34,7 @@ class SamplePage(BasePage):
         Button(self.frame, text="Select",
                command=lambda: self.controller.open_file_dialog(self.sample_xs_file, file_type='xs')).grid(row=3, column=2)
 
+        self.atob_widget = AtobWidget(self.frame, self.controller, self.sample_isotope, **self_kwargs)
         self.atob_widget.grid(row=4, columnspan=3)
 
     def finalize(self):
