@@ -5,7 +5,7 @@ from Utils.ToolTip import ToolTip
 
 
 class Element:
-    def __init__(self, master, controller, element_symbol):
+    def __init__(self, master, controller, element_symbol, isotopes=None):
         self.symbol = element_symbol.title()
         self.controller = controller
 
@@ -13,11 +13,17 @@ class Element:
         self.name = info['Name'].values[0]
         self.atomic_num = info['Atom_num'].values[0]
 
-        iso_abundance = abundance[abundance['symbol'] == self.symbol]
+        iso_abundance = abundance[abundance['symbol'] == 'H'].set_index('iso_num')['fraction']
 
-        self.no_data = (iso_abundance['fraction'].count() == 0)
+        self.no_data = (iso_abundance.count() == 0)
         iso_abundance = iso_abundance.fillna(0)
-        self.isotopes = [(iso['iso_num'], DoubleVar(master, iso['fraction'])) for _, iso in iso_abundance.iterrows()]
+
+        if isotopes and isotopes != 'Natural':
+            iso_abundance[:] = 0
+            for iso_num, fraction in isotopes:
+                iso_abundance[iso_num] = fraction
+
+        self.isotopes = [(iso_num, DoubleVar(master, fraction)) for iso_num, fraction in iso_abundance.iteritems()]
 
     def is_valid(self):
         cumulative_sum = sum([float(frac.get()) for _, frac in self.isotopes])

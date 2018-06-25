@@ -8,27 +8,30 @@ from ttk import Separator
 class SupportPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
-        self.index = kwargs.get('index')
+        self.index = kwargs['index']
 
         # vars:
-        self.vars_list = ['material_name', 'material_composition']
+        self.vars_list = ['material', 'composition']
 
         self.materials_list = support_materials.keys() + ['Other']
-        self.material_name = StringVar(self, kwargs.get('material_name', self.materials_list[0]))
+        self.material = StringVar(self, kwargs.get('material', self.materials_list[0]))
         self.molecular_mass = DoubleVar(self)
-        self.material_composition = MaterialWindow(self, self.controller, self.material_name)
+        self.material_composition = MaterialWindow(self, self.controller, self.material)
+
+        prefix = "support{}".format(self.index)
+        atob_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith(prefix)}
 
         # gui:
         self.frame.pack()
         Label(self.frame, text="Material for the total cross section:").grid(row=1, column=0, columnspan=2)
-        OptionMenu(self.frame, self.material_name, *self.materials_list,
+        OptionMenu(self.frame, self.material, *self.materials_list,
                    command=self.set_material).grid(row=1, column=2)
 
-        self.atob_widget = AtobWidget(self.frame, self.controller, self.molecular_mass)
+        self.atob_widget = AtobWidget(self.frame, self.controller, self.molecular_mass, **atob_kwargs)
         self.atob_widget.grid(row=5, columnspan=3)
 
         self.material_details = Frame(self.frame)
-        self.set_material(self.material_name.get())
+        self.set_material(self.material.get())
 
     def set_material(self, material):
         self.material_composition.set_material(material)
@@ -74,7 +77,14 @@ class SupportPage(BasePage):
         return self.material_composition.get_cmd(total_atob)
 
     def get_vars(self):
-        return {"support{}_".format(self.index) + var: getattr(self, var).get() for var in self.vars_list}
+        material = self.material.get()
+        vars_dict = {"support{}_material".format(self.index): material}
+        if material == 'Other':
+            vars_dict["support{}_composition".format(self.index)] = self.material_composition.get()
+
+        atob_dict = self.atob_widget.get_vars()
+        vars_dict.update({"support{}_".format(self.index) + key: value for key, value in atob_dict.iteritems()})
+        return vars_dict
 
     def finalize(self):
         atob_finalized = self.atob_widget.finalize()

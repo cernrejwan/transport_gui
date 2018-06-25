@@ -3,7 +3,7 @@ from Utils.Chemistry import *
 
 
 class AtobWidget(Frame):
-    def __init__(self, parent, controller, mass, show_atob=True):
+    def __init__(self, parent, controller, mass, show_atob=True, **kwargs):
         Frame.__init__(self, parent)
         self.mass = mass
         self.controller = controller
@@ -11,10 +11,10 @@ class AtobWidget(Frame):
         # vars:
         self.vars_list = ['sigma', 'atob', 'density', 'thickness', 'radio']
 
-        self.sigma = DoubleVar(self)
-        self.atob = DoubleVar(self)
-        self.density = DoubleVar(self)
-        self.thickness = DoubleVar(self)
+        self.sigma = DoubleVar(self, kwargs.get('sigma', 0))
+        self.atob = DoubleVar(self, kwargs.get('atob', 0))
+        self.density = DoubleVar(self, kwargs.get('density', 0))
+        self.thickness = DoubleVar(self, kwargs.get('thickness', 0))
         self.radio = IntVar(0)
 
         # gui:
@@ -72,7 +72,7 @@ class AtobWidget(Frame):
             return
 
         if self.radio.get() == 0:
-            atob, sigma = calc_atob_by_density(mass,self.density.get(),self.thickness.get())
+            atob, sigma = calc_atob_by_density(mass, self.density.get(), self.thickness.get())
             self.sigma.set(sigma)
         else:
             atob = calc_atob_by_sigma(mass, self.sigma.get())
@@ -90,13 +90,23 @@ class AtobWidget(Frame):
         if self.radio.get() == 0:
             data += u'Density = {density} [g/cm\xb3]\nThickness = {thickness} [mm]\n'.format(density=self.density.get(),
                                                                                              thickness=self.thickness.get())
-        if self.radio.get() == 1:
+        elif self.radio.get() == 1:
             data += u'Aerial density = {:0.3e} [g/cm\xb2]\n'.format(self.sigma.get())
         data += 'Atoms per barn = {:0.3e} [1/barn]'.format(self.atob.get())
         return data
 
     def get_atob(self):
         return self.atob.get()
+
+    def get_vars(self):
+        vars_dict = dict()
+        if self.radio.get() == 0:
+            vars_dict['density'] = self.density.get()
+            vars_dict['thickness'] = self.thickness.get()
+        elif self.radio.get() == 1:
+            vars_dict['aerial_density'] = self.sigma.get()
+        vars_dict['atob'] = self.atob.get()
+        return vars_dict
 
     def finalize(self):
         self.calc_atob()

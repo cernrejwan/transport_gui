@@ -11,12 +11,14 @@ class SamplePage(BasePage):
         self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file']
 
         self.sample_element = StringVar(self, kwargs.get('sample_element', ''))
-        self.sample_isotope = IntVar(self, kwargs.get('sample_isotope', ''))
+        self.sample_isotope = IntVar(self, kwargs.get('sample_isotope', 0))
         self.sample_xs_file = StringVar(self, kwargs.get('sample_xs_file', ''))
+
+        atob_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith("sample")}
 
         # gui:
         self.use.set(0)
-        self.atob_widget = AtobWidget(self.frame, self.controller, self.sample_isotope)
+        self.atob_widget = AtobWidget(self.frame, self.controller, self.sample_isotope, **atob_kwargs)
 
         Checkbutton(self, text="Use sample", variable=self.use, command=self.show).pack(side=TOP)
 
@@ -66,3 +68,9 @@ class SamplePage(BasePage):
         xstotal = get_xs_file(self.sample_element.get(), self.sample_isotope.get())
         atob = self.atob_widget.get_atob()
         return '--xs {xs} --atob {atob} --xstotal {xstotal}'.format(xs=xs, atob=atob, xstotal=xstotal)
+
+    def get_vars(self):
+        vars_dict = {var: getattr(self, var).get() for var in self.vars_list}
+        atob_dict = self.atob_widget.get_vars()
+        vars_dict.update({"sample_" + key: value for key, value in atob_dict.iteritems()})
+        return vars_dict

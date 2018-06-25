@@ -7,31 +7,38 @@ from ElementWindow import Element
 
 
 class MaterialWindow:
-    def __init__(self, parent, controller, material_var):
+    def __init__(self, parent, controller, material_var, **kwargs):
         self.controller = controller
         self.parent = parent
         self.material_var = material_var
         self.type_var = StringVar(self.parent, "Number of atoms")
         self.elements_dict = dict()
         self.curr_row = 1
+        self.formula = kwargs.get('composition', [])
+        self.set_material(self.material_var.get())
 
     def set_material(self, material):
         self.curr_row = 1
         self.elements_dict = dict()
 
         if material != 'Other':
-            formula = support_materials[material]['formula']
+            self.init_material_by_formula(support_materials[material]['formula'])
             self.type_var.set("Mass fraction")
-            for element, fraction in formula:
-                self.add_element(element, fraction)
+        elif self.formula:
+            self.init_material_by_formula(self.formula)
+            self.type_var.set("Number of atoms")
         else:
             self.add_element()
 
-    def add_element(self, symbol='', fraction=0.0):
+    def init_material_by_formula(self, formula):
+        for element, fraction, isotopes in formula:
+            self.add_element(element, fraction, isotopes)
+
+    def add_element(self, symbol='', fraction=0.0, isotopes=None):
         symbol_var = StringVar(self.controller, symbol)
         fraction_var = DoubleVar(self.controller, fraction)
-        element = Element(self.parent, self.controller, symbol) if symbol else None
-        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'composition': element, 'changed': False}
+        element = Element(self.parent, self.controller, symbol, isotopes) if symbol else None
+        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'isotopes': element, 'changed': False}
         self.curr_row += 1
 
     def show_element(self, frame, row):
@@ -51,12 +58,12 @@ class MaterialWindow:
             self.controller.raise_error_message('Element does not exist.\nPlease check spelling.')
             return
 
-        if not curr_element['composition'] or curr_element['composition'].symbol != element_symbol:
-            curr_element['composition'] = Element(self.parent, self.controller, element_symbol)
+        if not curr_element['isotopes'] or curr_element['isotopes'].symbol != element_symbol:
+            curr_element['isotopes'] = Element(self.parent, self.controller, element_symbol)
 
         curr_element['changed'] = True
         isotopes_window = Toplevel(self.controller)
-        curr_element['composition'].show(isotopes_window)
+        curr_element['isotopes'].show(isotopes_window)
 
     def finalize(self):
         if not self.elements_dict[1]['symbol'].get():
@@ -75,9 +82,9 @@ class MaterialWindow:
 
         new_dict = {}
         for i, item in self.elements_dict.iteritems():
-            if not item['composition']:
+            if not item['isotopes']:
                 new_dict[i] = item
-                new_dict[i]['composition'] = Element(self.parent, self.controller, item['symbol'].get())
+                new_dict[i]['isotopes'] = Element(self.parent, self.controller, item['symbol'].get())
         self.elements_dict.update(new_dict)
 
         return True
@@ -85,7 +92,7 @@ class MaterialWindow:
     def get_total_mass(self):
         total_mass = 0
         for item in self.elements_dict.values():
-            element_mass = item['composition'].get_avg_mass_number()
+            element_mass = item['isotopes'].get_avg_mass_number()
             total_mass += item['fraction'].get() * element_mass   # same formula for num atoms or mass fraction
         return total_mass
 
@@ -103,7 +110,7 @@ class MaterialWindow:
     def get_cmd(self, total_atob):
         cmd = ''
         for item in self.elements_dict.values():
-            cmd += item['composition'].get_cmd(total_atob)
+            cmd += item['isotopes'].get_cmd(total_atob)
         return cmd
 
     def get_data(self):
@@ -162,6 +169,6 @@ class MaterialWindow:
             if item['changed']:
                 composition = 'Natural'
             else:
-                composition = item['composition'].get()
+                composition = item['isotopes'].get()
             result.append((symbol, frac, composition))
         return str(result)
