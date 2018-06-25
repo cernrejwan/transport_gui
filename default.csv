@@ -1,0 +1,25 @@
+ear,EAR1
+bins_x,6000
+bins_y,6000
+collimation,ear1
+histogram_dim,1D
+histogram_type,Energy [eV]
+isotope,0
+max_x,1.00E+09
+max_y,2
+min_x,1.00E-03
+min_y,-2
+user_collimation_file,
+radius_max,1.65
+radius_min,0
+radius_step,0.05
+rect_x1,-1
+rect_x2,1
+rect_y1,-1
+rect_y2,1
+shape,Circular
+support_layers,1
+particle,Neutrons
+time_offset,0
+sigma,0
+iters,24
