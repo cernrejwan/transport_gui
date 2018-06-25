@@ -1,4 +1,5 @@
 from BasePage import *
+from Utils.OptionMenus import histogram_types
 import re
 
 
@@ -7,27 +8,27 @@ class HistoPage(BasePage):
         BasePage.__init__(self, parent, controller, "Histogram")
 
         # vars:
-        self.vars_list = ['hist_dim', 'hist_type', 'bins_x', 'bins_y', 'min_x', 'min_y', 'max_x', 'max_y']
+        self.vars_list = ['histogram_dim', 'histogram_type', 'bins_x', 'min_x', 'max_x']
 
-        self.hist_dim = StringVar(self, '1D')
-        self.types_list = default_values['histogram'][self.hist_dim.get()]
-        self.hist_type = StringVar(self, self.types_list[0])
+        self.histogram_dim = StringVar(self, kwargs['histogram_dim'])
+        self.types_list = histogram_types[self.histogram_dim.get()]
+        self.histogram_type = StringVar(self, kwargs['histogram_type'])
 
-        self.bins_x = IntVar(self, default_values['histogram']['-n'])
-        self.bins_y = IntVar(self, default_values['histogram']['-m'])
-        self.iters = IntVar(self, default_values['histogram']['num_iters'])
-        self.min_x = StringVar(self, default_values['histogram']['-h'])
-        self.max_x = StringVar(self, default_values['histogram']['-H'])
-        self.min_y = StringVar(self, default_values['histogram']['-b'])
-        self.max_y = StringVar(self, default_values['histogram']['-B'])
+        self.bins_x = IntVar(self, kwargs['bins_x'])
+        self.bins_y = IntVar(self, kwargs['bins_y'])
+        self.iters = IntVar(self, kwargs['iters'])
+        self.min_x = StringVar(self, kwargs['min_x'])
+        self.max_x = StringVar(self, kwargs['max_x'])
+        self.min_y = StringVar(self, kwargs['min_y'])
+        self.max_y = StringVar(self, kwargs['max_y'])
 
         # gui:
         self.frame.pack()
         self.header = Frame(self.frame)
         Label(self.header, text="Please select the number of dimensions:").grid(row=0, column=0)
-        OptionMenu(self.header, self.hist_dim, "1D", "2D", command=self.set_hist_dim).grid(row=0, column=1)
+        OptionMenu(self.header, self.histogram_dim, "1D", "2D", command=self.set_hist_dim).grid(row=0, column=1)
         Label(self.header, text="Please select histogram type:").grid(row=1, column=0)
-        self.types_menu = OptionMenu(self.header, self.hist_type, *self.types_list, command=self.set_hist_type)
+        self.types_menu = OptionMenu(self.header, self.histogram_type, *self.types_list, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
         Label(self.header, text="Number of files for statistics (20 to 100)").grid(row=2, column=0)
         Entry(self.header, textvariable=self.iters).grid(row=2, column=1)
@@ -57,10 +58,10 @@ class HistoPage(BasePage):
         y_range_frame.grid(row=3, columnspan=4, rowspan=4)
 
     def set_hist_dim(self, hist_dim):
-        self.types_list = default_values['histogram'][hist_dim]
-        self.hist_type.set(self.types_list[0])
+        self.types_list = histogram_types[hist_dim]
+        self.histogram_type.set(self.types_list[0])
         self.types_menu.grid_forget()
-        self.types_menu = OptionMenu(self.header, self.hist_type, *self.types_list, command=self.set_hist_type)
+        self.types_menu = OptionMenu(self.header, self.histogram_type, *self.types_list, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
 
         if hist_dim == '1D':
@@ -80,13 +81,18 @@ class HistoPage(BasePage):
     #     self.min_x.set(min_x)
     #     self.max_x.set(max_x)
 
+    def get_vars_list(self):
+        if self.histogram_dim.get() == '2D':
+            self.vars_list.extend(['bins_y', 'min_y', 'max_y'])
+        return self.vars_list
+
     def get_cmd(self):
         cmd = '-T?'
         cmd += ' -n ' + str(self.bins_x.get())
         cmd += ' -h ' + str(self.min_x.get())
         cmd += ' -H ' + str(self.max_x.get())
 
-        if self.hist_dim.get() == "2D":
+        if self.histogram_dim.get() == "2D":
             cmd += ' -m ' + str(self.bins_y.get())
             cmd += ' -b ' + str(self.min_y.get())
             cmd += ' -B ' + str(self.max_y.get())
@@ -94,13 +100,13 @@ class HistoPage(BasePage):
         return cmd
 
     def get_data(self):
-        unit_x = re.search(r'\[(.*?)\]', self.hist_type.get()).group(1)
+        unit_x = re.search(r'\[(.*?)\]', self.histogram_type.get()).group(1)
         data = 'Histogram: {hist_type}\nBins (x) = {bins_x}\nRange (x) = {min_x} - {max_x} [{unit_x}]'.format(
-                hist_type=self.hist_type.get(), bins_x=self.bins_x.get(), min_x=self.min_x.get(),
+                hist_type=self.histogram_type.get(), bins_x=self.bins_x.get(), min_x=self.min_x.get(),
                 max_x=self.max_x.get(), unit_x=unit_x)
 
-        if self.hist_dim.get() == '2D':
-            unit_y = re.search(r'\[(.*?)\]', self.hist_type.get().split('vs')[1]).group(1)
+        if self.histogram_dim.get() == '2D':
+            unit_y = re.search(r'\[(.*?)\]', self.histogram_type.get().split('vs')[1]).group(1)
             data += '\nBins (y) = {bins_y}\nRange (y) = {min_y} - {max_y} [{unit_y}]'.format(
                 bins_y=self.bins_y.get(), min_y=self.min_y.get(),
                 max_y=self.max_y.get(), unit_y=unit_y)

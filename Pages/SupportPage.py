@@ -1,46 +1,48 @@
 from BasePage import *
 from AtobWidget import AtobWidget
 from MaterialWindow import MaterialWindow
+from Utils.OptionMenus import support_materials
 from ttk import Separator
 
 
 class SupportPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
+        self.index = kwargs.get('index')
 
         # vars:
-        self.vars_list = ['material_var']
+        self.vars_list = ['material_name', 'material_composition']
 
-        self.materials_list = default_values['cross_section']['materials'].keys() + ['Other']
-        self.material_var = StringVar(self, self.materials_list[0])
+        self.materials_list = support_materials.keys() + ['Other']
+        self.material_name = StringVar(self, kwargs.get('material_name', self.materials_list[0]))
         self.molecular_mass = DoubleVar(self)
-        self.material_window = MaterialWindow(self, self.controller, self.material_var)
+        self.material_composition = MaterialWindow(self, self.controller, self.material_name)
 
         # gui:
         self.frame.pack()
         Label(self.frame, text="Material for the total cross section:").grid(row=1, column=0, columnspan=2)
-        OptionMenu(self.frame, self.material_var, *self.materials_list,
+        OptionMenu(self.frame, self.material_name, *self.materials_list,
                    command=self.set_material).grid(row=1, column=2)
 
         self.atob_widget = AtobWidget(self.frame, self.controller, self.molecular_mass)
         self.atob_widget.grid(row=5, columnspan=3)
 
         self.material_details = Frame(self.frame)
-        self.set_material(self.material_var.get())
+        self.set_material(self.material_name.get())
 
     def set_material(self, material):
-        self.material_window.set_material(material)
+        self.material_composition.set_material(material)
         if material != "Other":
-            self.atob_widget.density.set(default_values['cross_section']['materials'][material]['density'])
-            self.molecular_mass.set(default_values['cross_section']['materials'][material]['molecular_mass'])
-            self.show_material_details(self.material_window.get_formula(), self.molecular_mass.get(), allow_change=False)
+            self.atob_widget.density.set(support_materials[material]['density'])
+            self.molecular_mass.set(self.material_composition.get_total_mass())
+            self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get(), allow_change=False)
         else:
             self.open_material_window()
 
     def open_material_window(self):
         self.atob_widget.density.set(0.0)
         new_window = Toplevel(self.controller)
-        self.material_window.show(new_window)
+        self.material_composition.show(new_window)
         Button(new_window, text="OK", command=lambda: self.close_elements_session(new_window)).pack(side=BOTTOM)
 
     def show_material_details(self, formula, molecular_mass, allow_change):
@@ -54,22 +56,25 @@ class SupportPage(BasePage):
         Separator(self.material_details, orient="horizontal").grid(row=4, columnspan=3)
 
     def close_elements_session(self, parent):
-        finalized = self.material_window.finalize()
+        finalized = self.material_composition.finalize()
         if not finalized:
             return
 
-        self.molecular_mass.set(self.material_window.get_total_mass())
+        self.molecular_mass.set(self.material_composition.get_total_mass())
         parent.destroy()
-        self.show_material_details(self.material_window.get_formula(), self.molecular_mass.get(), allow_change=True)
+        self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get(), allow_change=True)
 
     def get_data(self):
-        data = self.material_window.get_data()
+        data = self.material_composition.get_data()
         data += "\n" + self.atob_widget.get_data()
         return data
 
     def get_cmd(self):
         total_atob = self.atob_widget.get_atob()
-        return self.material_window.get_cmd(total_atob)
+        return self.material_composition.get_cmd(total_atob)
+
+    def get_vars(self):
+        return {"support{}_".format(self.index) + var: getattr(self, var).get() for var in self.vars_list}
 
     def finalize(self):
         atob_finalized = self.atob_widget.finalize()

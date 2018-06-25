@@ -1,7 +1,6 @@
 from Tkinter import *
 from tkFont import Font
 import tkFileDialog
-from Default import *
 from Pages import *
 from Utils.OrderedDict import OrderedDict
 import pandas as pd
@@ -11,10 +10,10 @@ class AppManager(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 
+        self.const = pd.read_csv('./Utils/const.csv', index_col=0, header=None, squeeze=True).to_dict()
         self.curr_frame = 0
 
         self.title("Transport Simulation Wizard")
-        self.ear = StringVar(self, "EAR1")
 
         self.container = Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
@@ -27,11 +26,11 @@ class AppManager(Tk):
         self.frames[self.curr_frame].tkraise()
 
     def load_configs(self):
+        configs_dict = pd.read_csv('./default.csv', index_col=0, header=None, squeeze=True).to_dict()
         config_file = self.frames["WelcomePage"].get_config_file()
-        if not config_file:
-            return default_values
-
-        configs_dict = pd.read_csv(config_file, index_col=0, squeeze=True).to_dict()
+        if config_file:
+            extra_configs = pd.read_csv(config_file, index_col=0, header=None, squeeze=True).to_dict()
+            configs_dict = configs_dict.update(extra_configs)
         return configs_dict
 
     def next_frame(self):
@@ -43,7 +42,7 @@ class AppManager(Tk):
             configs_dict = self.load_configs()
 
             for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
-                frame = F(parent=self.container, controller=self)
+                frame = F(parent=self.container, controller=self, **configs_dict)
                 self.frames.add(F.__name__, frame)
                 frame.grid(row=0, column=0, sticky="nsew")
 
@@ -73,11 +72,13 @@ class AppManager(Tk):
             index = str(i + 1) if count > 1 else ''
             self.frames.remove(page_name + index)
 
+    def get_ear(self):
+        return self.frames["GeneralPage"].ear.get()
+
     def set_ear(self, ear):
         self.frames["GeneralPage"].set_collim(ear)
-        ear_values = default_values[self.ear.get()]
-        self.frames["SimuParamsPage"].length.set(ear_values['-L'])
-        self.frames["SimuParamsPage"].angle.set(ear_values['-a'])
+        self.frames["SimuParamsPage"].length.set(self.const[ear + '_length'])
+        self.frames["SimuParamsPage"].angle.set(self.const[ear + '_max_angle'])
 
     def get_cmd(self):
         cmds = [F.get_cmd() for F in self.frames]

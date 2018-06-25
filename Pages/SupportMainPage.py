@@ -6,8 +6,9 @@ class SupportMainPage(BasePage):
         BasePage.__init__(self, parent, controller, "Support")
 
         # vars
-        self.vars_list = ['support_layers', 'use']
-        self.support_layers = IntVar(self, 1)
+        self.vars_list = ['support_layers']
+
+        self.support_layers = IntVar(self, kwargs['support_layers'])
         self.support_pages_exist = 0
 
         # gui

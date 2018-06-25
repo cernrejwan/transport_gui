@@ -1,5 +1,4 @@
 import pandas as pd
-from Default import *
 
 symbols = pd.read_csv('./elements/symbols.csv')
 abundance = pd.read_csv('./elements/abundance.csv')
@@ -16,7 +15,8 @@ def get_full_name(element_symbol, isotope_number):
 
 
 def get_xs_file(element_symbol, isotope_number):
-    return default_values['cross_section']['path'] + get_full_name(element_symbol.title(), isotope_number) + '_tot.xs'
+    const = pd.read_csv('./Utils/const.csv', index_col=0, header=None, squeeze=True).to_dict()
+    return const['xs_files_path'] + get_full_name(element_symbol.title(), isotope_number) + '_tot.xs'
 
 
 def element_exists(element_symbol):

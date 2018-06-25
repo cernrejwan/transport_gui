@@ -6,27 +6,29 @@ class GeneralPage(BasePage):
         BasePage.__init__(self, parent, controller, "General Configurations")
 
         # vars:
-        self.vars_list = ['collim', 'other_collim_file_path', 'output_dir']
-
-        currList = self.get_collim_list(controller.ear.get())
-        self.collim = StringVar(self, currList[0])
-        self.other_collim_file_path = StringVar(self)
+        self.vars_list = ['ear', 'collimation']
+        self.ear = StringVar(self, "EAR1")
+        self.collimation = StringVar(self, kwargs['collimation'])
+        self.user_collimation_file = StringVar(self, kwargs.get('user_collimation_file', ''))
         self.output_dir = StringVar(self, os.path.expanduser('~'))
+
+        self.collim_lists = dict()
+        self.init_collim_list(self.controller.const['collimation_files_path'])
+        currList = self.collim_lists[self.ear.get()]
 
         # gui:
         self.frame.pack()
         Label(self.frame, text="Select experiment area:").grid(row=1, column=0)
-        OptionMenu(self.frame, controller.ear, "EAR1", "EAR2", command=controller.set_ear).grid(row=1, column=1)
-
+        OptionMenu(self.frame, self.ear, "EAR1", "EAR2", command=controller.set_ear).grid(row=1, column=1)
         Label(self.frame, text="Select collimation input file:").grid(row=2, column=0)
-        self.collim_option = OptionMenu(self.frame, self.collim, *currList, command=self.set_other_file)
+        self.collim_option = OptionMenu(self.frame, self.collimation, *currList, command=self.set_other_file)
         self.collim_option.grid(row=2, column=1)
 
         self.other_collim_frame = Frame(self.frame)
         Label(self.other_collim_frame, text="Specify the path for the collimation file:").grid(row=0, column=0)
-        Entry(self.other_collim_frame, textvariable=self.other_collim_file_path).grid(row=0, column=1)
+        Entry(self.other_collim_frame, textvariable=self.user_collimation_file).grid(row=0, column=1)
         Button(self.other_collim_frame, text="Select",
-               command=lambda: self.controller.open_file_dialog(self.other_collim_file_path, file_type='inp')).grid(row=0, column=2)
+               command=lambda: self.controller.open_file_dialog(self.user_collimation_file, file_type='inp')).grid(row=0, column=2)
 
         Label(self.frame, text="Specify the output directory:").grid(row=4, column=0)
         Entry(self.frame, textvariable=self.output_dir).grid(row=4, column=1)
@@ -35,15 +37,16 @@ class GeneralPage(BasePage):
 
         # Checkbutton(self, text="Use default arguments for all the other parameters?", variable=controller.use_default).pack(side=BOTTOM)
 
-    def get_collim_list(self, ear):
-        currList = default_values[ear]['collimation']
-        return currList + ["Other"]
+    def init_collim_list(self, collim_path):
+        files_list = os.listdir(collim_path)
+        self.collim_lists['EAR1'] = [f for f in files_list if f.lower().startswith('ear1')] + ["Other"]
+        self.collim_lists['EAR2'] = [f for f in files_list if f.lower().startswith('ear2')] + ["Other"]
 
     def set_collim(self, ear):
         self.collim_option.grid_forget()
-        currList = self.get_collim_list(ear)
-        self.collim = StringVar(self, currList[0])
-        self.collim_option = OptionMenu(self.frame, self.collim, *currList, command=self.set_other_file)
+        currList = self.collim_lists[self.ear.get()]
+        self.collimation = StringVar(self, currList[0])
+        self.collim_option = OptionMenu(self.frame, self.collimation, *currList, command=self.set_other_file)
         self.collim_option.grid(row=2, column=1)
         self.set_other_file('new')
 
@@ -54,14 +57,14 @@ class GeneralPage(BasePage):
             self.other_collim_frame.grid_forget()
 
     def get_ear_cmd(self):
-        return default_values[self.controller.ear.get()]['const']
+        return self.controller.const[self.ear.get() + '_const']
 
     def get_collimation_cmd(self):
-        collim = self.collim.get()
+        collim = self.collimation.get()
         if collim == "Other":
-            cmd = self.other_collim_file_path.get()
+            cmd = self.user_collimation_file.get()
         else:
-            cmd = '-i ' + default_values['collimation_path'] + collim + '.inp'
+            cmd = '-i ' + self.controller.const['collimation_files_path'] + collim + '.inp'
         return cmd
 
     def get_output_cmd(self):
@@ -72,11 +75,11 @@ class GeneralPage(BasePage):
 
     def get_summary(self, master, row, widths):
         Label(master, text="EAR", relief=SUNKEN, width=widths[0], height=2).grid(row=row, column=0)
-        Label(master, bg='white', text=self.controller.ear.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row, column=1)
+        Label(master, bg='white', text=self.ear.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row, column=1)
         Label(master, bg='white', text=self.get_ear_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row, column=2)
 
         Label(master, text="Collimation", relief=SUNKEN, width=widths[0], height=2).grid(row=row+1, column=0)
-        Label(master, bg='white', text=self.collim.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row+1, column=1)
+        Label(master, bg='white', text=self.collimation.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row + 1, column=1)
         Label(master, bg='white', text=self.get_collimation_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+1, column=2)
 
         Label(master, text="Output", relief=SUNKEN, width=widths[0], height=2).grid(row=row+2, column=0)
@@ -85,12 +88,17 @@ class GeneralPage(BasePage):
 
         return 3 # number of added rows
 
+    def get_vars_list(self):
+        if self.collimation.get == 'Other':
+            self.vars_list.append('user_collimation_file')
+        return self.vars_list
+
     def finalize(self):
         if not os.path.exists(self.output_dir.get()):
             self.controller.raise_error_message("Output directory does not exist.\nPlease specify an existing directory.")
             return False
 
-        if self.collim.get() == 'Other' and not os.path.exists(self.other_collim_file_path.get()):
+        if self.collimation.get() == 'Other' and not os.path.exists(self.user_collimation_file.get()):
             self.controller.raise_error_message("Collimation file does not exist.\nPlease try again.")
             return False
 

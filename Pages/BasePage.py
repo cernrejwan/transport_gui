@@ -1,6 +1,5 @@
 from Tkinter import *
 import tkFont as tkfont
-from Default import default_values
 import os
 
 
@@ -35,8 +34,14 @@ class BasePage(Frame):
     def get_cmd(self):
         raise NotImplemented
 
+    def get_vars_list(self):
+        return self.vars_list
+
     def get_vars(self):
-        return {var: getattr(self, var).get() for var in self.vars_list}
+        if not self.use.get():
+            return {}
+        vars_list = self.get_vars_list()
+        return {var: getattr(self, var).get() for var in vars_list}
 
     def finalize(self):
         return True

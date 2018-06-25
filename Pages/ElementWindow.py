@@ -69,3 +69,10 @@ class Element:
             self.controller.raise_error_message('Fractions should sum up to 1')
         else:
             self.window.destroy()
+
+    def get(self):
+        result = list()
+        for iso_num, frac in self.isotopes:
+            if frac.get() > 0:
+                result.append((iso_num, frac.get()))
+        return str(result)

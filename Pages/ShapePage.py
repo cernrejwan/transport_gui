@@ -6,17 +6,16 @@ class ShapePage(BasePage):
         BasePage.__init__(self, parent, controller, "Target shape")
 
         # vars:
-        self.vars_list = ['shape', 'radius_min', 'radius_max', 'radius_step', 'rect_x1', 'rect_x2', 'rect_y1', 'rect_y2']
         self.shape = StringVar(self, "Circular")
 
-        self.radius_min = DoubleVar(self, default_values['shape']['circular']['-r'])
-        self.radius_max = DoubleVar(self, default_values['shape']['circular']['-R'])
-        self.radius_step = DoubleVar(self, default_values['shape']['circular']['-s'])
+        self.radius_min = DoubleVar(self, kwargs['radius_min'])
+        self.radius_max = DoubleVar(self, kwargs['radius_max'])
+        self.radius_step = DoubleVar(self, kwargs['radius_step'])
 
-        self.rect_x1 = DoubleVar(self, default_values['shape']['rectangular']['--x1'])
-        self.rect_x2 = DoubleVar(self, default_values['shape']['rectangular']['--x2'])
-        self.rect_y1 = DoubleVar(self, default_values['shape']['rectangular']['--y1'])
-        self.rect_y2 = DoubleVar(self, default_values['shape']['rectangular']['--y2'])
+        self.rect_x1 = DoubleVar(self, kwargs['rect_x1'])
+        self.rect_x2 = DoubleVar(self, kwargs['rect_x2'])
+        self.rect_y1 = DoubleVar(self, kwargs['rect_y1'])
+        self.rect_y2 = DoubleVar(self, kwargs['rect_y2'])
 
         # gui:
         self.frame.pack()
@@ -80,6 +79,13 @@ class ShapePage(BasePage):
             )
 
         return data
+
+    def get_vars_list(self):
+        if self.shape.get() == "Circular":
+            self.vars_list = ['shape', 'radius_min', 'radius_max', 'radius_step']
+        else:
+            self.vars_list = ['shape', 'rect_x1', 'rect_x2', 'rect_y1', 'rect_y2']
+        return self.vars_list
 
     def finalize(self):
         if self.shape.get() == 'Circular':
