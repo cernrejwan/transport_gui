@@ -11,8 +11,8 @@ class SupportMainPage(BasePage):
 
         if 'support_layers' not in kwargs:
             self.use.set(0)
-        else:
-            self.self_kwargs = {key: value for key, value in kwargs.iteritems() if key.startswith("support")}
+
+        self.kwargs = {key: value for key, value in kwargs.iteritems() if key.startswith("support")}
 
         # gui
         Checkbutton(self, text="Use support layer(s)", variable=self.use, command=self.show).pack(side=TOP)
@@ -39,6 +39,6 @@ class SupportMainPage(BasePage):
             return True
 
         self.controller.remove_page("SupportPage", count=self.support_pages_exist)
-        self.controller.add_page("SupportPage", count=num_layers, **self.self_kwargs)
+        self.controller.add_page("SupportPage", count=num_layers, **self.kwargs)
         self.support_pages_exist = num_layers
         return True

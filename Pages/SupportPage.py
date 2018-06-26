@@ -1,8 +1,7 @@
-from BasePage import *
-from AtobWidget import AtobWidget
-from MaterialWindow import MaterialWindow
-from Utils.OptionMenus import support_materials
 from ttk import Separator
+from AtobWidget import AtobWidget
+from BasePage import *
+from MaterialWindow import MaterialWindow
 
 
 class SupportPage(BasePage):
@@ -15,10 +14,11 @@ class SupportPage(BasePage):
         # vars:
         self.vars_list = ['material', 'composition']
 
-        self.materials_list = support_materials.keys() + ['Other']
+        self.support_materials = self.get_support_materials(self.controller.paths['support_materials_path'])
+        self.materials_list = self.support_materials.keys() + ['Other']
         self.material = StringVar(self, self_kwargs.get('material', self.materials_list[0]))
         self.molecular_mass = DoubleVar(self)
-        self.material_composition = MaterialWindow(self, self.controller, self.material, **self_kwargs)
+        self.material_composition = MaterialWindow(self, self.controller, self.material, self.support_materials, **self_kwargs)
 
         # gui:
         self.frame.pack()
@@ -32,10 +32,22 @@ class SupportPage(BasePage):
         self.material_details = Frame(self.frame)
         self.set_material(self.material.get(), popup=False)
 
+    @staticmethod
+    def get_support_materials(support_materials_path):
+        support_materials = dict()
+        files_list = os.listdir(support_materials_path)
+        for material in files_list:
+            name = material.split('.')[0]
+            values = pd.read_csv(os.path.join(support_materials_path, material), header=None, index_col=0,
+                                 squeeze=True).to_dict()
+            values['formula'] = eval(values['formula'])
+            support_materials[name] = values
+        return support_materials
+
     def set_material(self, material, popup=True):
-        self.material_composition.set_material(material)
+        self.material_composition.set_material(material, self.support_materials)
         if material != "Other":
-            self.atob_widget.density.set(support_materials[material]['density'])
+            self.atob_widget.density.set(self.support_materials[material]['density'])
         elif popup:
             self.open_material_window()
 

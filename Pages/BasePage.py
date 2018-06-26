@@ -1,6 +1,7 @@
 from Tkinter import *
 import tkFont as tkfont
 import os
+import pandas as pd
 
 
 class BasePage(Frame):

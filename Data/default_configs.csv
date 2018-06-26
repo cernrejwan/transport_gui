@@ -9,7 +9,6 @@ max_x,1.00E+09
 max_y,2
 min_x,1.00E-03
 min_y,-2
-user_collimation_file,
 radius_max,1.65
 radius_min,0
 radius_step,0.05
@@ -18,8 +17,13 @@ rect_x2,1
 rect_y1,-1
 rect_y2,1
 shape,Circular
-support_layers,1
 particle,Neutrons
 time_offset,0
 sigma,0
 iters,24
+EAR1_const,-D Z -t 40 -x 0.0 -y 0.0 -z 41.06
+EAR2_const,-D Y -t 16 -x -10.8 -y 37.2 -z 9.86
+EAR1_max_angle,1
+EAR2_max_angle,2.5
+EAR1_length,185
+EAR2_length,19.5

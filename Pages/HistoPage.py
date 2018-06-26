@@ -1,6 +1,5 @@
-from BasePage import *
-from Utils.OptionMenus import histogram_types
 import re
+from BasePage import *
 
 
 class HistoPage(BasePage):
@@ -11,7 +10,7 @@ class HistoPage(BasePage):
         self.vars_list = ['histogram_dim', 'histogram_type', 'bins_x', 'min_x', 'max_x']
 
         self.histogram_dim = StringVar(self, kwargs['histogram_dim'])
-        self.types_list = histogram_types[self.histogram_dim.get()]
+        self.histogram_menus = dict()
         self.histogram_type = StringVar(self, kwargs['histogram_type'])
 
         self.bins_x = IntVar(self, kwargs['bins_x'])
@@ -22,13 +21,16 @@ class HistoPage(BasePage):
         self.min_y = StringVar(self, kwargs['min_y'])
         self.max_y = StringVar(self, kwargs['max_y'])
 
+        self.init_histogram_menus(self.controller.paths['histogram_menus_path'])
+        curr_menu = self.histogram_menus[self.histogram_dim.get()]
+
         # gui:
         self.frame.pack()
         self.header = Frame(self.frame)
         Label(self.header, text="Please select the number of dimensions:").grid(row=0, column=0)
         OptionMenu(self.header, self.histogram_dim, "1D", "2D", command=self.set_hist_dim).grid(row=0, column=1)
         Label(self.header, text="Please select histogram type:").grid(row=1, column=0)
-        self.types_menu = OptionMenu(self.header, self.histogram_type, *self.types_list, command=self.set_hist_type)
+        self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
         Label(self.header, text="Number of files for statistics (20 to 100)").grid(row=2, column=0)
         Entry(self.header, textvariable=self.iters).grid(row=2, column=1)
@@ -57,11 +59,17 @@ class HistoPage(BasePage):
         Entry(y_range_frame, textvariable=self.max_y).pack(side=LEFT)
         y_range_frame.grid(row=3, columnspan=4, rowspan=4)
 
+    def init_histogram_menus(self, histogram_menus_path):
+        for dim in ['1D', '2D']:
+            with open(os.path.join(histogram_menus_path, dim + '.txt'), 'r') as f:
+                menu = f.read()
+            self.histogram_menus[dim] = menu.split('\n')
+
     def set_hist_dim(self, hist_dim):
-        self.types_list = histogram_types[hist_dim]
-        self.histogram_type.set(self.types_list[0])
+        curr_menu = self.histogram_menus[hist_dim]
+        self.histogram_type.set(curr_menu[0])
         self.types_menu.grid_forget()
-        self.types_menu = OptionMenu(self.header, self.histogram_type, *self.types_list, command=self.set_hist_type)
+        self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
 
         if hist_dim == '1D':

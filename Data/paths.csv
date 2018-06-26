@@ -1,9 +1,6 @@
-EAR1_const,-D Z -t 40 -x 0.0 -y 0.0 -z 41.06
-EAR2_const,-D Y -t 16 -x -10.8 -y 37.2 -z 9.86
-EAR1_max_angle,1
-EAR2_max_angle,2.5
-EAR1_length,185
-EAR2_length,19.5
 collimation_files_path,.
+primary_files_path,.
+support_materials_path,./Data/support_materials/
+histogram_menus_path,./Data/histogram_menus/
 xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
 collimation_files_path2,/eos/experiment/ntof/simul/transport/input/

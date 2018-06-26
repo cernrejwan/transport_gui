@@ -13,7 +13,7 @@ class GeneralPage(BasePage):
         self.output_dir = StringVar(self, os.path.expanduser('~'))
 
         self.collim_lists = dict()
-        self.init_collim_list(self.controller.const['collimation_files_path'])
+        self.init_collim_list(self.controller.paths['collimation_files_path'])
         currList = self.collim_lists[self.ear.get()]
 
         # gui:
@@ -39,8 +39,8 @@ class GeneralPage(BasePage):
 
     def init_collim_list(self, collim_path):
         files_list = os.listdir(collim_path)
-        self.collim_lists['EAR1'] = [f for f in files_list if f.lower().startswith('ear1')] + ["Other"]
-        self.collim_lists['EAR2'] = [f for f in files_list if f.lower().startswith('ear2')] + ["Other"]
+        self.collim_lists['EAR1'] = [f.split('.')[0] for f in files_list if f.lower().startswith('ear1')] + ["Other"]
+        self.collim_lists['EAR2'] = [f.split('.')[0] for f in files_list if f.lower().startswith('ear2')] + ["Other"]
 
     def set_collim(self, ear):
         self.collim_option.grid_forget()

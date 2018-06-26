@@ -1,7 +1,7 @@
 import pandas as pd
 
-symbols = pd.read_csv('./elements/symbols.csv')
-abundance = pd.read_csv('./elements/abundance.csv')
+symbols = pd.read_csv('./Data/elements/symbols.csv')
+abundance = pd.read_csv('./Data/elements/abundance.csv')
 abundance['fraction'] = abundance['fraction'] / 100
 
 unit_mass = 1.66053904e-24
@@ -15,7 +15,7 @@ def get_full_name(element_symbol, isotope_number):
 
 
 def get_xs_file(element_symbol, isotope_number):
-    const = pd.read_csv('./Utils/const.csv', index_col=0, header=None, squeeze=True).to_dict()
+    const = pd.read_csv('./Utils/paths.csv', index_col=0, header=None, squeeze=True).to_dict()
     return const['xs_files_path'] + get_full_name(element_symbol.title(), isotope_number) + '_tot.xs'
 
 

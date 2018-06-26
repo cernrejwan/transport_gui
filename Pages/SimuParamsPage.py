@@ -12,8 +12,8 @@ class SimuParamsPage(BasePage):
         self.time_offset = DoubleVar(self, kwargs['time_offset'])
         self.sigma = DoubleVar(self, kwargs['sigma'])
 
-        self.length = DoubleVar(self, kwargs.get('length', controller.const[self.controller.get_ear() + '_length']))
-        self.angle = DoubleVar(self, kwargs.get('angle', controller.const[self.controller.get_ear() + '_max_angle']))
+        self.length = DoubleVar(self, kwargs.get('length', kwargs[self.controller.get_ear() + '_length']))
+        self.angle = DoubleVar(self, kwargs.get('angle', kwargs[self.controller.get_ear() + '_max_angle']))
 
         # gui:
         self.frame.pack()
@@ -56,7 +56,7 @@ class SimuParamsPage(BasePage):
 
     def finalize(self):
         ear = self.controller.get_ear()
-        max_angle = self.controller.const[ear + '_max_angle']
+        max_angle = float(self.controller.configs_dict[ear + '_max_angle'])
         if self.angle.get() > max_angle:
             self.controller.raise_error_message("Angle must be smaller than {} for {}.".format(max_angle, ear))
             return False

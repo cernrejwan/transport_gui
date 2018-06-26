@@ -1,13 +1,12 @@
 from Tkinter import *
-from Utils.ToolTip import ToolTip
-from Utils.Chemistry import *
-from Utils.OptionMenus import support_materials
 from tkFont import Font
 from ElementWindow import Element
+from Utils.Chemistry import *
+from Utils.ToolTip import ToolTip
 
 
 class MaterialWindow:
-    def __init__(self, parent, controller, material_var, **kwargs):
+    def __init__(self, parent, controller, material_var, support_materials, **kwargs):
         self.controller = controller
         self.parent = parent
         self.material_var = material_var
@@ -15,9 +14,9 @@ class MaterialWindow:
         self.elements_dict = dict()
         self.curr_row = 1
         self.formula = eval(kwargs.get('composition', '[]'))
-        self.set_material(self.material_var.get())
+        self.set_material(self.material_var.get(), support_materials)
 
-    def set_material(self, material):
+    def set_material(self, material, support_materials):
         self.curr_row = 1
         self.elements_dict = dict()
         self.type_var.set("Number of atoms")
