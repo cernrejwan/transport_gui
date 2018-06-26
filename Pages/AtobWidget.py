@@ -16,6 +16,8 @@ class AtobWidget(Frame):
         self.density = DoubleVar(self, kwargs.get('density', 0))
         self.thickness = DoubleVar(self, kwargs.get('thickness', 0))
         self.radio = IntVar(0)
+        if 'density' not in kwargs or kwargs['density'] == 0:
+            self.radio.set(1 if 'sigma' in kwargs else 2)
 
         # gui:
         txt = "Fill in one of the following options regarding your sample.\nThe number of atoms per barn will be calculated automatically"
@@ -100,6 +102,7 @@ class AtobWidget(Frame):
 
     def get_vars(self):
         vars_dict = dict()
+        vars_dict['density'] = 0
         if self.radio.get() == 0:
             vars_dict['density'] = self.density.get()
             vars_dict['thickness'] = self.thickness.get()

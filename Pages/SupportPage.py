@@ -74,7 +74,12 @@ class SupportPage(BasePage):
         if allow_change:
             Button(self.material_details, text="Change", command=self.open_material_window).grid(row=2, column=2)
         Label(self.material_details, text='Molecular mass: {} * 1.66e-24 g'.format(molecular_mass)).grid(row=3, columnspan=2)
-        Separator(self.material_details, orient="horizontal").grid(row=4, columnspan=3)
+        if allow_change:
+            Button(self.material_details, text="Change", command=self.save_material).grid(row=4, column=1, columnspan=2)
+
+    def save_material(self):
+        df = pd.Series(self.get_vars(use_prefix=False))
+        self.controller.save_df(df)
 
     def close_elements_session(self, parent):
         finalized = self.material_composition.finalize()
@@ -94,14 +99,15 @@ class SupportPage(BasePage):
         total_atob = self.atob_widget.get_atob()
         return self.material_composition.get_cmd(total_atob)
 
-    def get_vars(self):
+    def get_vars(self, use_prefix=True):
         material = self.material.get()
-        vars_dict = {"support{}_material".format(self.index): material}
+        prefix = 'support{}_'.format(self.index) if use_prefix else ''
+        vars_dict = {prefix + "material": material}
         if material == 'Other':
-            vars_dict["support{}_composition".format(self.index)] = self.material_composition.get()
+            vars_dict[prefix + "formula".format(self.index)] = self.material_composition.get()
 
         atob_dict = self.atob_widget.get_vars()
-        vars_dict.update({"support{}_".format(self.index) + key: value for key, value in atob_dict.iteritems()})
+        vars_dict.update({prefix + key: value for key, value in atob_dict.iteritems()})
         return vars_dict
 
     def finalize(self):

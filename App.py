@@ -105,16 +105,20 @@ done
         summary_window = Toplevel(self)
         SummaryWindow(summary_window, self, self.frames)
 
-    def save_configs(self):
+    @staticmethod
+    def save_df(df):
         save_path = tkFileDialog.asksaveasfilename(initialdir="~", filetypes=(("CSV", "*.csv"),))
         if not save_path.endswith('.csv'):
             save_path += '.csv'
+        df.to_csv(save_path)
 
+    def save_configs(self):
         configs_dict = dict()
         for F in self.frames:
             configs_dict.update(F.get_vars())
 
-        pd.Series(configs_dict).to_csv(save_path)
+        configs_df = pd.Series(configs_dict)
+        self.save_df(configs_df)
 
     def raise_error_message(self, message):
         error_window = Toplevel(self)
