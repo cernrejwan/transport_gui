@@ -70,6 +70,7 @@ class MaterialWindow:
         curr_element['changed'] = True
         isotopes_window = Toplevel(self.controller)
         curr_element['isotopes'].show(isotopes_window)
+        self.elements_dict[row] = curr_element
 
     def finalize(self):
         if not self.elements_dict[1]['symbol'].get():
@@ -183,7 +184,7 @@ class MaterialWindow:
         for item in self.elements_dict.values():
             symbol = item['symbol'].get().title()
             frac = item['fraction'].get()
-            if item['changed']:
+            if not item['changed']:
                 composition = 'Natural'
             else:
                 composition = item['isotopes'].get()

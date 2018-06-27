@@ -68,8 +68,8 @@ class SupportPage(BasePage):
                 Label(self.material_details, text=txt).grid(row=4, columnspan=3)
 
         if self.material.get() == 'Other':
-            Button(self.material_details, text="Load", command=self.load_material).grid(row=5, column=0)
-            Button(self.material_details, text="Change", command=self.open_material_window).grid(row=5, column=1)
+            Button(self.material_details, text="New", command=self.open_material_window).grid(row=5, column=0)
+            Button(self.material_details, text="Load", command=self.load_material).grid(row=5, column=1)
             Button(self.material_details, text="Save", command=self.save_material).grid(row=5, column=2)
 
     def save_material(self):
