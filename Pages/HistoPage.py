@@ -32,7 +32,7 @@ class HistoPage(BasePage):
         Label(self.header, text="Please select histogram type:").grid(row=1, column=0)
         self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
-        Label(self.header, text="Number of files for statistics (20 to 100)").grid(row=2, column=0)
+        Label(self.header, text="Number of files for statistics (1 to 24)").grid(row=2, column=0)
         Entry(self.header, textvariable=self.iters).grid(row=2, column=1)
         self.header.pack()
 

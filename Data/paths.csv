@@ -1,6 +1,5 @@
-collimation_files_path,.
 primary_files_path,.
 support_materials_path,./Data/support_materials/
 histogram_menus_path,./Data/histogram_menus/
 xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
-collimation_files_path2,/eos/experiment/ntof/simul/transport/input/
+collimation_files_path,/eos/experiment/ntof/simul/transport/input/
