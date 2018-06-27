@@ -1,22 +1,22 @@
 from BasePage import *
 from Utils.Chemistry import *
-from AtobWidget import AtobWidget
+from AtobCalculator import AtobCalculator
 
 
 class SamplePage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Sample")
+        self.kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith("sample")}
+        if not self.kwargs:
+            self.use.set(0)
 
         # vars:
-        self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file']
+        self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file', 'sample_atob']
 
-        self.sample_element = StringVar(self, kwargs.get('sample_element', ''))
-        self.sample_isotope = IntVar(self, kwargs.get('sample_isotope', 0))
-        self.sample_xs_file = StringVar(self, kwargs.get('sample_xs_file', ''))
-
-        self_kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith("sample")}
-        if not self_kwargs:
-            self.use.set(0)
+        self.sample_element = StringVar(self, self.kwargs.get('element', ''))
+        self.sample_isotope = IntVar(self, self.kwargs.get('isotope', 0))
+        self.sample_xs_file = StringVar(self, self.kwargs.get('xs_file', ''))
+        self.sample_atob = DoubleVar(self, self.kwargs.get('atob', 0.0))
 
         # gui:
         Checkbutton(self, text="Use sample", variable=self.use, command=self.show).pack(side=TOP)
@@ -34,8 +34,19 @@ class SamplePage(BasePage):
         Button(self.frame, text="Select",
                command=lambda: self.controller.open_file_dialog(self.sample_xs_file, file_type='xs')).grid(row=3, column=2)
 
-        self.atob_widget = AtobWidget(self.frame, self.controller, self.sample_isotope, **self_kwargs)
-        self.atob_widget.grid(row=4, columnspan=3)
+        Label(self.frame, text="Atoms per barn:").grid(row=4, column=0)
+        Entry(self.frame, textvariable=self.sample_atob).grid(row=4, column=1)
+        Button(self.frame, text="Calculate",
+               command=lambda: self.controller.open_atob_window(self.get_material_name(), self.sample_isotope.get(),
+                                                                self.sample_atob, **self.kwargs)).grid(row=4, column=2)
+
+        # self.atob_widget = AtobCalculator(self.frame, self.controller, self.sample_isotope, **self.kwargs)
+        # self.atob_widget.grid(row=4, columnspan=3)
+
+    def get_material_name(self):
+        if not isotope_exists(self.sample_element.get(), self.sample_isotope.get()):
+            return '\nERROR: Material not found\nor isotope does not match to the element.'
+        return get_full_name(self.sample_element.get().title(), self.sample_isotope.get())
 
     def finalize(self):
         if not self.use.get():
@@ -54,24 +65,28 @@ class SamplePage(BasePage):
             self.controller.raise_error_message('Cross section file does not exist.\nPlease try again.')
             return False
 
-        finalized = self.atob_widget.finalize()
-        return finalized
+        if self.sample_atob.get() <= 0:
+            self.controller.raise_error_message('Atoms per barn must be greater than zero.')
+            return False
+
+        return True
 
     def get_data(self):
         data = '''Sample: {sample}
-        XS file: {path}'''.format(sample=get_full_name(self.sample_element.get().title(), self.sample_isotope.get()),
+        XS file: {path}'''.format(sample=self.get_material_name(),
                                   path=self.sample_xs_file.get())
-        data += '\n' + self.atob_widget.get_data()
+        data += '\nAtoms per barn: ' + str(self.sample_atob.get())
+        # data += '\n' + self.atob_widget.get_data()
         return data
 
     def get_cmd(self):
         xs = self.sample_xs_file.get()
         xstotal = get_xs_file(self.sample_element.get(), self.sample_isotope.get())
-        atob = self.atob_widget.get_atob()
+        atob = self.sample_atob.get()
         return '--xs {xs} --atob {atob} --xstotal {xstotal}'.format(xs=xs, atob=atob, xstotal=xstotal)
 
-    def get_vars(self):
-        vars_dict = {var: getattr(self, var).get() for var in self.vars_list}
-        atob_dict = self.atob_widget.get_vars()
-        vars_dict.update({"sample_" + key: value for key, value in atob_dict.iteritems()})
-        return vars_dict
+    # def get_vars(self):
+    #     vars_dict = {var: getattr(self, var).get() for var in self.vars_list}
+    #     atob_dict = self.atob_widget.get_vars()
+    #     vars_dict.update({"sample_" + key: value for key, value in atob_dict.iteritems()})
+    #     return vars_dict

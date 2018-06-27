@@ -136,6 +136,14 @@ done
                                                     filetypes=((file_type + " files", "*." + file_type), ("All files", "*.*")))
         var.set(filename)
 
+    def open_atob_window(self, material_name, mass, atob_var, **kwargs):
+        if not mass:
+            self.raise_error_message("Must provide a material first.")
+            return
+        new_window = Toplevel(self)
+        atob_calculator = AtobCalculator(new_window, self, material_name, mass, atob_var, **kwargs)
+        atob_calculator.pack()
+
 
 if __name__ == "__main__":
     app = AppManager()

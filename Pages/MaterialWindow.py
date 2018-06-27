@@ -6,7 +6,7 @@ from Utils.ToolTip import ToolTip
 
 
 class MaterialWindow:
-    def __init__(self, parent, controller, material_var, support_materials, **kwargs):
+    def __init__(self, parent, controller, material_var, **kwargs):
         self.controller = controller
         self.parent = parent
         self.material_var = material_var
@@ -14,7 +14,7 @@ class MaterialWindow:
         self.elements_dict = dict()
         self.curr_row = 1
         self.formula = eval(kwargs.get('composition', '[]'))
-        # self.set_material(self.material_var.get(), support_materials)
+        self.density = kwargs.get('density_var', DoubleVar(self.parent, 0))
 
     def set_material(self, material, support_materials):
         self.curr_row = 1
@@ -117,9 +117,11 @@ class MaterialWindow:
             cmd += item['isotopes'].get_cmd(total_atob)
         return cmd
 
+    def get_material_name(self):
+        return self.get_formula() if self.material_var.get() == 'Other' else self.material_var.get()
+
     def get_data(self):
-        material = self.get_formula() if self.material_var.get() == 'Other' else self.material_var.get()
-        data = "Material: " + material
+        data = "Material: " + self.get_material_name()
         data += '\nMolecular mass: {} * 1.66e-24 g'.format(self.get_total_mass())
         return data
 
@@ -127,12 +129,18 @@ class MaterialWindow:
         frame = Frame(window)
         frame.pack()
         title_font = Font(family='Helvetica', size=15, weight="bold", slant="italic")
-        Label(frame, text='Elements composition', font=title_font).pack(side="top", fill="x", pady=10)
+        Label(frame, text='Material composition', font=title_font).pack(side="top", fill="x", pady=10)
 
         Label(frame, text="Provide the material's composition by:").pack()
         OptionMenu(frame, self.type_var, "Number of atoms", "Mass fraction",
                    command=self.set_fraction_input_method).pack()
         Label(frame, text="(hover over the headers for explanation)").pack()
+
+        density_frame = Frame(frame)
+        Label(density_frame, text="Density (optional):").grid(row=0, column=0)
+        Entry(density_frame, textvariable=self.density).grid(row=0, column=1)
+        Label(density_frame, text=u"[g/cm\xb3]").grid(row=0, column=2)
+        density_frame.pack()
 
         elements_frame = Frame(frame)
         symbol = Label(elements_frame, text="Element")
