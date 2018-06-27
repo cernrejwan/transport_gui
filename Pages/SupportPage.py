@@ -46,19 +46,16 @@ class SupportPage(BasePage):
 
     def set_material(self, material, popup=True):
         self.material_composition.set_material(material, self.support_materials)
+        if popup:
+            self.open_material_window()
+            return
+
         if material != "Other":
             self.atob_widget.density.set(self.support_materials[material]['density'])
-        elif popup:
-            self.open_material_window()
 
-        try:
-            mass = self.material_composition.get_total_mass()
-        except AttributeError:
-            mass = 0
-
+        mass = self.material_composition.get_total_mass()
         self.molecular_mass.set(mass)
-        self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get(),
-                                   allow_change=(self.material.get() == 'Other'))
+        self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get())
 
     def open_material_window(self):
         self.atob_widget.density.set(0.0)
@@ -66,20 +63,26 @@ class SupportPage(BasePage):
         self.material_composition.show(new_window)
         Button(new_window, text="OK", command=lambda: self.close_elements_session(new_window)).pack(side=BOTTOM)
 
-    def show_material_details(self, formula, molecular_mass, allow_change):
+    def show_material_details(self, formula, molecular_mass):
         self.material_details.grid_forget()
         self.material_details = Frame(self.frame)
         self.material_details.grid(row=2, columnspan=3)
-        Label(self.material_details, text='Material: ' + formula).grid(row=2, columnspan=2)
-        if allow_change:
-            Button(self.material_details, text="Change", command=self.open_material_window).grid(row=2, column=2)
-        Label(self.material_details, text='Molecular mass: {} * 1.66e-24 g'.format(molecular_mass)).grid(row=3, columnspan=2)
-        if allow_change:
-            Button(self.material_details, text="Change", command=self.save_material).grid(row=4, column=1, columnspan=2)
+        Label(self.material_details, text='Material: ' + formula).grid(row=2, columnspan=3)
+        Label(self.material_details, text='Molecular mass: {} * 1.66e-24 g'.format(molecular_mass)).grid(row=3, columnspan=3)
+        Label(self.material_details, text=u'Density: {} g / cm\xb3'.format(self.atob_widget.density.get())).grid(row=4,
+                                                                                                         columnspan=3)
+
+        if self.material.get() == 'Other':
+            Button(self.material_details, text="Load", command=self.load_material).grid(row=5, column=0)
+            Button(self.material_details, text="Change", command=self.open_material_window).grid(row=5, column=1)
+            Button(self.material_details, text="Save", command=self.save_material).grid(row=5, column=2)
 
     def save_material(self):
         df = pd.Series(self.get_vars(use_prefix=False))
         self.controller.save_df(df)
+
+    def load_material(self):
+        pass
 
     def close_elements_session(self, parent):
         finalized = self.material_composition.finalize()
@@ -88,7 +91,7 @@ class SupportPage(BasePage):
 
         self.molecular_mass.set(self.material_composition.get_total_mass())
         parent.destroy()
-        self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get(), allow_change=True)
+        self.show_material_details(self.material_composition.get_formula(), self.molecular_mass.get())
 
     def get_data(self):
         data = self.material_composition.get_data()

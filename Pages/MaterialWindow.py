@@ -14,7 +14,7 @@ class MaterialWindow:
         self.elements_dict = dict()
         self.curr_row = 1
         self.formula = eval(kwargs.get('composition', '[]'))
-        self.set_material(self.material_var.get(), support_materials)
+        # self.set_material(self.material_var.get(), support_materials)
 
     def set_material(self, material, support_materials):
         self.curr_row = 1

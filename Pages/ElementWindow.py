@@ -13,7 +13,7 @@ class Element:
         self.name = info['Name'].values[0]
         self.atomic_num = info['Atom_num'].values[0]
 
-        iso_abundance = abundance[abundance['symbol'] == element_symbol].set_index('iso_num')['fraction']
+        iso_abundance = abundance[abundance['symbol'] == self.symbol].set_index('iso_num')['fraction']
 
         self.no_data = (iso_abundance.count() == 0)
         iso_abundance = iso_abundance.fillna(0)
