@@ -6,24 +6,26 @@ from Utils.ToolTip import ToolTip
 
 
 class MaterialWindow:
-    def __init__(self, parent, controller, material_var, **kwargs):
+    def __init__(self, parent, controller, material_name, density_var, **kwargs):
         self.controller = controller
         self.parent = parent
-        self.material_var = material_var
+        self.material = material_name
         self.type_var = StringVar(self.parent, "Number of atoms")
         self.elements_dict = dict()
         self.curr_row = 1
-        self.formula = eval(kwargs.get('composition', '[]'))
-        self.density = kwargs.get('density_var', DoubleVar(self.parent, 0))
+        self.formula = kwargs.get('formula', [])
+        if type(self.formula) == str:
+            self.formula = eval(self.formula)
+        self.density = density_var
+        self.set_material(self.material)
 
-    def set_material(self, material, support_materials):
+    def set_material(self, material):
         self.curr_row = 1
         self.elements_dict = dict()
         self.type_var.set("Number of atoms")
 
-        if material != 'Other':
+        if material in support_materials:
             self.init_material_by_formula(support_materials[material]['formula'])
-
         elif self.formula:
             self.init_material_by_formula(self.formula)
         else:
@@ -106,6 +108,9 @@ class MaterialWindow:
         for item in self.elements_dict.values():
             symbol = item['symbol'].get().title()
             frac = item['fraction'].get()
+            if not frac:
+                continue
+
             if self.type_var.get() != "Number of atoms":
                 frac = frac * 100
             res += form.format(symbol, frac)
@@ -118,7 +123,7 @@ class MaterialWindow:
         return cmd
 
     def get_material_name(self):
-        return self.get_formula() if self.material_var.get() == 'Other' else self.material_var.get()
+        return self.get_formula() if self.material == 'Other' else self.material
 
     def get_data(self):
         data = "Material: " + self.get_material_name()
@@ -135,12 +140,6 @@ class MaterialWindow:
         OptionMenu(frame, self.type_var, "Number of atoms", "Mass fraction",
                    command=self.set_fraction_input_method).pack()
         Label(frame, text="(hover over the headers for explanation)").pack()
-
-        density_frame = Frame(frame)
-        Label(density_frame, text="Density (optional):").grid(row=0, column=0)
-        Entry(density_frame, textvariable=self.density).grid(row=0, column=1)
-        Label(density_frame, text=u"[g/cm\xb3]").grid(row=0, column=2)
-        density_frame.pack()
 
         elements_frame = Frame(frame)
         symbol = Label(elements_frame, text="Element")
@@ -163,7 +162,13 @@ class MaterialWindow:
             for row in self.elements_dict.keys():
                 self.show_element(elements_frame, row)
 
-        Button(frame, text="Add element", command=lambda: self.add_element_and_show(elements_frame)).pack(side=BOTTOM)
+        Button(frame, text="Add element", command=lambda: self.add_element_and_show(elements_frame)).pack()
+
+        density_frame = Frame(frame)
+        Label(density_frame, text="Density (optional):").grid(row=0, column=0)
+        Entry(density_frame, textvariable=self.density).grid(row=0, column=1)
+        Label(density_frame, text=u"[g/cm\xb3]").grid(row=0, column=2)
+        density_frame.pack()
 
     def set_fraction_input_method(self, type_var):
         if type_var == "Number of atoms":

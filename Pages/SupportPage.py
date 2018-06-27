@@ -1,5 +1,6 @@
 from BasePage import *
 from MaterialWindow import MaterialWindow
+from Utils.Chemistry import support_materials, get_support_material
 
 
 class SupportPage(BasePage):
@@ -10,15 +11,16 @@ class SupportPage(BasePage):
         self.kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith(prefix)}
 
         # vars:
-        self.vars_list = ['material', 'composition', 'atob']
+        self.vars_list = ['material', 'formula', 'atob', 'density']
 
-        self.support_materials = self.get_support_materials(self.controller.paths['support_materials_path'])
-        self.materials_list = self.support_materials.keys() + ['Other']
+        self.materials_list = support_materials.keys() + ['Other']
         self.material = StringVar(self, self.kwargs.get('material', self.materials_list[0]))
-        self.molecular_mass = DoubleVar(self)
         self.atob = DoubleVar(self, self.kwargs.get('atob', 0.0))
         self.density = DoubleVar(self, self.kwargs.get('density', 0.0))
-        self.material_window = MaterialWindow(self, self.controller, self.material, density_var=self.density, **self.kwargs)
+        if self.material.get() != "Other":
+            self.density.set(support_materials[self.material.get()]['density'])
+
+        self.material_window = MaterialWindow(self, self.controller, self.material.get(), density_var=self.density, **self.kwargs)
 
         # gui:
         self.frame.pack()
@@ -30,39 +32,19 @@ class SupportPage(BasePage):
         Entry(self.frame, textvariable=self.atob).grid(row=4, column=1)
         Button(self.frame, text="Calculate",
                command=lambda: self.controller.open_atob_window(self.material_window.get_material_name(),
-                                                                self.molecular_mass.get(), self.atob,
+                                                                self.material_window.get_total_mass(), self.atob,
                                                                 density_var=self.density, **self.kwargs)).grid(row=4, column=2)
 
-        # self.atob_widget = AtobCalculator(self.frame, self.controller, self.molecular_mass, **self_kwargs)
-        # self.atob_widget.grid(row=5, columnspan=3)
-
         self.material_details = Frame(self.frame)
-        self.set_material(self.material.get(), popup=False)
+        self.show_material_details()
 
-    @staticmethod
-    def get_support_materials(support_materials_path):
-        support_materials = dict()
-        files_list = os.listdir(support_materials_path)
-        for material in files_list:
-            name = material.split('.')[0]
-            values = pd.read_csv(os.path.join(support_materials_path, material), header=None, index_col=0,
-                                 squeeze=True).to_dict()
-            values['formula'] = eval(values['formula'])
-            support_materials[name] = values
-        return support_materials
+    def set_material(self, material):
+        self.material_window.set_material(material)
 
-    def set_material(self, material, popup=True):
-        self.material_window.set_material(material, self.support_materials)
-        if popup:
-            self.open_material_window()
-            return
+        if material in support_materials:
+            self.density.set(support_materials[material]['density'])
 
-        if material != "Other":
-            self.density.set(self.support_materials[material]['density'])
-
-        mass = self.material_window.get_total_mass()
-        self.molecular_mass.set(mass)
-        self.show_material_details(self.material_window.get_formula(), self.molecular_mass.get())
+        self.show_material_details()
 
     def open_material_window(self):
         self.density.set(0.0)
@@ -70,15 +52,20 @@ class SupportPage(BasePage):
         self.material_window.show(new_window)
         Button(new_window, text="OK", command=lambda: self.close_elements_session(new_window)).pack(side=BOTTOM)
 
-    def show_material_details(self, formula, molecular_mass):
+    def show_material_details(self):
         self.material_details.grid_forget()
         self.material_details = Frame(self.frame)
         self.material_details.grid(row=2, columnspan=3)
-        Label(self.material_details, text='Material: ' + formula).grid(row=2, columnspan=3)
-        Label(self.material_details, text='Molecular mass: {} * 1.66e-24 g'.format(molecular_mass)).grid(row=3, columnspan=3)
-        if self.density.get() > 0:
-            Label(self.material_details, text=u'Density: {} g / cm\xb3'.format(self.density.get())).grid(row=4,
-                                                                                                         columnspan=3)
+
+        formula = self.material_window.get_formula()
+
+        if formula:
+            Label(self.material_details, text='Material: ' + formula).grid(row=2, columnspan=3)
+            txt = 'Molecular mass: {} * 1.66e-24 g'.format(self.material_window.get_total_mass())
+            Label(self.material_details, text=txt).grid(row=3, columnspan=3)
+            if self.density.get() > 0:
+                txt = u'Density: {} g/cm\xb3'.format(self.density.get())
+                Label(self.material_details, text=txt).grid(row=4, columnspan=3)
 
         if self.material.get() == 'Other':
             Button(self.material_details, text="Load", command=self.load_material).grid(row=5, column=0)
@@ -90,16 +77,20 @@ class SupportPage(BasePage):
         self.controller.save_df(df)
 
     def load_material(self):
-        pass
+        file_path = StringVar(self)
+        self.controller.open_file_dialog(file_path, 'csv')
+        name, kwargs = get_support_material(file_path.get())
+        self.density.set(kwargs.get('density', 0.0))
+        self.material_window = MaterialWindow(self, self.controller, name, density_var=self.density, **kwargs)
+        self.show_material_details()
 
     def close_elements_session(self, parent):
         finalized = self.material_window.finalize()
         if not finalized:
             return
 
-        self.molecular_mass.set(self.material_window.get_total_mass())
         parent.destroy()
-        self.show_material_details(self.material_window.get_formula(), self.molecular_mass.get())
+        self.show_material_details()
 
     def get_data(self):
         data = self.material_window.get_data()
@@ -117,13 +108,12 @@ class SupportPage(BasePage):
         vars_dict = {prefix + "material": material}
         if material == 'Other':
             vars_dict[prefix + "formula".format(self.index)] = self.material_window.get()
-
-        # atob_dict = self.atob_widget.get_vars()
-        # vars_dict.update({prefix + key: value for key, value in atob_dict.iteritems()})
+        vars_dict[prefix + 'atob'] = self.atob.get()
+        vars_dict[prefix + 'density'] = self.density.get()
         return vars_dict
 
-    # def finalize(self):
-    #     atob_finalized = self.atob_widget.finalize()
-    #     elements_finalized = self.material_window.finalize()
-    #
-    #     return atob_finalized
+    def finalize(self):
+        if self.atob.get() <= 0:
+            self.controller.raise_error_message('Atoms per barn must be greater than zero.')
+            return False
+        return True
