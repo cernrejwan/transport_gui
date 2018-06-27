@@ -6,7 +6,7 @@ class ShapePage(BasePage):
         BasePage.__init__(self, parent, controller, "Target shape")
 
         # vars:
-        self.shape = StringVar(self, "Circular")
+        self.shape = StringVar(self, kwargs['shape'])
 
         self.radius_min = DoubleVar(self, kwargs['radius_min'])
         self.radius_max = DoubleVar(self, kwargs['radius_max'])
@@ -43,7 +43,10 @@ class ShapePage(BasePage):
         Label(self.rect_frame, text="y2").grid(row=1, column=2)
         Entry(self.rect_frame, textvariable=self.rect_y2).grid(row=1, column=3)
 
-        self.circ_frame.pack()
+        if self.shape.get() == 'Circular':
+            self.circ_frame.pack()
+        else:
+            self.rect_frame.pack()
 
     def set_shape(self, shape):
         if shape == "Circular":

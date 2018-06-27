@@ -33,6 +33,12 @@ class AppManager(Tk):
             extra_configs = pd.read_csv(config_file, index_col=0, header=None, squeeze=True).to_dict()
             self.configs_dict.update(extra_configs)
 
+    def init_frames(self):
+        for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
+            frame = F(parent=self.container, controller=self, **self.configs_dict)
+            self.frames.add(F.__name__, frame)
+            frame.grid(row=0, column=0, sticky="nsew")
+
     def next_frame(self):
         finalized = self.frames[self.curr_frame].finalize()
         if not finalized:
@@ -40,11 +46,7 @@ class AppManager(Tk):
 
         if self.curr_frame == 0:
             self.load_configs()
-
-            for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
-                frame = F(parent=self.container, controller=self, **self.configs_dict)
-                self.frames.add(F.__name__, frame)
-                frame.grid(row=0, column=0, sticky="nsew")
+            self.init_frames()
 
         self.curr_frame += 1
         if self.curr_frame == len(self.frames): # or self.use_default.get()

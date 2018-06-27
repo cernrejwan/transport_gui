@@ -36,7 +36,7 @@ def get_full_name(element_symbol, isotope_number):
 
 
 def get_xs_file(element_symbol, isotope_number):
-    const = pd.read_csv('./Utils/paths.csv', index_col=0, header=None, squeeze=True).to_dict()
+    const = pd.read_csv('./Data/paths.csv', index_col=0, header=None, squeeze=True).to_dict()
     return const['xs_files_path'] + get_full_name(element_symbol.title(), isotope_number) + '_tot.xs'
 
 

@@ -3,7 +3,7 @@ from BasePage import *
 
 class GeneralPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
-        BasePage.__init__(self, parent, controller, "General Configurations")
+        BasePage.__init__(self, parent, controller, "General Configurations", has_prev=False)
 
         # vars:
         self.vars_list = ['ear', 'collimation']
@@ -57,14 +57,14 @@ class GeneralPage(BasePage):
             self.other_collim_frame.grid_forget()
 
     def get_ear_cmd(self):
-        return self.controller.const[self.ear.get() + '_const']
+        return self.controller.configs_dict[self.ear.get() + '_const']
 
     def get_collimation_cmd(self):
         collim = self.collimation.get()
         if collim == "Other":
             cmd = self.user_collimation_file.get()
         else:
-            cmd = '-i ' + self.controller.const['collimation_files_path'] + collim + '.inp'
+            cmd = '-i ' + self.controller.paths['collimation_files_path'] + collim + '.inp'
         return cmd
 
     def get_output_cmd(self):

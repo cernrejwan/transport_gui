@@ -59,6 +59,9 @@ class HistoPage(BasePage):
         Entry(y_range_frame, textvariable=self.max_y).pack(side=LEFT)
         y_range_frame.grid(row=3, columnspan=4, rowspan=4)
 
+        if self.histogram_dim.get() == '2D':
+            self.y_frame.pack()
+
     def init_histogram_menus(self, histogram_menus_path):
         for dim in ['1D', '2D']:
             with open(os.path.join(histogram_menus_path, dim + '.txt'), 'r') as f:
