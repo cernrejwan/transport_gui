@@ -20,6 +20,7 @@ class MaterialWindow:
         self.set_material(self.material)
 
     def set_material(self, material):
+        self.material = material
         self.curr_row = 1
         self.elements_dict = dict()
         self.type_var.set("Number of atoms")
