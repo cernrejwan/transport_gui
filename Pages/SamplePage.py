@@ -1,6 +1,5 @@
 from BasePage import *
 from Utils.Chemistry import *
-from AtobCalculator import AtobCalculator
 
 
 class SamplePage(BasePage):

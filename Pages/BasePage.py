@@ -7,6 +7,7 @@ import pandas as pd
 class BasePage(Frame):
     def __init__(self, parent, controller, title, has_prev=True):
         Frame.__init__(self, parent)
+        self.page_name = self.__class__.__name__
         self.parent = parent
         self.controller = controller
         self.use = IntVar(self, 1)

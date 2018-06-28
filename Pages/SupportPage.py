@@ -1,5 +1,5 @@
 from BasePage import *
-from MaterialWindow import MaterialWindow
+from Pages.Windows.MaterialWindow import MaterialWindow
 from Utils.Chemistry import support_materials, get_support_material
 
 
@@ -8,6 +8,7 @@ class SupportPage(BasePage):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
         self.index = kwargs['index']
         prefix = "support{}".format(self.index)
+        self.page_name = "SupportPage{}".format(self.index)
         self.kwargs = {'_'.join(key.split("_")[1:]): value for key, value in kwargs.iteritems() if key.startswith(prefix)}
 
         # vars:

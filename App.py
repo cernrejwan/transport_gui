@@ -20,15 +20,15 @@ class AppManager(Tk):
         self.container = Frame(self)
         self.container.pack(side="top", fill="both", expand=True)
 
-        self.frames = OrderedDict()
+        self.pages = OrderedDict()
         frame = WelcomePage(parent=self.container, controller=self)
-        self.frames.add("WelcomePage", frame)
+        self.pages.add("WelcomePage", frame)
         frame.grid(row=0, column=0, sticky="nsew")
 
-        self.frames[self.curr_frame].tkraise()
+        self.pages[self.curr_frame].tkraise()
 
     def load_configs(self):
-        config_file = self.frames["WelcomePage"].get_config_file()
+        config_file = self.pages["WelcomePage"].get_config_file()
         if config_file:
             extra_configs = pd.read_csv(config_file, index_col=0, header=None, squeeze=True).to_dict()
             self.configs_dict.update(extra_configs)
@@ -36,11 +36,11 @@ class AppManager(Tk):
     def init_frames(self):
         for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
             frame = F(parent=self.container, controller=self, **self.configs_dict)
-            self.frames.add(F.__name__, frame)
+            self.pages.add(F.__name__, frame)
             frame.grid(row=0, column=0, sticky="nsew")
 
     def next_frame(self):
-        finalized = self.frames[self.curr_frame].finalize()
+        finalized = self.pages[self.curr_frame].finalize()
         if not finalized:
             return
 
@@ -49,46 +49,38 @@ class AppManager(Tk):
             self.init_frames()
 
         self.curr_frame += 1
-        if self.curr_frame == len(self.frames): # or self.use_default.get()
+        if self.curr_frame == len(self.pages): # or self.use_default.get()
             self.summarize()
         else:
-            self.frames[self.curr_frame].tkraise()
+            self.pages[self.curr_frame].tkraise()
 
     def prev_frame(self):
         self.curr_frame -= 1
-        self.frames[self.curr_frame].tkraise()
+        self.pages[self.curr_frame].tkraise()
 
-    def add_page(self, page_name, count=1, **kwargs):
-        if "FinalPage" in self.frames:
-            self.remove_page("FinalPage")
+    def add_page(self, cls, page_name, **kwargs):
+        page = cls(parent=self.container, controller=self, **kwargs)
+        self.pages.add(page_name, page)
+        page.grid(row=0, column=0, sticky="nsew")
 
-        for i in range(count):
-            cls = eval(page_name)
-            page = cls(parent=self.container, controller=self, index=i+1, **kwargs)
-            index = str(i+1) if count > 1 else ''
-            self.frames.add(page_name + index, page)
-            page.grid(row=0, column=0, sticky="nsew")
-
-    def remove_page(self, page_name, count=1):
-        for i in range(count):
-            index = str(i + 1) if count > 1 else ''
-            self.frames.remove(page_name + index)
+    def remove_page(self, page_name):
+        self.pages.remove(page_name)
 
     def get_ear(self):
-        return self.frames["GeneralPage"].ear.get()
+        return self.pages["GeneralPage"].ear.get()
 
     def set_ear(self, ear):
-        self.frames["GeneralPage"].set_collim(ear)
-        self.frames["SimuParamsPage"].length.set(self.configs_dict[ear + '_length'])
-        self.frames["SimuParamsPage"].angle.set(self.configs_dict[ear + '_max_angle'])
+        self.pages["GeneralPage"].set_collim(ear)
+        self.pages["SimuParamsPage"].length.set(self.configs_dict[ear + '_length'])
+        self.pages["SimuParamsPage"].angle.set(self.configs_dict[ear + '_max_angle'])
 
     def get_cmd(self):
-        cmds = [F.get_cmd() for F in self.frames]
+        cmds = [F.get_cmd() for F in self.pages]
         return ' '.join(cmds)
 
     def submit(self):
         cmd = self.get_cmd()
-        iters = self.frames[3].iters.get()
+        iters = self.pages[3].iters.get()
         output = '''
 for i in `seq 1 {iters}` ;
 do
@@ -99,13 +91,12 @@ done
         return output
 
     def summarize(self):
-        final_page = FinalPage(self.container, self)
-        self.frames.add("FinalPage", final_page)
+        final_page = FinalPage(parent=self.container, controller=self)
         final_page.grid(row=0, column=0, sticky="nsew")
         final_page.tkraise()
 
         summary_window = Toplevel(self)
-        SummaryWindow(summary_window, self, self.frames)
+        SummaryWindow(summary_window, self, self.pages)
 
     @staticmethod
     def save_df(df):
@@ -116,7 +107,7 @@ done
 
     def save_configs(self):
         configs_dict = dict()
-        for F in self.frames:
+        for F in self.pages:
             configs_dict.update(F.get_vars())
 
         configs_df = pd.Series(configs_dict)

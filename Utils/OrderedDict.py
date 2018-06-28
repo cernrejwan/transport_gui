@@ -18,6 +18,9 @@ class OrderedDict:
     def remove(self, key):
         index = self.keys_dict.pop(key)
         self.items_list.pop(index)
+        for i in range(index, len(self.items_list)):
+            curr_key = self.items_list[i]
+            self.keys_dict[curr_key] = i
 
     def __len__(self):
         return len(self.items_list)

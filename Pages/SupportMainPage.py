@@ -1,4 +1,5 @@
 from BasePage import *
+from Pages.SupportPage import SupportPage
 
 
 class SupportMainPage(BasePage):
@@ -6,6 +7,7 @@ class SupportMainPage(BasePage):
         BasePage.__init__(self, parent, controller, "Support")
 
         # vars
+        self.vars_list = ['support_layers']
         self.support_layers = IntVar(self, kwargs.get('support_layers', 1))
         self.support_pages_exist = 0
 
@@ -20,11 +22,6 @@ class SupportMainPage(BasePage):
         Label(self.frame, text="Number of support layers:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.support_layers).grid(row=1, column=1)
 
-    def get_vars_list(self):
-        if self.use.get():
-            return ['support_layers']
-        return []
-
     def finalize(self):
         if not self.use.get():
             return True
@@ -38,7 +35,11 @@ class SupportMainPage(BasePage):
         if num_layers == self.support_pages_exist:
             return True
 
-        self.controller.remove_page("SupportPage", count=self.support_pages_exist)
-        self.controller.add_page("SupportPage", count=num_layers, **self.kwargs)
+        if self.support_pages_exist > num_layers:
+            for i in range(self.support_pages_exist, num_layers, -1):
+                self.controller.remove_page("SupportPage" + str(i))
+        else:
+            for i in range(self.support_pages_exist + 1, num_layers + 1):
+                self.controller.add_page(SupportPage, "SupportPage" + str(i), index=i, **self.kwargs)
         self.support_pages_exist = num_layers
         return True
