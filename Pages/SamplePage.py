@@ -6,7 +6,7 @@ from AtobCalculator import AtobCalculator
 class SamplePage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Sample")
-        self.kwargs = {key.split("_")[1]: value for key, value in kwargs.iteritems() if key.startswith("sample")}
+        self.kwargs = {'_'.join(key.split("_")[1:]): value for key, value in kwargs.iteritems() if key.startswith("sample")}
         if not self.kwargs:
             self.use.set(0)
 

@@ -6,11 +6,11 @@ class SimuParamsPage(BasePage):
         BasePage.__init__(self, parent, controller, "Simulation")
 
         # vars:
-        self.vars_list = ['particle', 'time_offset', 'sigma', 'length', 'angle']
+        self.vars_list = ['particle', 'time_offset', 'beam_RMS', 'length', 'angle']
 
         self.particle = StringVar(self, kwargs['particle'])
         self.time_offset = DoubleVar(self, kwargs['time_offset'])
-        self.sigma = DoubleVar(self, kwargs['sigma'])
+        self.beam_RMS = DoubleVar(self, kwargs['beam_RMS'])
 
         self.length = DoubleVar(self, kwargs.get('length', kwargs[self.controller.get_ear() + '_length']))
         self.angle = DoubleVar(self, kwargs.get('angle', kwargs[self.controller.get_ear() + '_max_angle']))
@@ -29,7 +29,7 @@ class SimuParamsPage(BasePage):
         Label(self.frame, text="[degrees]").grid(row=2, column=2)
 
         Label(self.frame, text="RMS of the proton beam:").grid(row=3, column=0)
-        OptionMenu(self.frame, self.sigma, '0', '7e-9', '14e-9').grid(row=3, column=1)
+        OptionMenu(self.frame, self.beam_RMS, '0', '7e-9', '14e-9').grid(row=3, column=1)
         Label(self.frame, text="[s]").grid(row=3, column=2)
 
         Label(self.frame, text="Time offset:").grid(row=4, column=0)
@@ -44,14 +44,14 @@ class SimuParamsPage(BasePage):
 
         cmd += ' -L ' + str(self.length.get())
         cmd += ' -a ' + str(self.angle.get())
-        cmd += ' -S ' + str(self.sigma.get())
+        cmd += ' -S ' + str(self.beam_RMS.get())
         cmd += ' --t0 ' + str(self.time_offset.get())
 
         return cmd
 
     def get_data(self):
         data = "Particle = {p}\nLength = {L} [m]\nAngle = {a} [deg]\nBeam RMS = {S} [s]\nTime offset = {t} [s]".format(
-                p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.sigma.get(), t=self.time_offset.get())
+                p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.beam_RMS.get(), t=self.time_offset.get())
         return data
 
     def finalize(self):

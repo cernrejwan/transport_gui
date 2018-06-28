@@ -19,7 +19,7 @@ rect_y2,1
 shape,Circular
 particle,Neutrons
 time_offset,0
-sigma,0
+beam_RMS,0
 iters,24
 EAR1_const,-D Z -t 40 -x 0.0 -y 0.0 -z 41.06
 EAR2_const,-D Y -t 16 -x -10.8 -y 37.2 -z 9.86

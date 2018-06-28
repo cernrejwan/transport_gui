@@ -6,11 +6,11 @@ class GeneralPage(BasePage):
         BasePage.__init__(self, parent, controller, "General Configurations", has_prev=False)
 
         # vars:
-        self.vars_list = ['ear', 'collimation']
-        self.ear = StringVar(self, "EAR1")
+        self.vars_list = ['ear', 'collimation', 'output_dir']
+        self.ear = StringVar(self, kwargs['ear'])
         self.collimation = StringVar(self, kwargs['collimation'])
         self.user_collimation_file = StringVar(self, kwargs.get('user_collimation_file', ''))
-        self.output_dir = StringVar(self, os.path.expanduser('~'))
+        self.output_dir = StringVar(self, kwargs.get('output_dir', os.path.expanduser('~')))
 
         self.collim_lists = dict()
         self.init_collim_list(self.controller.paths['collimation_files_path'])
@@ -29,6 +29,8 @@ class GeneralPage(BasePage):
         Entry(self.other_collim_frame, textvariable=self.user_collimation_file).grid(row=0, column=1)
         Button(self.other_collim_frame, text="Select",
                command=lambda: self.controller.open_file_dialog(self.user_collimation_file, file_type='inp')).grid(row=0, column=2)
+        if self.collimation.get() == "Other":
+            self.set_other_file("Other")
 
         Label(self.frame, text="Specify the output directory:").grid(row=4, column=0)
         Entry(self.frame, textvariable=self.output_dir).grid(row=4, column=1)
@@ -53,8 +55,11 @@ class GeneralPage(BasePage):
     def set_other_file(self, file):
         if file == "Other":
             self.other_collim_frame.grid(row=3, columnspan=3)
+            self.vars_list.append('user_collimation_file')
         else:
             self.other_collim_frame.grid_forget()
+            if 'user_collimation_file' in self.vars_list:
+                self.vars_list.append('user_collimation_file')
 
     def get_ear_cmd(self):
         return self.controller.configs_dict[self.ear.get() + '_const']
@@ -87,11 +92,6 @@ class GeneralPage(BasePage):
         Label(master, bg='white', text=self.get_output_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+2, column=2)
 
         return 3 # number of added rows
-
-    def get_vars_list(self):
-        if self.collimation.get == 'Other':
-            self.vars_list.append('user_collimation_file')
-        return self.vars_list
 
     def finalize(self):
         if not os.path.exists(self.output_dir.get()):
