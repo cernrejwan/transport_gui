@@ -24,5 +24,7 @@ class SummaryWindow:
             num_rows = F.get_summary(self.frame, curr_row, self.widths)
             curr_row += num_rows
 
-        Button(self.parent, text="Save", command=self.controller.save_configs).pack()
-        Button(self.parent, text="OK", command=self.parent.destroy).pack()
+        buttons_frame = Frame(self.parent)
+        buttons_frame.pack(side=BOTTOM)
+        Button(buttons_frame, text="Save", command=self.controller.save_configs).grid(row=0, column=0)
+        Button(buttons_frame, text="Exit", command=self.parent.destroy).grid(row=0, column=1)

@@ -1,0 +1,7 @@
+dim,name,cmd,unit_x,unit_y
+1D,Energy,e,eV,
+1D,Tof,t,s,
+2D,Tof vs Energy,et,s,eV
+2D,Lambda vs Energy,l,cm,eV
+2D,Lambda vs Tof,tl,cm,s
+2D,Profile,2,cm,cm

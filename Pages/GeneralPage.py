@@ -78,20 +78,26 @@ class GeneralPage(BasePage):
     def get_cmd(self):
         return self.get_ear_cmd() + ' ' + self.get_collimation_cmd() + ' ' + self.get_output_cmd()
 
-    def get_summary(self, master, row, widths):
-        Label(master, text="EAR", relief=SUNKEN, width=widths[0], height=2).grid(row=row, column=0)
-        Label(master, bg='white', text=self.ear.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row, column=1)
-        Label(master, bg='white', text=self.get_ear_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row, column=2)
+    def get_data(self):
+        data = "Experimental Area: " + self.ear.get()
+        data += '\nCollimation file: ' + self.collimation.get()
+        data += '\nOutput directory: ' + self.output_dir.get()
+        return data
 
-        Label(master, text="Collimation", relief=SUNKEN, width=widths[0], height=2).grid(row=row+1, column=0)
-        Label(master, bg='white', text=self.collimation.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row + 1, column=1)
-        Label(master, bg='white', text=self.get_collimation_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+1, column=2)
-
-        Label(master, text="Output", relief=SUNKEN, width=widths[0], height=2).grid(row=row+2, column=0)
-        Label(master, bg='white', text=self.output_dir.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row+2, column=1)
-        Label(master, bg='white', text=self.get_output_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+2, column=2)
-
-        return 3 # number of added rows
+    # def get_summary(self, master, row, widths):
+    #     Label(master, text="EAR", relief=SUNKEN, width=widths[0], height=2).grid(row=row, column=0)
+    #     Label(master, bg='white', text=self.ear.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row, column=1)
+    #     Label(master, bg='white', text=self.get_ear_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row, column=2)
+    #
+    #     Label(master, text="Collimation", relief=SUNKEN, width=widths[0], height=2).grid(row=row+1, column=0)
+    #     Label(master, bg='white', text=self.collimation.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row + 1, column=1)
+    #     Label(master, bg='white', text=self.get_collimation_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+1, column=2)
+    #
+    #     Label(master, text="Output", relief=SUNKEN, width=widths[0], height=2).grid(row=row+2, column=0)
+    #     Label(master, bg='white', text=self.output_dir.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row+2, column=1)
+    #     Label(master, bg='white', text=self.get_output_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+2, column=2)
+    #
+    #     return 3 # number of added rows
 
     def finalize(self):
         if not os.path.exists(self.output_dir.get()):

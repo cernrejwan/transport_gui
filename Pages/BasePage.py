@@ -49,11 +49,8 @@ class BasePage(Frame):
         return True
 
     def get_summary(self, master, row, widths):
-        if not self.use.get():
-            return 0
-
         data = self.get_data()
-        if data == '':
+        if not data:
             return 0
 
         num_lines = len(data.split('\n')) + 1

@@ -71,11 +71,12 @@ class SamplePage(BasePage):
         return True
 
     def get_data(self):
+        if not self.use.get():
+            return ''
+
         data = '''Sample: {sample}
-        XS file: {path}'''.format(sample=self.get_material_name(),
-                                  path=self.sample_xs_file.get())
+        XS file: {path}'''.format(sample=self.get_material_name(), path=self.sample_xs_file.get())
         data += '\nAtoms per barn: ' + str(self.sample_atob.get())
-        # data += '\n' + self.atob_widget.get_data()
         return data
 
     def get_cmd(self):
