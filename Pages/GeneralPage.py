@@ -36,8 +36,6 @@ class GeneralPage(BasePage):
         Button(self.frame, text="Select",
                command=lambda: self.controller.open_file_dialog(self.output_dir, file_type='dir')).grid(row=4, column=2)
 
-        # Checkbutton(self, text="Use default arguments for all the other parameters?", variable=controller.use_default).pack(side=BOTTOM)
-
     def init_collim_list(self, collim_path):
         files_list = os.listdir(collim_path)
         self.collim_lists['EAR1'] = [f.split('.')[0] for f in files_list if f.lower().startswith('ear1')] + ["Other"]
@@ -82,21 +80,6 @@ class GeneralPage(BasePage):
         data += '\nCollimation file: ' + self.collimation.get()
         data += '\nOutput directory: ' + self.output_dir.get()
         return data
-
-    # def get_summary(self, master, row, widths):
-    #     Label(master, text="EAR", relief=SUNKEN, width=widths[0], height=2).grid(row=row, column=0)
-    #     Label(master, bg='white', text=self.ear.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row, column=1)
-    #     Label(master, bg='white', text=self.get_ear_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row, column=2)
-    #
-    #     Label(master, text="Collimation", relief=SUNKEN, width=widths[0], height=2).grid(row=row+1, column=0)
-    #     Label(master, bg='white', text=self.collimation.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row + 1, column=1)
-    #     Label(master, bg='white', text=self.get_collimation_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+1, column=2)
-    #
-    #     Label(master, text="Output", relief=SUNKEN, width=widths[0], height=2).grid(row=row+2, column=0)
-    #     Label(master, bg='white', text=self.output_dir.get(), relief=SUNKEN, width=widths[1], height=2).grid(row=row+2, column=1)
-    #     Label(master, bg='white', text=self.get_output_cmd(), relief=SUNKEN, width=widths[2], height=2).grid(row=row+2, column=2)
-    #
-    #     return 3 # number of added rows
 
     def finalize(self):
         if not os.path.exists(self.output_dir.get()):

@@ -35,7 +35,7 @@ class BasePage(Frame):
         return ''
 
     def get_cmd(self):
-        raise NotImplemented
+        return ''
 
     def get_vars_list(self):
         return self.vars_list
@@ -49,18 +49,6 @@ class BasePage(Frame):
 
     def finalize(self):
         return True
-
-    def get_summary(self, master, row, widths):
-        data = self.get_data()
-        if not data:
-            return 0
-
-        num_lines = len(data.split('\n')) + 1
-
-        Label(master, text=self.title, relief=SUNKEN, width=widths[0], height=num_lines).grid(row=row, column=0)
-        Label(master, bg='white', text=data, relief=SUNKEN, width=widths[1], height=num_lines).grid(row=row, column=1)
-        Label(master, bg='white', text=self.get_cmd(), relief=SUNKEN, width=widths[2], height=num_lines, wraplength=widths[2]*6).grid(row=row, column=2)
-        return 1  # number of added rows
 
     def switch(self, bit):
         self.show_page.set(bit)

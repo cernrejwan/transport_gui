@@ -21,10 +21,22 @@ class SummaryWindow:
 
         curr_row = 1
         for F in frames:
-            num_rows = F.get_summary(self.frame, curr_row, self.widths)
+            num_rows = self.get_summary(curr_row, F.get_data(), F.title, F.get_cmd())
             curr_row += num_rows
 
         buttons_frame = Frame(self.parent)
         buttons_frame.pack(side=BOTTOM)
         Button(buttons_frame, text="Save", command=self.controller.save_configs).grid(row=0, column=0)
         Button(buttons_frame, text="Exit", command=self.parent.destroy).grid(row=0, column=1)
+
+    def get_summary(self, row, data, title, cmd):
+        if not data:
+            return 0
+
+        num_lines = len(data.split('\n')) + 1
+
+        Label(self.frame, text=title, relief=SUNKEN, width=self.widths[0], height=num_lines).grid(row=row, column=0)
+        Label(self.frame, bg='white', text=data, relief=SUNKEN, width=self.widths[1], height=num_lines).grid(row=row, column=1)
+        Label(self.frame, bg='white', text=cmd, relief=SUNKEN, width=self.widths[2], height=num_lines,
+              wraplength=self.widths[2]*6).grid(row=row, column=2)
+        return 1  # number of added rows
