@@ -97,8 +97,7 @@ class SupportPage(BasePage):
             return ''
 
         data = self.material_window.get_data()
-        data += "\nAtoms per barn: " + str(self.atob.get())
-        # data += "\n" + self.atob_widget.get_data()
+        data += "\nAtoms per barn: " + str(round(self.atob.get(),3))
         return data
 
     def get_cmd(self):

@@ -3,7 +3,7 @@ from BasePage import *
 
 class GeneralPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
-        BasePage.__init__(self, parent, controller, "General Configurations", has_prev=False)
+        BasePage.__init__(self, parent, controller, "General Configs", has_prev=False)
 
         # vars:
         self.vars_list = ['ear', 'collimation', 'output_dir']

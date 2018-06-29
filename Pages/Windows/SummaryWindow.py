@@ -14,7 +14,7 @@ class SummaryWindow:
 
         self.frame = Frame(self.parent)
         self.frame.pack()
-        font = Font(family='Helvetica', weight="bold", slant="italic")
+        font = Font(weight="bold", slant="italic") # family='Helvetica',
 
         for col, txt in enumerate(["Section", "Parameters", "cmd"]):
             Label(self.frame, text=txt, relief=RIDGE, width=int(self.widths[col]), height=3, font=font).grid(row=0, column=col)
@@ -36,7 +36,12 @@ class SummaryWindow:
         num_lines = len(data.split('\n')) + 1
 
         Label(self.frame, text=title, relief=SUNKEN, width=self.widths[0], height=num_lines).grid(row=row, column=0)
-        Label(self.frame, bg='white', text=data, relief=SUNKEN, width=self.widths[1], height=num_lines).grid(row=row, column=1)
-        Label(self.frame, bg='white', text=cmd, relief=SUNKEN, width=self.widths[2], height=num_lines,
-              wraplength=self.widths[2]*6).grid(row=row, column=2)
+        text_data = Text(self.frame, height=num_lines, width=self.widths[1])
+        text_data.insert(INSERT, data)
+        text_data.grid(row=row, column=1)
+
+        text_cmd = Text(self.frame, height=num_lines, width=self.widths[2], wrap=WORD)
+        text_cmd.insert(INSERT, cmd)
+        text_cmd.grid(row=row, column=2)
+
         return 1  # number of added rows

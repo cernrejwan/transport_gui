@@ -129,7 +129,7 @@ class MaterialWindow:
 
     def get_data(self):
         data = "Material: " + self.get_material_name()
-        data += '\nMolecular mass: {} * 1.66e-24 g'.format(self.get_total_mass())
+        data += '\nMolecular mass: {} * 1.66e-24 g'.format(round(self.get_total_mass(), 1))
         return data
 
     def show(self, window):
