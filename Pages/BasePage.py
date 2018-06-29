@@ -21,7 +21,8 @@ class BasePage(Frame):
             self.prev_button = Button(self.navigation_bar, text="< Prev", command=self.controller.prev_page)
             self.prev_button.pack(side=LEFT)
 
-        self.next_button = Button(self.navigation_bar, text="Next >", command=self.controller.next_page)
+        txt, cmd = self.get_next_button()
+        self.next_button = Button(self.navigation_bar, text=txt, command=cmd)
         self.next_button.pack(side=RIGHT)
 
         self.title = title
@@ -30,6 +31,9 @@ class BasePage(Frame):
 
         self.frame = Frame(self)
         self.frame.pack()
+
+    def get_next_button(self):
+        return 'Next >', self.controller.next_page
 
     def get_data(self):
         return ''

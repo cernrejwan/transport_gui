@@ -1,5 +1,4 @@
 from BasePage import *
-import pickle
 
 
 class WelcomePage(BasePage):

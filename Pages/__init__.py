@@ -10,6 +10,7 @@ from SimuParamsPage import SimuParamsPage
 from SupportMainPage import SupportMainPage
 from SupportPage import SupportPage
 from WelcomePage import WelcomePage
+from SubmitPage import SubmitPage
 
-__all__ = ["WelcomePage", "GeneralPage", "SimuParamsPage", "ShapePage", "HistoPage", "SamplePage",
+__all__ = ["WelcomePage", "GeneralPage", "SimuParamsPage", "ShapePage", "HistoPage", "SamplePage", "SubmitPage",
            "SupportPage", "FinalPage", "SupportMainPage", "SummaryWindow", "AtobCalculator"]

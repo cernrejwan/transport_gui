@@ -9,3 +9,5 @@ class FinalPage(BasePage):
         Label(self.frame, text="Press the prev button if you want to change anything.").pack()
         Label(self.frame, text="Press the next button for submitting the job.").pack()
 
+    def get_next_button(self):
+        return "Submit", self.controller.submit

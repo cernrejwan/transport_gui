@@ -73,7 +73,7 @@ class GeneralPage(BasePage):
         return '-o ' + self.output_dir.get() + '/${{i}}.out'
 
     def get_cmd(self):
-        return self.get_ear_cmd() + ' ' + self.get_collimation_cmd() + ' ' + self.get_output_cmd()
+        return self.get_ear_cmd() + ' ' + self.get_collimation_cmd()
 
     def get_data(self):
         data = "Experimental Area: " + self.ear.get()

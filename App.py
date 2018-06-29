@@ -4,6 +4,7 @@ import tkFileDialog
 from Pages import *
 from Utils.OrderedDict import OrderedDict
 import pandas as pd
+import os
 
 
 class AppManager(Tk):
@@ -52,7 +53,7 @@ class AppManager(Tk):
         while self.curr_frame < len(self.pages) and not self.pages[self.curr_frame].show_page.get():
             self.curr_frame += 1
 
-        if self.curr_frame == len(self.pages): # or self.use_default.get()
+        if self.curr_frame == len(self.pages):
             self.summarize()
         else:
             self.pages[self.curr_frame].tkraise()
@@ -90,15 +91,25 @@ class AppManager(Tk):
 
     def submit(self):
         cmd = self.get_cmd()
-        iters = self.pages[3].iters.get()
-        output = '''
-for i in `seq 1 {iters}` ;
-do
-/eos/experiment/ntof/simul/transport/transport -d /afs/cern.ch/exp/ntof/simulations/FLUKA_spallation/${{i}}/EAR2.smooth {cmd}
-done
-        '''.format(iters=iters, cmd=cmd)
+        iters = self.pages["HistoPage"].iters.get()
+        output_dir = self.pages["GeneralPage"].output_dir.get()
+        submit_dir = os.path.join(output_dir, "submit")
+        if os.path.exists(submit_dir):
+            self.raise_error_message("Submission folder already exists in output directory.\nPlease provide another one.")
+            return
+        else:
+            os.mkdir(submit_dir)
 
-        return output
+        for i in range(iters):
+            filename = os.path.join(submit_dir, 'job_{}.sh'.format(i))
+            d_file = os.path.join(self.paths['transport_files'], str(i), self.pages["GeneralPage"].ear.get())
+            out = self.paths['transport_simulation_code'] + ' -d ' + d_file + ' -o ' + filename + cmd
+            with open(filename, 'w') as f:
+                f.write(out)
+
+        frame = SubmitPage(self.container, self)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.tkraise()
 
     def summarize(self):
         final_page = FinalPage(parent=self.container, controller=self)
