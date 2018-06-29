@@ -33,30 +33,39 @@ class AppManager(Tk):
             extra_configs = pd.read_csv(config_file, index_col=0, header=None, squeeze=True).to_dict()
             self.configs_dict.update(extra_configs)
 
-    def init_frames(self):
+    def init_pages(self):
         for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, SamplePage, SupportMainPage]:
             frame = F(parent=self.container, controller=self, **self.configs_dict)
             self.pages.add(F.__name__, frame)
             frame.grid(row=0, column=0, sticky="nsew")
 
-    def next_frame(self):
+    def next_page(self):
         finalized = self.pages[self.curr_frame].finalize()
         if not finalized:
             return
 
         if self.curr_frame == 0:
             self.load_configs()
-            self.init_frames()
+            self.init_pages()
 
         self.curr_frame += 1
+        while self.curr_frame < len(self.pages) and not self.pages[self.curr_frame].show_page.get():
+            self.curr_frame += 1
+
         if self.curr_frame == len(self.pages): # or self.use_default.get()
             self.summarize()
         else:
             self.pages[self.curr_frame].tkraise()
 
-    def prev_frame(self):
+    def prev_page(self):
         self.curr_frame -= 1
+        while self.curr_frame >= 0 and not self.pages[self.curr_frame].show_page.get():
+            self.curr_frame -= 1
+
         self.pages[self.curr_frame].tkraise()
+
+    def switch_page(self, page_name, bit):
+        self.pages[page_name].switch(bit)
 
     def add_page(self, cls, page_name, **kwargs):
         page = cls(parent=self.container, controller=self, **kwargs)
@@ -64,7 +73,8 @@ class AppManager(Tk):
         page.grid(row=0, column=0, sticky="nsew")
 
     def remove_page(self, page_name):
-        self.pages.remove(page_name)
+        if page_name in self.pages:
+            self.pages.remove(page_name)
 
     def get_ear(self):
         return self.pages["GeneralPage"].ear.get()

@@ -6,8 +6,6 @@ class SamplePage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Sample")
         self.kwargs = {'_'.join(key.split("_")[1:]): value for key, value in kwargs.iteritems() if key.startswith("sample")}
-        if not self.kwargs:
-            self.use.set(0)
 
         # vars:
         self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file', 'sample_atob']
@@ -18,9 +16,6 @@ class SamplePage(BasePage):
         self.sample_atob = DoubleVar(self, self.kwargs.get('atob', 0.0))
 
         # gui:
-        Checkbutton(self, text="Use sample", variable=self.use, command=self.show).pack(side=TOP)
-
-        self.show()
         Label(self.frame, text="Please specify the sample's properties").grid(row=0, columnspan=3)
         Label(self.frame, text="Element:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.sample_element).grid(row=1, column=1)
@@ -39,16 +34,13 @@ class SamplePage(BasePage):
                command=lambda: self.controller.open_atob_window(self.get_material_name(), self.sample_isotope.get(),
                                                                 self.sample_atob, **self.kwargs)).grid(row=4, column=2)
 
-        # self.atob_widget = AtobCalculator(self.frame, self.controller, self.sample_isotope, **self.kwargs)
-        # self.atob_widget.grid(row=4, columnspan=3)
-
     def get_material_name(self):
         if not isotope_exists(self.sample_element.get(), self.sample_isotope.get()):
             return '\nERROR: Material not found\nor isotope does not match to the element.'
         return get_full_name(self.sample_element.get().title(), self.sample_isotope.get())
 
     def finalize(self):
-        if not self.use.get():
+        if not self.show_page.get():
             return True
 
         symbol = self.sample_element.get().title()
@@ -71,7 +63,7 @@ class SamplePage(BasePage):
         return True
 
     def get_data(self):
-        if not self.use.get():
+        if not self.show_page.get():
             return ''
 
         data = '''Sample: {sample}
@@ -80,13 +72,10 @@ class SamplePage(BasePage):
         return data
 
     def get_cmd(self):
+        if not self.show_page.get():
+            return ''
+
         xs = self.sample_xs_file.get()
         xstotal = get_xs_file(self.sample_element.get(), self.sample_isotope.get())
         atob = self.sample_atob.get()
         return '--xs {xs} --atob {atob} --xstotal {xstotal}'.format(xs=xs, atob=atob, xstotal=xstotal)
-
-    # def get_vars(self):
-    #     vars_dict = {var: getattr(self, var).get() for var in self.vars_list}
-    #     atob_dict = self.atob_widget.get_vars()
-    #     vars_dict.update({"sample_" + key: value for key, value in atob_dict.iteritems()})
-    #     return vars_dict

@@ -18,7 +18,6 @@ class ShapePage(BasePage):
         self.rect_y2 = DoubleVar(self, kwargs['rect_y2'])
 
         # gui:
-        self.frame.pack()
         Label(self.frame, text="Please select target shape:").pack()
         OptionMenu(self, self.shape, "Circular", "Rectangular", command=self.set_shape).pack()
 

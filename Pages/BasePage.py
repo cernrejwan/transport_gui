@@ -10,7 +10,7 @@ class BasePage(Frame):
         self.page_name = self.__class__.__name__
         self.parent = parent
         self.controller = controller
-        self.use = IntVar(self, 1)
+        self.show_page = IntVar(self, 1)
 
         self.vars_list = list()
 
@@ -18,10 +18,10 @@ class BasePage(Frame):
         self.navigation_bar.pack(side=BOTTOM)
 
         if has_prev:
-            self.prev_button = Button(self.navigation_bar, text="< Prev", command=self.controller.prev_frame)
+            self.prev_button = Button(self.navigation_bar, text="< Prev", command=self.controller.prev_page)
             self.prev_button.pack(side=LEFT)
 
-        self.next_button = Button(self.navigation_bar, text="Next >", command=self.controller.next_frame)
+        self.next_button = Button(self.navigation_bar, text="Next >", command=self.controller.next_page)
         self.next_button.pack(side=RIGHT)
 
         self.title = title
@@ -29,6 +29,7 @@ class BasePage(Frame):
         Label(self, text=title, font=self.title_font).pack(side="top", fill="x", pady=10)
 
         self.frame = Frame(self)
+        self.frame.pack()
 
     def get_data(self):
         return ''
@@ -40,8 +41,9 @@ class BasePage(Frame):
         return self.vars_list
 
     def get_vars(self):
-        if not self.use.get():
+        if not self.show_page.get():
             return {}
+
         vars_list = self.get_vars_list()
         return {var: getattr(self, var).get() for var in vars_list}
 
@@ -60,8 +62,5 @@ class BasePage(Frame):
         Label(master, bg='white', text=self.get_cmd(), relief=SUNKEN, width=widths[2], height=num_lines, wraplength=widths[2]*6).grid(row=row, column=2)
         return 1  # number of added rows
 
-    def show(self):
-        if self.use.get():
-            self.frame.pack()
-        else:
-            self.frame.pack_forget()
+    def switch(self, bit):
+        self.show_page.set(bit)

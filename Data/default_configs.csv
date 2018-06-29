@@ -3,7 +3,6 @@ bins_x,6000
 bins_y,6000
 collimation,ear1
 histogram_dim,1D
-histogram_type,Energy
 isotope,0
 max_x,1.00E+09
 max_y,2

@@ -1,5 +1,7 @@
 import re
 from BasePage import *
+from Pages.SamplePage import SamplePage
+from Pages.SupportMainPage import SupportMainPage
 
 
 class HistoPage(BasePage):
@@ -9,7 +11,9 @@ class HistoPage(BasePage):
         # vars:
         self.vars_list = ['histogram_dim', 'histogram_type', 'bins_x', 'min_x', 'max_x']
         self.histogram_dim = StringVar(self, kwargs['histogram_dim'])
-        self.histogram_type = StringVar(self, kwargs['histogram_type'])
+        self.menus = pd.read_csv(self.controller.paths['histogram_menus_path'])
+        curr_menu = self.get_menu_for_dim(self.histogram_dim.get())
+        self.histogram_type = StringVar(self, kwargs.get('histogram_type', curr_menu[0]))
 
         self.bins_x = IntVar(self, kwargs['bins_x'])
         self.bins_y = IntVar(self, kwargs['bins_y'])
@@ -20,11 +24,7 @@ class HistoPage(BasePage):
         self.min_y = StringVar(self, kwargs['min_y'])
         self.max_y = StringVar(self, kwargs['max_y'])
 
-        self.menus = pd.read_csv(self.controller.paths['histogram_menus_path'])
-        curr_menu = self.get_menu_for_dim(self.histogram_dim.get())
-
         # gui:
-        self.frame.pack()
         self.header = Frame(self.frame)
         Label(self.header, text="Number of dimensions:").grid(row=0, column=0)
         OptionMenu(self.header, self.histogram_dim, "1D", "2D", command=self.set_hist_dim).grid(row=0, column=1)
@@ -123,7 +123,17 @@ class HistoPage(BasePage):
 
         return data
 
+    def is_yield(self, histogram_type):
+        return self.menus.loc[self.menus['name'] == histogram_type, 'yield'].values[0]
+
     def finalize(self):
+        if self.is_yield(self.histogram_type.get()):
+            self.controller.switch_page("SamplePage", 1)
+            self.controller.switch_page("SupportMainPage", 1)
+        else:
+            self.controller.switch_page("SamplePage", 0)
+            self.controller.switch_page("SupportMainPage", 0)
+
         if self.iters.get() not in range(1, self.max_iters + 1):
             self.controller.raise_error_message('Number of files for statistics must be between 1 and 24')
             return False

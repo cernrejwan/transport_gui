@@ -7,9 +7,9 @@ class SupportMainPage(BasePage):
         BasePage.__init__(self, parent, controller, "Support")
 
         # vars
-        self.vars_list = ['support_layers']
         self.support_layers = IntVar(self, kwargs.get('support_layers', 1))
         self.support_pages_exist = 0
+        self.use = IntVar(self, 1)
 
         if 'support_layers' not in kwargs:
             self.use.set(0)
@@ -22,8 +22,19 @@ class SupportMainPage(BasePage):
         Label(self.frame, text="Number of support layers:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.support_layers).grid(row=1, column=1)
 
+    def show(self):
+        if self.use.get():
+            self.frame.pack()
+        else:
+            self.frame.pack_forget()
+
+    def get_vars_list(self):
+        if self.show_page.get() and self.use.get():
+            return ['support_layers']
+        return []
+
     def finalize(self):
-        if not self.use.get():
+        if not self.use.get() or not self.show_page.get():
             return True
 
         num_layers = int(self.support_layers.get())
@@ -43,3 +54,8 @@ class SupportMainPage(BasePage):
                 self.controller.add_page(SupportPage, "SupportPage" + str(i), index=i, **self.kwargs)
         self.support_pages_exist = num_layers
         return True
+
+    def switch(self, bit):
+        BasePage.switch(self, bit)
+        for i in range(self.support_pages_exist):
+            self.controller.switch_page("SupportPage" + str(i + 1), bit)

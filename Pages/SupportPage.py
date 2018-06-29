@@ -24,7 +24,6 @@ class SupportPage(BasePage):
         self.material_window = MaterialWindow(self, self.controller, self.material.get(), density_var=self.density, **self.kwargs)
 
         # gui:
-        self.frame.pack()
         Label(self.frame, text="Material for the total cross section:").grid(row=1, column=0, columnspan=2)
         OptionMenu(self.frame, self.material, *self.materials_list,
                    command=self.set_material).grid(row=1, column=2)
@@ -94,16 +93,25 @@ class SupportPage(BasePage):
         self.show_material_details()
 
     def get_data(self):
+        if not self.show_page.get():
+            return ''
+
         data = self.material_window.get_data()
         data += "\nAtoms per barn: " + str(self.atob.get())
         # data += "\n" + self.atob_widget.get_data()
         return data
 
     def get_cmd(self):
+        if not self.show_page.get():
+            return ''
+
         total_atob = self.atob.get()
         return self.material_window.get_cmd(total_atob)
 
     def get_vars(self, use_prefix=True):
+        if not self.show_page.get():
+            return {}
+
         material = self.material.get()
         prefix = 'support{}_'.format(self.index) if use_prefix else ''
         vars_dict = {prefix + "material": material}
@@ -117,4 +125,4 @@ class SupportPage(BasePage):
         if self.atob.get() <= 0:
             self.controller.raise_error_message('Atoms per barn must be greater than zero.')
             return False
-        return True
+        return self.material_window.finalize()

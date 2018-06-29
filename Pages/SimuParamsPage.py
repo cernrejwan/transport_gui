@@ -16,7 +16,6 @@ class SimuParamsPage(BasePage):
         self.angle = DoubleVar(self, kwargs.get('angle', kwargs[self.controller.get_ear() + '_max_angle']))
 
         # gui:
-        self.frame.pack()
         Label(self.frame, text="Select particle type:").grid(row=0, column=0)
         OptionMenu(self.frame, self.particle, "Neutrons", "Photons").grid(row=0, column=1)
 

@@ -1,7 +1,9 @@
-dim,name,cmd,unit_x,unit_y
-1D,Energy,e,eV,
-1D,Tof,t,s,
-2D,Tof vs Energy,et,s,eV
-2D,Lambda vs Energy,l,cm,eV
-2D,Lambda vs Tof,tl,cm,s
-2D,Profile,2,cm,cm
+dim,name,cmd,unit_x,unit_y,yield
+1D,Energy (fluence),e,eV,,FALSE
+1D,Energy (yield),e,eV,,TRUE
+1D,Tof (fluence),t,s,,FALSE
+1D,Tof (yield),t,s,,TRUE
+2D,Tof vs Energy,et,s,eV,FALSE
+2D,Lambda vs Energy,l,cm,eV,FALSE
+2D,Lambda vs Tof,tl,cm,s,FALSE
+2D,Profile,2,cm,cm,FALSE
