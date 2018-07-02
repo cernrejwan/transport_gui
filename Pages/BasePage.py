@@ -1,6 +1,5 @@
 from Tkinter import *
 import tkFont as tkfont
-import os
 
 
 class BasePage(Frame):

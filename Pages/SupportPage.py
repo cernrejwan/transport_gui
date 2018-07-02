@@ -1,6 +1,6 @@
 from BasePage import *
 from Pages.Windows.MaterialWindow import MaterialWindow
-from Utils.Chemistry import support_materials, get_support_material
+from Utils.SupportMaterialsHandler import *
 
 
 class SupportPage(BasePage):
