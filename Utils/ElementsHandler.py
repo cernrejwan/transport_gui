@@ -1,10 +1,8 @@
-import pandas as pd
 from CSVHandler import *
 
 paths = csv2dict('./Data/paths.csv')
 symbols = read_symbols('./Data/elements/symbols.csv')
-abundance = pd.read_csv('./Data/elements/abundance.csv')
-abundance['fraction'] = abundance['fraction'] / 100
+abundance = read_abundance('./Data/elements/abundance.csv')
 
 unit_mass = 1.66053904e-24
 cm2barn = 1e24
@@ -25,7 +23,7 @@ def element_exists(element_symbol):
 
 
 def isotope_exists(element_symbol, isotope_number):
-    isotopes = abundance.loc[abundance['symbol'] == element_symbol.title(), 'iso_num']
+    isotopes = abundance[element_symbol.title()].keys()
     return isotope_number in list(isotopes)
 
 

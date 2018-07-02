@@ -29,5 +29,6 @@ def read_abundance(filename):
     result = read_csv(filename, header=True)
     res_dict = defaultdict(dict)
     for item in result:
-        res_dict[item[0]][item[1]] = item[2]
+        fraction = item[2] if item[2] else 0
+        res_dict[item[0]][int(item[1])] = float(fraction) / 100
     return res_dict

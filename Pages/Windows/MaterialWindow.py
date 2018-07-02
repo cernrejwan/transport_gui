@@ -93,7 +93,7 @@ class MaterialWindow:
 
         new_dict = {}
         for i, item in self.elements_dict.iteritems():
-            if not item['isotopes']:
+            if item['symbol'].get() and not item['isotopes']:
                 new_dict[i] = item
                 new_dict[i]['isotopes'] = Element(self.parent, self.controller, item['symbol'].get())
         self.elements_dict.update(new_dict)
@@ -103,7 +103,7 @@ class MaterialWindow:
     def get_total_mass(self):
         total_mass = 0
         for item in self.elements_dict.values():
-            element_mass = item['isotopes'].get_avg_mass_number()
+            element_mass = item['isotopes'].get_avg_mass_number() if item['isotopes'] else 0
             total_mass += item['fraction'].get() * element_mass   # same formula for num atoms or mass fraction
         return total_mass
 

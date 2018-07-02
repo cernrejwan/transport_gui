@@ -13,10 +13,7 @@ class Element:
         self.name = info['Name']
         self.atomic_num = info['Atom_num']
 
-        self.natural_abundance = abundance[abundance['symbol'] == self.symbol].set_index('iso_num')['fraction']
-
-        self.no_data = (self.natural_abundance.count() == 0)
-        self.natural_abundance = self.natural_abundance.fillna(0)
+        self.natural_abundance = abundance[self.symbol]
 
         if isotopes and isotopes != 'Natural':
             curr_abundance = dict()
@@ -58,10 +55,7 @@ class Element:
         header_txt = 'Isotopic abundance for element:\n{} (atomic number: {})'.format(self.name, self.atomic_num)
         Label(window, text=header_txt, font=title_font).pack(side="top", fill="x", pady=10)
 
-        if self.no_data:
-            txt = "Unfortunately, natural abundance of this element is missing.\nPlease provide the isotopes and their fraction (%)."
-        else:
-            txt = "Here is the natural abundance for the selected element.\nFeel free to change the composition."
+        txt = "Here is the natural abundance for the selected element.\nFeel free to change the composition."
         Label(window, text=txt).pack()
 
         isotopes_frame = Frame(window)
