@@ -48,7 +48,7 @@ class MaterialWindow:
         symbol_var = StringVar(self.controller, symbol)
         fraction_var = DoubleVar(self.controller, fraction)
         element = Element(self.parent, self.controller, symbol, isotopes) if symbol else None
-        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'isotopes': element, 'changed': False}
+        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'isotopes': element}
         self.curr_row += 1
 
     def show_element(self, frame, row):
@@ -71,7 +71,6 @@ class MaterialWindow:
         if not curr_element['isotopes'] or curr_element['isotopes'].symbol != element_symbol:
             curr_element['isotopes'] = Element(self.parent, self.controller, element_symbol)
 
-        curr_element['changed'] = True
         isotopes_window = Toplevel(self.controller)
         curr_element['isotopes'].show(isotopes_window)
         self.elements_dict[row] = curr_element
@@ -188,7 +187,7 @@ class MaterialWindow:
         for item in self.elements_dict.values():
             symbol = item['symbol'].get().title()
             frac = item['fraction'].get()
-            if not item['changed']:
+            if item['isotopes'].is_natural():
                 composition = 'Natural'
             else:
                 composition = item['isotopes'].get()

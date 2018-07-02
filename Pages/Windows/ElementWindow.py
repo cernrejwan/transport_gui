@@ -16,7 +16,7 @@ class Element:
         self.natural_abundance = abundance[self.symbol]
 
         if isotopes and isotopes != 'Natural':
-            curr_abundance = dict()
+            curr_abundance = {key: 0 for key in self.natural_abundance.keys()}
             isotopes = eval(isotopes)
             for iso_num, fraction in isotopes:
                 curr_abundance[iso_num] = fraction
@@ -29,7 +29,7 @@ class Element:
         cumulative_sum = sum([float(frac.get()) for _, frac in self.isotopes])
         return (cumulative_sum == 1)
 
-    def is_natural_abundance(self):
+    def is_natural(self):
         for iso, frac in self.isotopes:
             if frac.get() != self.natural_abundance[iso]:
                 return False
