@@ -1,7 +1,5 @@
-import re
 from BasePage import *
-from Pages.SamplePage import SamplePage
-from Pages.SupportMainPage import SupportMainPage
+import pandas as pd
 
 
 class HistoPage(BasePage):

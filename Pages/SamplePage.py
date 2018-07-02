@@ -66,8 +66,8 @@ class SamplePage(BasePage):
         if not self.show_page.get():
             return ''
 
-        data = '''Sample: {sample}
-        XS file: {path}'''.format(sample=self.get_material_name(), path=self.sample_xs_file.get())
+        data = "Sample: {sample}"
+        data += '\nXS file: {path}'''.format(sample=self.get_material_name(), path=self.sample_xs_file.get())
         data += '\nAtoms per barn: ' + str(self.sample_atob.get())
         return data
 

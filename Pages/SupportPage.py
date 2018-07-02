@@ -73,8 +73,8 @@ class SupportPage(BasePage):
             Button(self.material_details, text="Save", command=self.save_material).grid(row=5, column=2)
 
     def save_material(self):
-        df = pd.Series(self.get_vars(use_prefix=False))
-        self.controller.save_df(df)
+        data_dict = self.get_vars(use_prefix=False)
+        self.controller.save_to_csv(data_dict)
 
     def load_material(self):
         file_path = StringVar(self)

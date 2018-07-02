@@ -3,7 +3,7 @@ from tkFont import Font
 import tkFileDialog
 from Pages import *
 from Utils.OrderedDict import OrderedDict
-import pandas as pd
+from Utils.FileReader import *
 import os
 
 
@@ -11,8 +11,8 @@ class AppManager(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 
-        self.paths = pd.read_csv('./Data/paths.csv', index_col=0, header=None, squeeze=True).to_dict()
-        self.configs_dict = pd.read_csv('./Data/default_configs.csv', index_col=0, header=None, squeeze=True).to_dict()
+        self.paths = csv2dict('./Data/paths.csv')
+        self.configs_dict = csv2dict('./Data/default_configs.csv')
 
         self.curr_frame = 0
 
@@ -31,7 +31,7 @@ class AppManager(Tk):
     def load_configs(self):
         config_file = self.pages["WelcomePage"].get_config_file()
         if config_file:
-            extra_configs = pd.read_csv(config_file, index_col=0, header=None, squeeze=True).to_dict()
+            extra_configs = csv2dict(config_file)
             self.configs_dict.update(extra_configs)
 
     def init_pages(self):
@@ -126,19 +126,18 @@ class AppManager(Tk):
         SummaryWindow(summary_window, self, self.pages)
 
     @staticmethod
-    def save_df(df):
+    def save_to_csv(data_dict):
         save_path = tkFileDialog.asksaveasfilename(initialdir="~", filetypes=(("CSV", "*.csv"),))
         if not save_path.endswith('.csv'):
             save_path += '.csv'
-        df.to_csv(save_path)
+        dict2csv(data_dict, save_path)
 
     def save_configs(self):
         configs_dict = dict()
         for F in self.pages:
             configs_dict.update(F.get_vars())
 
-        configs_df = pd.Series(configs_dict)
-        self.save_df(configs_df)
+        self.save_to_csv(configs_dict)
 
     def raise_error_message(self, message):
         error_window = Toplevel(self)

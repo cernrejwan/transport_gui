@@ -13,7 +13,7 @@ class MaterialWindow:
         self.type_var = StringVar(self.parent, "Number of atoms")
         self.elements_dict = dict()
         self.curr_row = 1
-        self.formula = kwargs.get('formula', [])
+        self.formula = eval(eval(kwargs.get('formula', '"[]"')))
         if type(self.formula) == str:
             self.formula = eval(self.formula)
         self.density = density_var
@@ -190,4 +190,4 @@ class MaterialWindow:
             else:
                 composition = item['isotopes'].get()
             result.append((symbol, frac, composition))
-        return str(result)
+        return '"' + str(result) + '"'

@@ -1,6 +1,8 @@
 import pandas as pd
+from FileReader import *
 import os
 
+paths = csv2dict('./Data/paths.csv')
 symbols = pd.read_csv('./Data/elements/symbols.csv')
 abundance = pd.read_csv('./Data/elements/abundance.csv')
 abundance['fraction'] = abundance['fraction'] / 100
@@ -11,8 +13,8 @@ cm2barn = 1e24
 
 def get_support_material(file_path):
     name = os.path.basename(file_path).split('.')[0]
-    values = pd.read_csv(file_path, header=None, index_col=0, squeeze=True).to_dict()
-    values['formula'] = eval(values['formula'])
+    values = csv2dict(file_path)
+    values['formula'] = eval(eval(values['formula']))
     return name, values
 
 
@@ -36,8 +38,7 @@ def get_full_name(element_symbol, isotope_number):
 
 
 def get_xs_file(element_symbol, isotope_number):
-    const = pd.read_csv('./Data/paths.csv', index_col=0, header=None, squeeze=True).to_dict()
-    return const['xs_files_path'] + get_full_name(element_symbol.title(), isotope_number) + '_tot.xs'
+    return paths['xs_files_path'] + get_full_name(element_symbol.title(), isotope_number) + '_tot.xs'
 
 
 def element_exists(element_symbol):
