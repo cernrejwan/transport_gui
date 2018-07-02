@@ -93,30 +93,13 @@ class AppManager(Tk):
         cmd = self.get_cmd()
         iters = self.pages["HistoPage"].iters.get()
         output_dir = self.pages["GeneralPage"].output_dir.get()
-
-        submit_dir = os.path.join(output_dir, "submit")
-        if os.path.exists(submit_dir):
-            ls = os.listdir(output_dir)
-            ls = [int(f.split('_')[1]) for f in ls if f.startswith('submit_')]
-            idx = '2' if not ls else max(ls) + 1
-            submit_dir = os.path.join(output_dir, 'submit_' + str(idx))
-            self.raise_error_message(
-                "'submit' folder already exists in output directory.\nCreating folder 'submit_{}' instead.".format(idx))
-        os.mkdir(submit_dir)
-
-        for i in range(iters):
-            job_file = os.path.join(submit_dir, 'job_{}.sh'.format(i))
-            input_file = os.path.join(self.paths['transport_files'], str(i), self.pages["GeneralPage"].ear.get())
-            output_file = os.path.join(submit_dir, 'res_{}'.format(i))
-            out = self.paths['transport_simulation_code'] + ' -d ' + input_file + ' -o ' + output_file + cmd
-            with open(job_file, 'w') as f:
-                f.write(out)
-            os.system('./HTCondorSub.sh ' + job_file)
-            os.system('condor_submit ' + job_file + '.CondorSub.sh')
+        ear = self.pages["GeneralPage"].ear.get()
 
         frame = SubmitPage(self.container, self, iters)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
+
+        frame.submit(cmd, iters, output_dir, ear)
 
     def summarize(self):
         final_page = FinalPage(parent=self.container, controller=self)
@@ -163,6 +146,11 @@ class AppManager(Tk):
         new_window = Toplevel(self)
         atob_calculator = AtobCalculator(new_window, self, material_name, mass, atob_var, **kwargs)
         atob_calculator.pack()
+
+    def get_input_files(self):
+        ls = os.listdir(self.controller.paths['input_files_path'])
+        input_files = [f for f in ls if f.endswith('_')]
+        return sorted(input_files)
 
 
 if __name__ == "__main__":
