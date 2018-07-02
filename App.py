@@ -111,7 +111,7 @@ class AppManager(Tk):
             out = self.paths['transport_simulation_code'] + ' -d ' + input_file + ' -o ' + output_file + cmd
             with open(job_file, 'w') as f:
                 f.write(out)
-            os.system('HTCondorSub.sh ' + job_file)
+            os.system('./HTCondorSub.sh ' + job_file)
             os.system('condor_submit ' + job_file + '.CondorSub.sh')
 
         frame = SubmitPage(self.container, self, iters)
