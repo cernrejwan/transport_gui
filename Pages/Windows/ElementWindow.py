@@ -1,5 +1,5 @@
 from Tkinter import *
-from Utils.Chemistry import *
+from Utils.ElementsHandler import *
 from tkFont import Font
 from Utils.ToolTip import ToolTip
 
@@ -9,26 +9,34 @@ class Element:
         self.symbol = element_symbol.title()
         self.controller = controller
 
-        info = symbols[symbols['Symbol'] == self.symbol]
-        self.name = info['Name'].values[0]
-        self.atomic_num = info['Atom_num'].values[0]
+        info = symbols[self.symbol]
+        self.name = info['Name']
+        self.atomic_num = info['Atom_num']
 
-        iso_abundance = abundance[abundance['symbol'] == self.symbol].set_index('iso_num')['fraction']
+        self.natural_abundance = abundance[abundance['symbol'] == self.symbol].set_index('iso_num')['fraction']
 
-        self.no_data = (iso_abundance.count() == 0)
-        iso_abundance = iso_abundance.fillna(0)
+        self.no_data = (self.natural_abundance.count() == 0)
+        self.natural_abundance = self.natural_abundance.fillna(0)
 
         if isotopes and isotopes != 'Natural':
-            iso_abundance[:] = 0
+            curr_abundance = dict()
             isotopes = eval(isotopes)
             for iso_num, fraction in isotopes:
-                iso_abundance[iso_num] = fraction
+                curr_abundance[iso_num] = fraction
+        else:
+            curr_abundance = self.natural_abundance
 
-        self.isotopes = [(iso_num, DoubleVar(master, fraction)) for iso_num, fraction in iso_abundance.iteritems()]
+        self.isotopes = [(iso_num, DoubleVar(master, fraction)) for iso_num, fraction in curr_abundance.iteritems()]
 
     def is_valid(self):
         cumulative_sum = sum([float(frac.get()) for _, frac in self.isotopes])
         return (cumulative_sum == 1)
+
+    def is_natural_abundance(self):
+        for iso, frac in self.isotopes:
+            if frac.get() != self.natural_abundance[iso]:
+                return False
+        return True
 
     def get_avg_mass_number(self):
         weighted_sum = sum([frac.get() * iso_num for iso_num, frac in self.isotopes])

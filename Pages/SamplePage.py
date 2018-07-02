@@ -1,5 +1,5 @@
 from BasePage import *
-from Utils.Chemistry import *
+from Utils.ElementsHandler import *
 
 
 class SamplePage(BasePage):

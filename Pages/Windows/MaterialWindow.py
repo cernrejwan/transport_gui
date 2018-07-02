@@ -1,7 +1,7 @@
 from Tkinter import *
 from tkFont import Font
 from ElementWindow import Element
-from Utils.Chemistry import *
+from Utils.ElementsHandler import *
 from Utils.SupportMaterialsHandler import support_materials
 from Utils.ToolTip import ToolTip
 
@@ -14,9 +14,11 @@ class MaterialWindow:
         self.type_var = StringVar(self.parent, "Number of atoms")
         self.elements_dict = dict()
         self.curr_row = 1
-        self.formula = eval(eval(kwargs.get('formula', '"[]"')))
+        self.formula = kwargs.get('formula', [])
         if type(self.formula) == str:
             self.formula = eval(self.formula)
+            if type(self.formula) == str:
+                self.formula = eval(self.formula)
         self.density = density_var
         self.set_material(self.material)
 

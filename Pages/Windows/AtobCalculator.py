@@ -1,5 +1,5 @@
 from Tkinter import *
-from Utils.Chemistry import *
+from Utils.ElementsHandler import *
 from tkFont import Font
 
 
