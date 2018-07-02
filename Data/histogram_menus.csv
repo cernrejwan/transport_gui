@@ -1,9 +1,9 @@
 dim,name,cmd,unit_x,unit_y,yield
-1D,Energy (fluence),e,eV,,FALSE
-1D,Energy (yield),e,eV,,TRUE
-1D,Tof (fluence),t,s,,FALSE
-1D,Tof (yield),t,s,,TRUE
-2D,Tof vs Energy,et,s,eV,FALSE
-2D,Lambda vs Energy,l,cm,eV,FALSE
-2D,Lambda vs Tof,tl,cm,s,FALSE
-2D,Profile,2,cm,cm,FALSE
+1D,Energy (fluence),e,eV,,0
+1D,Energy (yield),e,eV,,1
+1D,Tof (fluence),t,s,,0
+1D,Tof (yield),t,s,,1
+2D,Tof vs Energy,et,s,eV,0
+2D,Lambda vs Energy,l,cm,eV,0
+2D,Lambda vs Tof,tl,cm,s,0
+2D,Profile,2,cm,cm,0

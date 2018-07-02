@@ -32,3 +32,12 @@ def read_abundance(filename):
         fraction = item[2] if item[2] else 0
         res_dict[item[0]][int(item[1])] = float(fraction) / 100
     return res_dict
+
+
+def read_histogram_menus(filename):
+    result = read_csv(filename, header=True)
+    res_dict = dict()
+    for item in result:
+        name = item[1]
+        res_dict[name] = {'dim': item[0], 'cmd': item[2], 'unit_x': item[3], 'unit_y': item[4], 'yield': int(item[5])}
+    return res_dict

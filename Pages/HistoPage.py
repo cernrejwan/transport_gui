@@ -1,5 +1,5 @@
 from BasePage import *
-import pandas as pd
+from Utils.CSVHandler import read_histogram_menus
 
 
 class HistoPage(BasePage):
@@ -9,7 +9,7 @@ class HistoPage(BasePage):
         # vars:
         self.vars_list = ['histogram_dim', 'histogram_type', 'bins_x', 'min_x', 'max_x']
         self.histogram_dim = StringVar(self, kwargs['histogram_dim'])
-        self.menus = pd.read_csv(self.controller.paths['histogram_menus_path'])
+        self.menus = read_histogram_menus(self.controller.paths['histogram_menus_path'])
         curr_menu = self.get_menu_for_dim(self.histogram_dim.get())
         self.histogram_type = StringVar(self, kwargs.get('histogram_type', curr_menu[0]))
 
@@ -62,11 +62,11 @@ class HistoPage(BasePage):
             self.y_frame.pack()
 
     def get_menu_for_dim(self, dim):
-        menu = self.menus.loc[self.menus['dim'] == dim, 'name']
+        menu = [name for name, value in self.menus.iteritems() if value['dim'] == dim]
         return list(menu)
 
     def get_unit(self, hist_type, axis):
-        return self.menus.loc[self.menus['name'] == hist_type, 'unit_' + axis].values[0]
+        return self.menus[hist_type]['unit_' + axis]
 
     def set_hist_dim(self, hist_dim):
         curr_menu = self.get_menu_for_dim(hist_dim)
@@ -97,7 +97,7 @@ class HistoPage(BasePage):
         return self.vars_list
 
     def get_cmd(self):
-        cmd = '-T' + self.menus.loc[self.menus['name'] == self.histogram_type.get(), 'cmd'].values[0]
+        cmd = '-T' + self.menus[self.histogram_type.get()]['cmd']
         cmd += ' -n ' + str(self.bins_x.get())
         cmd += ' -h ' + str(self.min_x.get())
         cmd += ' -H ' + str(self.max_x.get())
@@ -122,7 +122,7 @@ class HistoPage(BasePage):
         return data
 
     def is_yield(self, histogram_type):
-        return self.menus.loc[self.menus['name'] == histogram_type, 'yield'].values[0]
+        return self.menus[histogram_type]['yield']
 
     def finalize(self):
         if self.is_yield(self.histogram_type.get()):
