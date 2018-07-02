@@ -2,6 +2,7 @@ from Tkinter import *
 from tkFont import Font
 from ElementWindow import Element
 from Utils.Chemistry import *
+from Utils.SupportMaterialsHandler import support_materials
 from Utils.ToolTip import ToolTip
 
 
