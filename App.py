@@ -93,18 +93,23 @@ class AppManager(Tk):
         cmd = self.get_cmd()
         iters = self.pages["HistoPage"].iters.get()
         output_dir = self.pages["GeneralPage"].output_dir.get()
+
         submit_dir = os.path.join(output_dir, "submit")
         if os.path.exists(submit_dir):
-            self.raise_error_message("Submission folder already exists in output directory.\nPlease provide another one.")
-            return
-        else:
-            os.mkdir(submit_dir)
+            ls = os.listdir(output_dir)
+            ls = [int(f.split('_')[1]) for f in ls if f.startswith('submit_')]
+            idx = '2' if not ls else max(ls) + 1
+            submit_dir = os.path.join(output_dir, 'submit_' + str(idx))
+            self.raise_error_message(
+                "'submit' folder already exists in output directory.\nCreating folder 'submit_{}' instead.".format(idx))
+        os.mkdir(submit_dir)
 
         for i in range(iters):
-            filename = os.path.join(submit_dir, 'job_{}.sh'.format(i))
-            d_file = os.path.join(self.paths['transport_files'], str(i), self.pages["GeneralPage"].ear.get())
-            out = self.paths['transport_simulation_code'] + ' -d ' + d_file + ' -o ' + filename + cmd
-            with open(filename, 'w') as f:
+            job_file = os.path.join(submit_dir, 'job_{}.sh'.format(i))
+            input_file = os.path.join(self.paths['transport_files'], str(i), self.pages["GeneralPage"].ear.get())
+            output_file = os.path.join(submit_dir, 'res_{}'.format(i))
+            out = self.paths['transport_simulation_code'] + ' -d ' + input_file + ' -o ' + output_file + cmd
+            with open(job_file, 'w') as f:
                 f.write(out)
 
         frame = SubmitPage(self.container, self)
