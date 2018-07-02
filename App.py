@@ -112,8 +112,9 @@ class AppManager(Tk):
             with open(job_file, 'w') as f:
                 f.write(out)
             os.system('HTCondorSub.sh ' + job_file)
+            os.system('condor_submit ' + job_file + '.CondorSub.sh')
 
-        frame = SubmitPage(self.container, self)
+        frame = SubmitPage(self.container, self, iters)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
 
