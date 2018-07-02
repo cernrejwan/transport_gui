@@ -3,7 +3,7 @@ from tkFont import Font
 import tkFileDialog
 from Pages import *
 from Utils.OrderedDict import OrderedDict
-from Utils.FileReader import *
+from Utils.CSVHandler import *
 import os
 
 

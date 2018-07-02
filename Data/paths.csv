@@ -1,7 +1,8 @@
-primary_files_path,.
+primary_files_path,./
 support_materials_path,./Data/support_materials/
 histogram_menus_path,./Data/histogram_menus.csv
 xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
-collimation_files_path,/eos/experiment/ntof/simul/transport/input/
+collimation_files_path,./
+collimation_files_path2,/eos/experiment/ntof/simul/transport/input/
 transport_simulation_code,/eos/experiment/ntof/simul/transport/transport
 transport_files,/afs/cern.ch/exp/ntof/simulations/FLUKA_spallation/

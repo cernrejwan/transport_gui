@@ -1,5 +1,5 @@
 import pandas as pd
-from FileReader import *
+from CSVHandler import *
 import os
 
 paths = csv2dict('./Data/paths.csv')
