@@ -13,11 +13,11 @@ class SubmitPage(BasePage):
         submit_dir = self.get_submit_dir(output_dir)
         os.mkdir(submit_dir)
 
-        input_files = self.controller.get_input_files()
+        input_files = self.controller.get_input_dirs()
 
         for i in range(iters):
             job_file = os.path.join(submit_dir, 'job_{}.sh'.format(i))
-            input_file = os.path.join(self.controller.paths['input_files_path'], input_files[i], ear, '.bin')
+            input_file = os.path.join(input_files[i], ear, '.bin')
             out = self.get_full_cmd(self.controller.paths['transport_simulation_code'], submit_dir, input_file, cmd, i)
 
             with open(job_file, 'w') as f:

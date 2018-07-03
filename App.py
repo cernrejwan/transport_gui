@@ -147,9 +147,9 @@ class AppManager(Tk):
         atob_calculator = AtobCalculator(new_window, self, material_name, mass, atob_var, **kwargs)
         atob_calculator.pack()
 
-    def get_input_files(self):
-        ls = os.listdir(self.controller.paths['input_files_path'])
-        input_files = [f for f in ls if f.endswith('_')]
+    def get_input_dirs(self):
+        ls = os.listdir(self.paths['input_files_path'])
+        input_files = [os.path.join(self.paths['input_files_path'], f) for f in ls if f.endswith('_')]
         return sorted(input_files)
 
 
