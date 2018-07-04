@@ -15,8 +15,6 @@ class HistoPage(BasePage):
 
         self.bins_x = IntVar(self, kwargs['bins_x'])
         self.bins_y = IntVar(self, kwargs['bins_y'])
-        self.iters = IntVar(self, int(kwargs.get('iters', 1)))
-        self.max_iters = len(self.controller.get_input_dirs())
         self.min_x = StringVar(self, kwargs['min_x'])
         self.max_x = StringVar(self, kwargs['max_x'])
         self.min_y = StringVar(self, kwargs['min_y'])
@@ -29,8 +27,6 @@ class HistoPage(BasePage):
         Label(self.header, text="Histogram type:").grid(row=1, column=0)
         self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
-        Label(self.header, text="Number of files for statistics (1 to {0})".format(self.max_iters)).grid(row=2, column=0)
-        Entry(self.header, textvariable=self.iters).grid(row=2, column=1)
         self.header.pack()
 
         self.x_frame = Frame(self.frame)
@@ -131,8 +127,4 @@ class HistoPage(BasePage):
         else:
             self.controller.switch_page("SamplePage", 0)
             self.controller.switch_page("SupportMainPage", 0)
-
-        if self.iters.get() not in range(1, self.max_iters + 1):
-            self.controller.raise_error_message('Number of files for statistics must be between 1 and ' + str(self.max_iters))
-            return False
         return True
