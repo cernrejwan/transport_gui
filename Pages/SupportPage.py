@@ -9,7 +9,8 @@ class SupportPage(BasePage):
         self.index = kwargs['index']
         prefix = "support{}".format(self.index)
         self.page_name = "SupportPage{}".format(self.index)
-        self.kwargs = {'_'.join(key.split("_")[1:]): value for key, value in kwargs.iteritems() if key.startswith(prefix)}
+        self.kwargs = dict([('_'.join(key.split("_")[1:]), value)
+                            for key, value in kwargs.iteritems() if key.startswith(prefix)])
 
         # vars:
         self.vars_list = ['material', 'formula', 'atob', 'density']
