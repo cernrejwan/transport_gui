@@ -10,7 +10,7 @@ def read_csv(filename, header=False):
 
 def csv2dict(filename):
     result = read_csv(filename)
-    return {item[0]: ','.join(item[1:]) for item in result}
+    return dict([(item[0], ','.join(item[1:])) for item in result])
 
 
 def dict2csv(data_dict, filename):
