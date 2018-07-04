@@ -39,5 +39,6 @@ def read_histogram_menus(filename):
     res_dict = dict()
     for item in result:
         name = item[1]
-        res_dict[name] = dict([('dim',item[0]),('cmd',item[2]),('unit_x',item[3]),('unit_y',item[4]),('yield',item[5])])
+        res_dict[name] = dict([('dim', item[0]), ('cmd', item[2]), ('unit_x', item[3]), ('unit_y', item[4]),
+                               ('yield', int(item[5]))])
     return res_dict
