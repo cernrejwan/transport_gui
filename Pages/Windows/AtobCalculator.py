@@ -94,7 +94,7 @@ class AtobCalculator(Frame):
         else:
             atob = calc_atob_by_sigma(self.mass, self.sigma.get())
 
-        self.atob.set(float('{:0.5e}'.format(atob)))
+        self.atob.set(float('{0:0.5e}'.format(atob)))
 
     def reset(self):
         # self.density.set(0.0)
@@ -108,8 +108,8 @@ class AtobCalculator(Frame):
             data += u'Density = {density} [g/cm\xb3]\nThickness = {thickness} [mm]\n'.format(density=self.density.get(),
                                                                                              thickness=self.thickness.get())
         elif self.radio.get() == 1:
-            data += u'Aerial density = {:0.3e} [g/cm\xb2]\n'.format(self.sigma.get())
-        data += 'Atoms per barn = {:0.3e} [1/barn]'.format(self.atob.get())
+            data += u'Aerial density = {0:0.3e} [g/cm\xb2]\n'.format(self.sigma.get())
+        data += 'Atoms per barn = {0:0.3e} [1/barn]'.format(self.atob.get())
         return data
 
     def get_atob(self):
