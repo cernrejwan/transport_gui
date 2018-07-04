@@ -52,7 +52,7 @@ class Element:
     def show(self, window):
         self.window = window
         title_font = Font(family='Helvetica', size=15, weight="bold", slant="italic")
-        header_txt = 'Isotopic abundance for element:\n{} (atomic number: {})'.format(self.name, self.atomic_num)
+        header_txt = 'Isotopic abundance for element:\n{0} (atomic number: {1})'.format(self.name, self.atomic_num)
         Label(window, text=header_txt, font=title_font).pack(side="top", fill="x", pady=10)
 
         txt = "Here is the natural abundance for the selected element.\nFeel free to change the composition."

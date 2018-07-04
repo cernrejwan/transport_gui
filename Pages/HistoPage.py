@@ -29,14 +29,14 @@ class HistoPage(BasePage):
         Label(self.header, text="Histogram type:").grid(row=1, column=0)
         self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
         self.types_menu.grid(row=1, column=1)
-        Label(self.header, text="Number of files for statistics (1 to {})".format(self.max_iters)).grid(row=2, column=0)
+        Label(self.header, text="Number of files for statistics (1 to {0})".format(self.max_iters)).grid(row=2, column=0)
         Entry(self.header, textvariable=self.iters).grid(row=2, column=1)
         self.header.pack()
 
         self.x_frame = Frame(self.frame)
         Label(self.x_frame, text="Number of bins (x):").grid(row=0, column=0)
         Entry(self.x_frame, textvariable=self.bins_x).grid(row=0, column=1)
-        self.x_range_label = Label(self.x_frame, text="x range [{}]".format(self.get_unit(self.histogram_type.get(), 'x')))
+        self.x_range_label = Label(self.x_frame, text="x range [{0}]".format(self.get_unit(self.histogram_type.get(), 'x')))
         self.x_range_label.grid(row=1, column=0, columnspan=2)
         x_range_frame = Frame(self.x_frame)
         Label(x_range_frame, text="min:").pack(side=LEFT)
@@ -49,7 +49,7 @@ class HistoPage(BasePage):
         self.y_frame = Frame(self.frame)
         Label(self.y_frame, text="Number of bins (y):").grid(row=0, column=0)
         Entry(self.y_frame, textvariable=self.bins_y).grid(row=0, column=1)
-        self.y_range_label = Label(self.y_frame, text="y range [{}]".format(self.get_unit(self.histogram_type.get(), 'y')))
+        self.y_range_label = Label(self.y_frame, text="y range [{0}]".format(self.get_unit(self.histogram_type.get(), 'y')))
         self.y_range_label.grid(row=1, column=0, columnspan=2)
         y_range_frame = Frame(self.y_frame)
         Label(y_range_frame, text="min:").pack(side=LEFT)
@@ -83,12 +83,12 @@ class HistoPage(BasePage):
 
     def set_hist_type(self, hist_type):
         self.x_range_label.grid_forget()
-        self.x_range_label = Label(self.x_frame, text="x range [{}]".format(self.get_unit(hist_type, 'x')))
+        self.x_range_label = Label(self.x_frame, text="x range [{0}]".format(self.get_unit(hist_type, 'x')))
         self.x_range_label.grid(row=1, column=0, columnspan=2)
 
         if self.histogram_dim.get() == '2D':
             self.y_range_label.grid_forget()
-            self.y_range_label = Label(self.y_frame, text="y range [{}]".format(self.get_unit(hist_type, 'y')))
+            self.y_range_label = Label(self.y_frame, text="y range [{0}]".format(self.get_unit(hist_type, 'y')))
             self.y_range_label.grid(row=1, column=0, columnspan=2)
 
     def get_vars_list(self):
@@ -133,6 +133,6 @@ class HistoPage(BasePage):
             self.controller.switch_page("SupportMainPage", 0)
 
         if self.iters.get() not in range(1, self.max_iters + 1):
-            self.controller.raise_error_message('Number of files for statistics must be between 1 and {}'.format(self.max_iters))
+            self.controller.raise_error_message('Number of files for statistics must be between 1 and ' + str(self.max_iters))
             return False
         return True

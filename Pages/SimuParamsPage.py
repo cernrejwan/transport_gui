@@ -57,6 +57,6 @@ class SimuParamsPage(BasePage):
         ear = self.controller.get_ear()
         max_angle = float(self.controller.configs_dict[ear + '_max_angle'])
         if self.angle.get() > max_angle:
-            self.controller.raise_error_message("Angle must be smaller than {} for {}.".format(max_angle, ear))
+            self.controller.raise_error_message("Angle must be smaller than {0} for {1}.".format(max_angle, ear))
             return False
         return True

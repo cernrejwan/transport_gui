@@ -108,7 +108,7 @@ class MaterialWindow:
 
     def get_formula(self):
         res = ''
-        form = '{}{:0.0f} ' if self.type_var.get() == 'Number of atoms' else '{} ({:0.2f}%) '
+        form = '{0}{1:0.0f} ' if self.type_var.get() == 'Number of atoms' else '{0} ({1:0.2f}%) '
         for item in self.elements_dict.values():
             symbol = item['symbol'].get().title()
             frac = item['fraction'].get()
@@ -131,7 +131,7 @@ class MaterialWindow:
 
     def get_data(self):
         data = "Material: " + self.get_material_name()
-        data += '\nMolecular mass: {} * 1.66e-24 g'.format(round(self.get_total_mass(), 1))
+        data += '\nMolecular mass: {0} * 1.66e-24 g'.format(round(self.get_total_mass(), 1))
         return data
 
     def show(self, window):

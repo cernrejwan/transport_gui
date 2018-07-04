@@ -7,8 +7,8 @@ class SupportPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
         self.index = kwargs['index']
-        prefix = "support{}".format(self.index)
-        self.page_name = "SupportPage{}".format(self.index)
+        prefix = "support" +str(self.index)
+        self.page_name = "SupportPage" +str(self.index)
         self.kwargs = dict([('_'.join(key.split("_")[1:]), value)
                             for key, value in kwargs.iteritems() if key.startswith(prefix)])
 
@@ -62,10 +62,10 @@ class SupportPage(BasePage):
 
         if formula:
             Label(self.material_details, text='Material: ' + formula).grid(row=2, columnspan=3)
-            txt = 'Molecular mass: {} * 1.66e-24 g'.format(self.material_window.get_total_mass())
+            txt = 'Molecular mass: {0} * 1.66e-24 g'.format(self.material_window.get_total_mass())
             Label(self.material_details, text=txt).grid(row=3, columnspan=3)
             if self.density.get() > 0:
-                txt = u'Density: {} g/cm\xb3'.format(self.density.get())
+                txt = u'Density: {0} g/cm\xb3'.format(self.density.get())
                 Label(self.material_details, text=txt).grid(row=4, columnspan=3)
 
         if self.material.get() == 'Other':
@@ -113,7 +113,7 @@ class SupportPage(BasePage):
             return dict()
 
         material = self.material.get()
-        prefix = 'support{}_'.format(self.index) if use_prefix else ''
+        prefix = 'support{0}_'.format(self.index) if use_prefix else ''
         vars_dict = dict()
         vars_dict[prefix + "material"] = material
         if material == 'Other':
