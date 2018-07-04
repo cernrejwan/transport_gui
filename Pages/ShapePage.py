@@ -35,7 +35,7 @@ class ShapePage(BasePage):
         Label(radius_range, text="max:").pack(side=LEFT)
         Entry(radius_range, textvariable=self.radius_max).pack(side=LEFT)
         Label(self.circ_frame, text="Set circle center").pack()
-        circ_center = Frame(self.circ_center)
+        circ_center = Frame(self.circ_frame)
         circ_center.pack()
         Label(circ_center, text="x=").pack(side=LEFT)
         Entry(circ_center, textvariable=self.radius_min).pack(side=LEFT)
