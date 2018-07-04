@@ -15,8 +15,8 @@ class HistoPage(BasePage):
 
         self.bins_x = IntVar(self, kwargs['bins_x'])
         self.bins_y = IntVar(self, kwargs['bins_y'])
-        self.iters = IntVar(self, int(kwargs['iters']))
-        self.max_iters = int(self.controller.configs_dict['max_iters'])
+        self.iters = IntVar(self, int(kwargs.get('iters', 1)))
+        self.max_iters = len(self.controller.get_input_dirs())
         self.min_x = StringVar(self, kwargs['min_x'])
         self.max_x = StringVar(self, kwargs['max_x'])
         self.min_y = StringVar(self, kwargs['min_y'])
@@ -133,6 +133,6 @@ class HistoPage(BasePage):
             self.controller.switch_page("SupportMainPage", 0)
 
         if self.iters.get() not in range(1, self.max_iters + 1):
-            self.controller.raise_error_message('Number of files for statistics must be between 1 and 24')
+            self.controller.raise_error_message('Number of files for statistics must be between 1 and {}'.format(self.max_iters))
             return False
         return True
