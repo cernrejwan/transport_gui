@@ -4,3 +4,4 @@ histogram_menus_path,./Data/histogram_menus.csv
 xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
 collimation_files_path,/eos/experiment/ntof/simul/transport/input/
 transport_simulation_code,/eos/experiment/ntof/simul/transport/transport
+efficiency_file,/afs/cern.ch/work/m/msabateg/public/FLUKA/FLUKA_transport_lxplus/xs_extended/efftest.dat

@@ -69,9 +69,6 @@ class GeneralPage(BasePage):
             cmd = '-i ' + self.controller.paths['collimation_files_path'] + collim + '.inp'
         return cmd
 
-    def get_output_cmd(self):
-        return '-o ' + self.output_dir.get() + '/${{i}}.out'
-
     def get_cmd(self):
         return self.get_ear_cmd() + ' ' + self.get_collimation_cmd()
 
