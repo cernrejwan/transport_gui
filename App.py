@@ -35,7 +35,7 @@ class AppManager(Tk):
             self.configs_dict.update(extra_configs)
 
     def init_pages(self):
-        for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, StatisticsPage, SamplePage, SupportMainPage]:
+        for F in [GeneralPage, SimuParamsPage, ShapePage, StatisticsPage, HistoPage, SamplePage, SupportMainPage]:
             frame = F(parent=self.container, controller=self, **self.configs_dict)
             self.pages.add(F.__name__, frame)
             frame.grid(row=0, column=0, sticky="nsew")
@@ -91,7 +91,7 @@ class AppManager(Tk):
 
     def submit(self):
         cmd = self.get_cmd()
-        iters = self.pages["HistoPage"].iters.get()
+        iters = self.pages["StatisticsPage"].iters.get()
         output_dir = self.pages["GeneralPage"].output_dir.get()
         ear = self.pages["GeneralPage"].ear.get()
 

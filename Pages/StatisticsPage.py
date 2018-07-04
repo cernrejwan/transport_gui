@@ -9,14 +9,14 @@ class StatisticsPage(BasePage):
         self.vars_list = ['min_e', 'max_e', 'min_t', 'max_t', 'iters']
         self.max_iters = len(self.controller.get_input_dirs())
         self.iters = IntVar(self, int(kwargs.get('iters', self.max_iters)))
-        self.min_e = StringVar(self, kwargs['min_e_cutoff'])
-        self.max_e = StringVar(self, kwargs['max_e_cutoff'])
-        self.min_t = StringVar(self, kwargs['min_t_cutoff'])
-        self.max_t = StringVar(self, kwargs['max_t_cutoff'])
+        self.min_e = StringVar(self, kwargs['min_e'])
+        self.max_e = StringVar(self, kwargs['max_e'])
+        self.min_t = StringVar(self, kwargs['min_t'])
+        self.max_t = StringVar(self, kwargs['max_t'])
 
         # gui
-        Label(self.frame, text="Number of files for statistics (1 to {0})".format(self.max_iters)).grid(row=2, column=0)
-        Entry(self.frame, textvariable=self.iters).grid(row=2, column=1)
+        Label(self.frame, text="Number of files for statistics (1 to {0})".format(self.max_iters)).grid(row=0, column=0)
+        Entry(self.frame, textvariable=self.iters).grid(row=0, column=1)
 
         Label(self.frame, text="Energy cutoff [eV]").grid(row=1, columnspan=2)
         time_frame = Frame(self.frame)
