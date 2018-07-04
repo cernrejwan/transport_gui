@@ -40,7 +40,7 @@ class SummaryWindow:
         text_data.insert(INSERT, data)
         text_data.grid(row=row, column=1)
 
-        text_cmd = Text(self.frame, height=num_lines, width=self.widths[2], wrap=WORD)
+        text_cmd = Text(self.frame, height=num_lines, width=self.widths[2], wrap=CHAR)
         text_cmd.insert(INSERT, cmd)
         text_cmd.grid(row=row, column=2)
 

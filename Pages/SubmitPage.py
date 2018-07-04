@@ -17,14 +17,14 @@ class SubmitPage(BasePage):
 
         for i in range(iters):
             job_file = os.path.join(submit_dir, 'job_{0}.sh'.format(i))
-            input_file = os.path.join(input_files[i], ear, '.bin')
+            input_file = os.path.join(input_files[i], ear + '.bin')
             out = self.get_full_cmd(self.controller.paths['transport_simulation_code'], submit_dir, input_file, cmd, i)
 
             with open(job_file, 'w') as f:
                 f.write(out)
             os.system('./HTCondorSub.sh ' + job_file)
             os.system('condor_submit ' + job_file + '.CondorSub.sh')
-            Label(self.frame, text="Job #{0} submitted successfully".format(i), justify=LEFT).pack()
+            Label(self.frame, text="job_{0} submitted successfully".format(i), justify=LEFT).pack()
             self.frame.update()
 
     def get_submit_dir(self, output_dir):

@@ -49,7 +49,7 @@ class SimuParamsPage(BasePage):
         cmd += ' -S ' + str(self.beam_RMS.get())
         cmd += ' --t0 ' + str(self.time_offset.get())
         if self.gravity.get():
-            cmd += '--gravity'
+            cmd += ' --gravity'
 
         return cmd
 
