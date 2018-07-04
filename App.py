@@ -98,6 +98,7 @@ class AppManager(Tk):
         frame = SubmitPage(self.container, self, iters)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
+        frame.update()
 
         frame.submit(cmd, iters, output_dir, ear)
 

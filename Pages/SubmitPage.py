@@ -25,6 +25,7 @@ class SubmitPage(BasePage):
             os.system('./HTCondorSub.sh ' + job_file)
             os.system('condor_submit ' + job_file + '.CondorSub.sh')
             Label(self.frame, text="Job #{0} submitted successfully".format(i), justify=LEFT).pack()
+            self.frame.update()
 
     def get_submit_dir(self, output_dir):
         result = os.path.join(output_dir, "submit")
