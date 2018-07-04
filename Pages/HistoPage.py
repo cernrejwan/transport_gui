@@ -121,10 +121,6 @@ class HistoPage(BasePage):
         return self.menus[histogram_type]['yield']
 
     def finalize(self):
-        if self.is_yield(self.histogram_type.get()):
-            self.controller.switch_page("SamplePage", 1)
-            self.controller.switch_page("SupportMainPage", 1)
-        else:
-            self.controller.switch_page("SamplePage", 0)
-            self.controller.switch_page("SupportMainPage", 0)
+        bit = int(self.is_yield(self.histogram_type.get()))
+        self.controller.switch_page("SamplePage", bit)
         return True
