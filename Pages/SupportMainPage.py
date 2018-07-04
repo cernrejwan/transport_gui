@@ -14,7 +14,7 @@ class SupportMainPage(BasePage):
         if 'support_layers' not in kwargs:
             self.use.set(0)
 
-        self.kwargs = {key: value for key, value in kwargs.iteritems() if key.startswith("support")}
+        self.kwargs = dict([(key, value) for key, value in kwargs.iteritems() if key.startswith("support")])
 
         # gui
         Checkbutton(self, text="Use support layer(s)", variable=self.use, command=self.show).pack(side=TOP)

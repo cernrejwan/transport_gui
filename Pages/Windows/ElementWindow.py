@@ -16,7 +16,7 @@ class Element:
         self.natural_abundance = abundance[self.symbol]
 
         if isotopes and isotopes != 'Natural':
-            curr_abundance = {key: 0 for key in self.natural_abundance.keys()}
+            curr_abundance = dict([(key, 0) for key in self.natural_abundance.keys()])
             isotopes = eval(isotopes)
             for iso_num, fraction in isotopes:
                 curr_abundance[iso_num] = fraction

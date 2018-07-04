@@ -45,10 +45,10 @@ class BasePage(Frame):
 
     def get_vars(self):
         if not self.show_page.get():
-            return {}
+            return dict()
 
         vars_list = self.get_vars_list()
-        return {var: getattr(self, var).get() for var in vars_list}
+        return dict([(var, getattr(self, var).get()) for var in vars_list])
 
     def finalize(self):
         return True

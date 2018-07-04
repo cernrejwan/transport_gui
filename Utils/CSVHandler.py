@@ -22,7 +22,7 @@ def dict2csv(data_dict, filename):
 
 def read_symbols(filename):
     result = read_csv(filename, header=True)
-    return {item[0]: {'Name': item[1], 'Atom_num': item[2]} for item in result}
+    return dict([(item[0], dict([('Name', item[1]), ('Atom_num', item[2])])) for item in result])
 
 
 def read_abundance(filename):
@@ -39,5 +39,5 @@ def read_histogram_menus(filename):
     res_dict = dict()
     for item in result:
         name = item[1]
-        res_dict[name] = {'dim': item[0], 'cmd': item[2], 'unit_x': item[3], 'unit_y': item[4], 'yield': int(item[5])}
+        res_dict[name] = dict([('dim',item[0]),('cmd',item[2]),('unit_x',item[3]),('unit_y',item[4]),('yield',item[5])])
     return res_dict

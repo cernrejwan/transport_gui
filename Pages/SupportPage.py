@@ -109,11 +109,12 @@ class SupportPage(BasePage):
 
     def get_vars(self, use_prefix=True):
         if not self.show_page.get():
-            return {}
+            return dict()
 
         material = self.material.get()
         prefix = 'support{}_'.format(self.index) if use_prefix else ''
-        vars_dict = {prefix + "material": material}
+        vars_dict = dict()
+        vars_dict[prefix + "material"] = material
         if material == 'Other':
             vars_dict[prefix + "formula".format(self.index)] = self.material_window.get()
         vars_dict[prefix + 'atob'] = self.atob.get()

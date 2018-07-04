@@ -48,7 +48,7 @@ class MaterialWindow:
         symbol_var = StringVar(self.controller, symbol)
         fraction_var = DoubleVar(self.controller, fraction)
         element = Element(self.parent, self.controller, symbol, isotopes) if symbol else None
-        self.elements_dict[self.curr_row] = {'symbol': symbol_var, 'fraction': fraction_var, 'isotopes': element}
+        self.elements_dict[self.curr_row] = dict([('symbol', symbol_var), ('fraction', fraction_var), ('isotopes', element)])
         self.curr_row += 1
 
     def show_element(self, frame, row):
@@ -90,7 +90,7 @@ class MaterialWindow:
                 self.controller.raise_error_message('Each element has to have at least 1 atom.')
                 return False
 
-        new_dict = {}
+        new_dict = dict()
         for i, item in self.elements_dict.iteritems():
             if item['symbol'].get() and not item['isotopes']:
                 new_dict[i] = item

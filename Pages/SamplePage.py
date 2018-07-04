@@ -5,7 +5,8 @@ from Utils.ElementsHandler import *
 class SamplePage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Sample")
-        self.kwargs = {'_'.join(key.split("_")[1:]): value for key, value in kwargs.iteritems() if key.startswith("sample")}
+        self.kwargs = dict([('_'.join(key.split("_")[1:]), value)
+                            for key, value in kwargs.iteritems() if key.startswith("sample")])
 
         # vars:
         self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file', 'sample_atob']
