@@ -11,6 +11,7 @@ from SupportMainPage import SupportMainPage
 from SupportPage import SupportPage
 from WelcomePage import WelcomePage
 from SubmitPage import SubmitPage
+from StatisticsPage import StatisticsPage
 
 __all__ = ["WelcomePage", "GeneralPage", "SimuParamsPage", "ShapePage", "HistoPage", "SamplePage", "SubmitPage",
-           "SupportPage", "FinalPage", "SupportMainPage", "SummaryWindow", "AtobCalculator"]
+           "SupportPage", "FinalPage", "SupportMainPage", "SummaryWindow", "AtobCalculator", 'StatisticsPage']

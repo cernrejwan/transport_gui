@@ -8,10 +8,10 @@ class WelcomePage(BasePage):
         self.config_set = IntVar(0)
 
         # gui
-        txt = "Welcome to the transport simulation configuration wizard!\nUse this wizard to set up a simulation and see its results.\nWhat would you like to do?"
+        txt = "Welcome to the transport simulation configuration wizard!\nUse this wizard for setting the parameters and running a simulation.\nWhat would you like to do?"
         Label(self.frame, text=txt, justify=LEFT).grid(sticky="w", row=0, columnspan=2)
 
-        Radiobutton(self.frame, variable=self.config_set, value=0, text="Load configurations",
+        Radiobutton(self.frame, variable=self.config_set, value=0, text="Load saved parameters",
                     command=lambda: self.loader_button.grid(sticky="w", row=1, column=1)).grid(sticky="w", row=1, column=0)
 
         self.loader_button = Button(self.frame, text="Load",

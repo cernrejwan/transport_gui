@@ -76,7 +76,7 @@ class SamplePage(BasePage):
         if not self.show_page.get():
             return ''
 
-        eff = self.controller.path['efficiency_file']
+        eff = self.controller.paths['efficiency_file']
         xs = self.sample_xs_file.get()
         xstotal = get_xs_file(self.sample_element.get(), self.sample_isotope.get())
         atob = self.sample_atob.get()

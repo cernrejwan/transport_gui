@@ -11,6 +11,7 @@ class SimuParamsPage(BasePage):
         self.particle = StringVar(self, kwargs['particle'])
         self.time_offset = DoubleVar(self, kwargs['time_offset'])
         self.beam_RMS = DoubleVar(self, kwargs['beam_RMS'])
+        self.gravity = IntVar(self, kwargs['gravity'])
 
         self.length = DoubleVar(self, kwargs.get('length', kwargs[self.controller.get_ear() + '_length']))
         self.angle = DoubleVar(self, kwargs.get('angle', kwargs[self.controller.get_ear() + '_max_angle']))
@@ -35,6 +36,8 @@ class SimuParamsPage(BasePage):
         Entry(self.frame, textvariable=self.time_offset).grid(row=4, column=1)
         Label(self.frame, text="[s]").grid(row=4, column=2)
 
+        Checkbutton(self.frame, text="Use gravity?", variable=self.gravity).grid(row=5, column=0)
+
     def get_cmd(self):
         if self.particle.get() == 'Neutrons':
             cmd = '-p 8'
@@ -45,12 +48,15 @@ class SimuParamsPage(BasePage):
         cmd += ' -a ' + str(self.angle.get())
         cmd += ' -S ' + str(self.beam_RMS.get())
         cmd += ' --t0 ' + str(self.time_offset.get())
+        if self.gravity.get():
+            cmd += '--gravity'
 
         return cmd
 
     def get_data(self):
-        data = "Particle = {p}\nLength = {L} [m]\nAngle = {a} [deg]\nBeam RMS = {S} [s]\nTime offset = {t} [s]".format(
-                p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.beam_RMS.get(), t=self.time_offset.get())
+        data = "Particle = {p}\nLength = {L} [m]\nAngle = {a} [deg]\nBeam RMS = {S} [s]\nTime offset = {t} [s]\nUse gravity? {g}".format(
+            p=self.particle.get(), L=self.length.get(), a=self.angle.get(), S=self.beam_RMS.get(),
+            t=self.time_offset.get(), g='Yes' if self.gravity.get() else 'No')
         return data
 
     def finalize(self):
