@@ -14,7 +14,7 @@ class AppManager(Tk):
         self.paths = csv2dict('./Data/paths.csv')
         self.configs_dict = csv2dict('./Data/default_configs.csv')
 
-        self.curr_frame = 0
+        self.curr_page = 0
 
         self.title("Transport Simulation Wizard")
 
@@ -26,7 +26,7 @@ class AppManager(Tk):
         self.pages.add("WelcomePage", frame)
         frame.grid(row=0, column=0, sticky="nsew")
 
-        self.pages[self.curr_frame].tkraise()
+        self.pages[self.curr_page].tkraise()
 
     def load_configs(self):
         config_dir = self.pages["WelcomePage"].get_submit_dir()
@@ -42,29 +42,30 @@ class AppManager(Tk):
             frame.grid(row=0, column=0, sticky="nsew")
 
     def next_page(self):
-        finalized = self.pages[self.curr_frame].finalize()
+        finalized = self.pages[self.curr_page].finalize()
         if not finalized:
             return
 
-        if self.curr_frame == 0:
-            self.load_configs()
-            self.init_pages()
+        if self.curr_page == 0:
+            if not self.pages[0].is_watch():
+                self.load_configs()
+                self.init_pages()
 
-        self.curr_frame += 1
-        while self.curr_frame < len(self.pages) and not self.pages[self.curr_frame].show_page.get():
-            self.curr_frame += 1
+        self.curr_page += 1
+        while self.curr_page < len(self.pages) and not self.pages[self.curr_page].show_page.get():
+            self.curr_page += 1
 
-        if self.curr_frame == len(self.pages):
+        if self.curr_page == len(self.pages):
             self.summarize()
         else:
-            self.pages[self.curr_frame].tkraise()
+            self.pages[self.curr_page].tkraise()
 
     def prev_page(self):
-        self.curr_frame -= 1
-        while self.curr_frame >= 0 and not self.pages[self.curr_frame].show_page.get():
-            self.curr_frame -= 1
+        self.curr_page -= 1
+        while self.curr_page >= 0 and not self.pages[self.curr_page].show_page.get():
+            self.curr_page -= 1
 
-        self.pages[self.curr_frame].tkraise()
+        self.pages[self.curr_page].tkraise()
 
     def switch_page(self, page_name, bit):
         self.pages[page_name].switch(bit)
