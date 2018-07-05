@@ -1,10 +1,12 @@
 from BasePage import *
+import subprocess
 
 
 class SubmitPage(BasePage):
     def __init__(self, parent, controller, iters, **kwargs):
         BasePage.__init__(self, parent, controller, "Submission", has_prev=False)
         Label(self.frame, text="Submitting {0} jobs to HTCondor".format(iters), justify=LEFT).pack()
+        self.job_ids = list()
 
     def get_next_button(self):
         return 'Exit', self.controller.destroy
@@ -29,12 +31,17 @@ class SubmitPage(BasePage):
                 f.write(full_cmd)
 
             os.system('./HTCondorSub.sh ' + job_file)
-            os.system('condor_submit ' + job_file + '.CondorSub.sh')
+            self.job_ids.append(subprocess.Popen(['condor_submit', job_file + '.CondorSub.sh'],
+                                                 stdout=subprocess.PIPE).communicate()[0])
+
             Label(self.frame, text="job_{0} submitted successfully.".format(i), justify=LEFT).pack()
             self.frame.update()
 
         Label(self.frame, text="Done!", justify=LEFT).pack()
         self.frame.update()
+
+        with open(os.path.join(submit_dir, 'job_ids.txt'), 'w') as f:
+            f.writelines(self.job_ids)
 
     def make_submit_dir(self, work_dir):
         submit_dir = os.path.join(work_dir, "submit")
