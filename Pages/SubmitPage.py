@@ -18,14 +18,19 @@ class SubmitPage(BasePage):
             job_file = os.path.join(submit_dir, 'jobs', 'job_{0}.sh'.format(i))
             input_file = os.path.join(input_files[i], ear + '.bin')
             output_file = os.path.join(output_dir, 'res_' + str(i))
+            primeries = self.get_primeries(input_files[i])
+            if not primeries:
+                Label(self.frame, text="Problem with job_{0}. Skipping.".format(i), justify=LEFT).pack()
+                self.frame.update()
+                continue
 
-            full_cmd = transport_code + ' -d ' + input_file + ' -o ' + output_file + cmd
+            full_cmd = transport_code + ' -d ' + input_file + ' -o ' + output_file + '-P ' + str(primeries) + cmd
             with open(job_file, 'w') as f:
                 f.write(full_cmd)
 
             os.system('./HTCondorSub.sh ' + job_file)
             os.system('condor_submit ' + job_file + '.CondorSub.sh')
-            Label(self.frame, text="job_{0} submitted successfully".format(i), justify=LEFT).pack()
+            Label(self.frame, text="job_{0} submitted successfully.".format(i), justify=LEFT).pack()
             self.frame.update()
 
     def make_submit_dir(self, work_dir):
@@ -44,3 +49,14 @@ class SubmitPage(BasePage):
         output_dir = os.path.join(submit_dir, 'output')
         os.mkdir(output_dir)
         return submit_dir, jobs_dir, output_dir
+
+    def get_primeries(self, path):
+        info_file = os.path.join(path, 'info')
+        if not os.path.exists(info_file):
+            self.controller.raise_error_message('Info file does not exist in dir {0}. Skipping.'.format(path))
+            return
+        with open(info_file, 'r') as f:
+            data = f.readlines()
+        primaries = [i for i in data if i.startswith("primaries")][0]
+        num = primaries.split(' ')[1]
+        return num
