@@ -39,6 +39,13 @@ class StatisticsPage(BasePage):
         cmd += ' -E ' + str(self.max_e.get())
         cmd += ' -c ' + str(self.min_t.get())
         cmd += ' -C ' + str(self.max_t.get())
+        return cmd
+
+    def get_data(self):
+        data = 'Number of statistics: {iters}'.format(iters=self.iters.get())
+        data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.min_e.get(), self.max_e.get())
+        data += '\nTime cutoff: {0} - {1} [eV]'.format(self.min_t.get(), self.max_t.get())
+        return data
 
     def finalize(self):
         if self.iters.get() not in range(1, self.max_iters + 1):
