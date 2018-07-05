@@ -7,7 +7,7 @@ class StatisticsPage(BasePage):
 
         # vars:
         self.vars_list = ['min_e', 'max_e', 'min_t', 'max_t', 'iters']
-        self.max_iters = len(self.controller.get_input_dirs())
+        self.max_iters = len(self.controller.get_input_files())
         self.iters = IntVar(self, int(kwargs.get('iters', self.max_iters)))
         self.min_e = StringVar(self, kwargs['min_e'])
         self.max_e = StringVar(self, kwargs['max_e'])

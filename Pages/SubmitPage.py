@@ -9,36 +9,38 @@ class SubmitPage(BasePage):
     def get_next_button(self):
         return 'Exit', self.controller.destroy
 
-    def submit(self, cmd, iters, output_dir, ear):
-        submit_dir = self.get_submit_dir(output_dir)
-        os.mkdir(submit_dir)
-
-        input_files = self.controller.get_input_dirs()
+    def submit(self, cmd, iters, work_dir, ear):
+        submit_dir, jobs_dir, output_dir = self.make_submit_dir(work_dir)
+        input_files = self.controller.get_input_files()
+        transport_code = self.controller.paths['transport_simulation_code']
 
         for i in range(iters):
-            job_file = os.path.join(submit_dir, 'job_{0}.sh'.format(i))
+            job_file = os.path.join(submit_dir, 'jobs', 'job_{0}.sh'.format(i))
             input_file = os.path.join(input_files[i], ear + '.bin')
-            out = self.get_full_cmd(self.controller.paths['transport_simulation_code'], submit_dir, input_file, cmd, i)
+            output_file = os.path.join(output_dir, 'res_' + str(i))
 
+            full_cmd = transport_code + ' -d ' + input_file + ' -o ' + output_file + cmd
             with open(job_file, 'w') as f:
-                f.write(out)
+                f.write(full_cmd)
+
             os.system('./HTCondorSub.sh ' + job_file)
             os.system('condor_submit ' + job_file + '.CondorSub.sh')
             Label(self.frame, text="job_{0} submitted successfully".format(i), justify=LEFT).pack()
             self.frame.update()
 
-    def get_submit_dir(self, output_dir):
-        result = os.path.join(output_dir, "submit")
-        if os.path.exists(result):
-            ls = os.listdir(output_dir)
+    def make_submit_dir(self, work_dir):
+        submit_dir = os.path.join(work_dir, "submit")
+        if os.path.exists(submit_dir):
+            ls = os.listdir(work_dir)
             ls = [int(f.split('_')[1]) for f in ls if f.startswith('submit_')]
             idx = '2' if not ls else max(ls) + 1
-            result = os.path.join(output_dir, 'submit_' + str(idx))
+            submit_dir = os.path.join(work_dir, 'submit_' + str(idx))
             self.controller.raise_error_message(
-                "'submit' folder already exists in output directory.\nCreating folder 'submit_{0}' instead.".format(idx))
-        return result
+                "'submit' folder already exists in output directory.\nCreating folder 'submit_{0}' instead.".format(idx), title='Warning')
 
-    @staticmethod
-    def get_full_cmd(transport_simulation_code, submit_dir, input_file, cmd, i):
-        output_file = os.path.join(submit_dir, 'res_' + str(i))
-        return transport_simulation_code + ' -d ' + input_file + ' -o ' + output_file + cmd
+        os.mkdir(submit_dir)
+        jobs_dir = os.path.join(submit_dir, 'jobs')
+        os.mkdir(jobs_dir)
+        output_dir = os.path.join(submit_dir, 'output')
+        os.mkdir(output_dir)
+        return submit_dir, jobs_dir, output_dir

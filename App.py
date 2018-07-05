@@ -124,10 +124,10 @@ class AppManager(Tk):
 
         self.save_to_csv(configs_dict)
 
-    def raise_error_message(self, message):
+    def raise_error_message(self, message, title="Error!"):
         error_window = Toplevel(self)
         title_font = Font(family='Helvetica', size=15, weight="bold", slant="italic")
-        Label(error_window, text='Error!', font=title_font).pack(side="top", fill="x", pady=10)
+        Label(error_window, text=title, font=title_font).pack(side="top", fill="x", pady=10)
         Label(error_window, text=message).pack()
         Button(error_window, text="OK", command=error_window.destroy).pack(side=BOTTOM)
 
@@ -148,7 +148,7 @@ class AppManager(Tk):
         atob_calculator = AtobCalculator(new_window, self, material_name, mass, atob_var, **kwargs)
         atob_calculator.pack()
 
-    def get_input_dirs(self):
+    def get_input_files(self):
         ls = os.listdir(self.paths['input_files_path'])
         input_files = [os.path.join(self.paths['input_files_path'], f) for f in ls if f.endswith('_')]
         return sorted(input_files)
