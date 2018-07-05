@@ -18,8 +18,8 @@ class GeneralPage(BasePage):
         currList = self.collim_lists[self.ear.get()]
 
         # gui:
-        Label(self.frame, text="Select experiment area:").grid(row=1, column=0)
-        OptionMenu(self.frame, self.ear, "EAR1", "EAR2", command=controller.set_ear).grid(row=1, column=1)
+        Label(self.frame, text="Select experiment area:").grid(row=0, column=0)
+        OptionMenu(self.frame, self.ear, "EAR1", "EAR2", command=controller.set_ear).grid(row=0, column=1)
         Label(self.frame, text="Select input files source:").grid(row=1, column=0)
         OptionMenu(self.frame, self.input_source, "FLUKA", "FLUKA + MCNP").grid(row=1, column=1)
         Label(self.frame, text="Select collimation input file:").grid(row=3, column=0)

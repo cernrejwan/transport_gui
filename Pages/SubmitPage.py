@@ -33,6 +33,9 @@ class SubmitPage(BasePage):
             Label(self.frame, text="job_{0} submitted successfully.".format(i), justify=LEFT).pack()
             self.frame.update()
 
+        Label(self.frame, text="Done!", justify=LEFT).pack()
+        self.frame.update()
+
     def make_submit_dir(self, work_dir):
         submit_dir = os.path.join(work_dir, "submit")
         if os.path.exists(submit_dir):
