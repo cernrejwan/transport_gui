@@ -29,8 +29,9 @@ class AppManager(Tk):
         self.pages[self.curr_frame].tkraise()
 
     def load_configs(self):
-        config_file = self.pages["WelcomePage"].get_config_file()
-        if config_file:
+        config_dir = self.pages["WelcomePage"].get_submit_dir()
+        if config_dir:
+            config_file = os.path.join(config_dir, 'configs.csv')
             extra_configs = csv2dict(config_file)
             self.configs_dict.update(extra_configs)
 
@@ -117,12 +118,11 @@ class AppManager(Tk):
             save_path += '.csv'
         dict2csv(data_dict, save_path)
 
-    def save_configs(self):
+    def save_configs(self, save_path):
         configs_dict = dict()
         for F in self.pages:
             configs_dict.update(F.get_vars())
-
-        self.save_to_csv(configs_dict)
+        dict2csv(configs_dict, save_path)
 
     def raise_error_message(self, message, title="Error!"):
         error_window = Toplevel(self)
