@@ -149,8 +149,10 @@ class AppManager(Tk):
         atob_calculator.pack()
 
     def get_input_files(self):
-        ls = os.listdir(self.paths['input_files_path'])
-        input_files = [os.path.join(self.paths['input_files_path'], f) for f in ls if f.endswith('_')]
+        input_source = self.pages['GeneralPage'].input_source.get()
+        source = 'input_fluka' if input_source == 'FLUKA' else 'input_mcnp'
+        ls = os.listdir(self.paths[source])
+        input_files = [os.path.join(self.paths[source], f) for f in ls if f.endswith('_')]
         return sorted(input_files)
 
 

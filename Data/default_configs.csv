@@ -33,3 +33,4 @@ min_e,0
 max_e,10000
 min_t,0
 max_t,10000
+input_source,FLUKA
