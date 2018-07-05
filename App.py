@@ -35,7 +35,7 @@ class AppManager(Tk):
             self.configs_dict.update(extra_configs)
 
     def init_pages(self):
-        for F in [GeneralPage, SimuParamsPage, ShapePage, StatisticsPage, HistoPage, SamplePage, SupportMainPage]:
+        for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, StatisticsPage, SamplePage, SupportMainPage]:
             frame = F(parent=self.container, controller=self, **self.configs_dict)
             self.pages.add(F.__name__, frame)
             frame.grid(row=0, column=0, sticky="nsew")
@@ -148,8 +148,9 @@ class AppManager(Tk):
         atob_calculator = AtobCalculator(new_window, self, material_name, mass, atob_var, **kwargs)
         atob_calculator.pack()
 
-    def get_input_files(self):
-        input_source = self.pages['GeneralPage'].input_source.get()
+    def get_input_files(self, input_source=None):
+        if not input_source:
+            input_source = self.pages['StatisticsPage'].input_source.get()
         source = 'input_fluka' if input_source == 'FLUKA' else 'input_mcnp'
         ls = os.listdir(self.paths[source])
         input_files = [os.path.join(self.paths[source], f) for f in ls if f.endswith('_')]

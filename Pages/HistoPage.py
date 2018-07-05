@@ -7,7 +7,8 @@ class HistoPage(BasePage):
         BasePage.__init__(self, parent, controller, "Histogram")
 
         # vars:
-        self.vars_list = ['histogram_dim', 'histogram_type', 'bins_x', 'min_x', 'max_x']
+        self.vars_list = ['histogram_dim', 'histogram_type', 'bins_x', 'min_x', 'max_x',
+                          'min_e', 'max_e', 'min_t', 'max_t']
         self.histogram_dim = StringVar(self, kwargs['histogram_dim'])
         self.menus = read_histogram_menus(self.controller.paths['histogram_menus_path'])
         curr_menu = self.get_menu_for_dim(self.histogram_dim.get())
@@ -20,42 +21,56 @@ class HistoPage(BasePage):
         self.min_y = StringVar(self, kwargs['min_y'])
         self.max_y = StringVar(self, kwargs['max_y'])
 
+        self.min_e = StringVar(self, kwargs['min_e'])
+        self.max_e = StringVar(self, kwargs['max_e'])
+        self.min_t = StringVar(self, kwargs['min_t'])
+        self.max_t = StringVar(self, kwargs['max_t'])
+
+        self.unit_x = StringVar(self, "[{0}]".format(self.get_unit(self.histogram_type.get(), 'x')))
+        self.unit_y = StringVar(self, "[{0}]".format(self.get_unit(self.histogram_type.get(), 'y')))
+
         # gui:
         self.header = Frame(self.frame)
-        Label(self.header, text="Number of dimensions:").grid(row=0, column=0)
-        OptionMenu(self.header, self.histogram_dim, "1D", "2D", command=self.set_hist_dim).grid(row=0, column=1)
-        Label(self.header, text="Histogram type:").grid(row=1, column=0)
+        Label(self.header, text="Histogram type:").grid(row=0, column=0)
+        OptionMenu(self.header, self.histogram_dim, *["1D", "2D"], command=self.set_hist_dim).grid(row=0, column=1)
         self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
-        self.types_menu.grid(row=1, column=1)
+        self.types_menu.grid(row=0, column=2)
         self.header.pack()
 
-        self.x_frame = Frame(self.frame)
-        Label(self.x_frame, text="Number of bins (x):").grid(row=0, column=0)
-        Entry(self.x_frame, textvariable=self.bins_x).grid(row=0, column=1)
-        self.x_range_label = Label(self.x_frame, text="x range [{0}]".format(self.get_unit(self.histogram_type.get(), 'x')))
-        self.x_range_label.grid(row=1, column=0, columnspan=2)
-        x_range_frame = Frame(self.x_frame)
-        Label(x_range_frame, text="min:").pack(side=LEFT)
-        Entry(x_range_frame, textvariable=self.min_x).pack(side=LEFT)
-        Label(x_range_frame, text="max:").pack(side=LEFT)
-        Entry(x_range_frame, textvariable=self.max_x).pack(side=LEFT)
-        x_range_frame.grid(row=3, columnspan=4, rowspan=4)
-        self.x_frame.pack()
+        self.table = Frame(self.frame)
+        for i, txt in enumerate(["bins", "min", "max"]):
+            Label(self.table, text=txt).grid(row=0, column=i+2)
 
-        self.y_frame = Frame(self.frame)
-        Label(self.y_frame, text="Number of bins (y):").grid(row=0, column=0)
-        Entry(self.y_frame, textvariable=self.bins_y).grid(row=0, column=1)
-        self.y_range_label = Label(self.y_frame, text="y range [{0}]".format(self.get_unit(self.histogram_type.get(), 'y')))
-        self.y_range_label.grid(row=1, column=0, columnspan=2)
-        y_range_frame = Frame(self.y_frame)
-        Label(y_range_frame, text="min:").pack(side=LEFT)
-        Entry(y_range_frame, textvariable=self.min_y).pack(side=LEFT)
-        Label(y_range_frame, text="max:").pack(side=LEFT)
-        Entry(y_range_frame, textvariable=self.max_y).pack(side=LEFT)
-        y_range_frame.grid(row=3, columnspan=4, rowspan=4)
+        Label(self.table, text="x").grid(row=1, column=0)
+        Label(self.table, textvariable=self.unit_x).grid(row=1, column=1)
+        for i, var in enumerate([self.bins_x, self.min_x, self.max_x]):
+            Entry(self.table, textvariable=var).grid(row=1, column=i+2)
 
-        if self.histogram_dim.get() == '2D':
-            self.y_frame.pack()
+        self.y_values = [Label(self.table, text="y"), Label(self.table, textvariable=self.unit_y)]
+        self.y_values += [Entry(self.table, textvariable=var) for var in [self.bins_y, self.min_y, self.max_y]]
+        self.grid_y(self.histogram_dim.get() == '2D')
+        self.table.pack()
+
+        Label(self.frame, text="Cutoff", font=self.title_font).pack()
+        cutoff_frame = Frame(self.frame)
+        Label(cutoff_frame, text="min").grid(row=0, column=1)
+        Label(cutoff_frame, text="max").grid(row=0, column=2)
+
+        Label(cutoff_frame, text="Energy [eV]").grid(row=1, column=0)
+        Entry(cutoff_frame, textvariable=self.min_e).grid(row=1, column=1)
+        Entry(cutoff_frame, textvariable=self.max_e).grid(row=1, column=2)
+
+        Label(cutoff_frame, text="Time [s]").grid(row=2, column=0)
+        Entry(cutoff_frame, textvariable=self.min_t).grid(row=2, column=1)
+        Entry(cutoff_frame, textvariable=self.max_t).grid(row=2, column=2)
+        cutoff_frame.pack()
+
+    def grid_y(self, show):
+        for i, item in enumerate(self.y_values):
+            if show:
+                item.grid(row=2, column=i)
+            else:
+                item.grid_forget()
 
     def get_menu_for_dim(self, dim):
         menu = [name for name, value in self.menus.iteritems() if value['dim'] == dim]
@@ -70,22 +85,14 @@ class HistoPage(BasePage):
         self.set_hist_type(curr_menu[0])
         self.types_menu.grid_forget()
         self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
-        self.types_menu.grid(row=1, column=1)
-
-        if hist_dim == '1D':
-            self.y_frame.pack_forget()
-        else:
-            self.y_frame.pack(side=BOTTOM)
+        self.types_menu.grid(row=0, column=2)
+        self.grid_y(hist_dim == '2D')
 
     def set_hist_type(self, hist_type):
-        self.x_range_label.grid_forget()
-        self.x_range_label = Label(self.x_frame, text="x range [{0}]".format(self.get_unit(hist_type, 'x')))
-        self.x_range_label.grid(row=1, column=0, columnspan=2)
+        self.unit_x.set("[{0}]".format(self.get_unit(hist_type, 'x')))
 
         if self.histogram_dim.get() == '2D':
-            self.y_range_label.grid_forget()
-            self.y_range_label = Label(self.y_frame, text="y range [{0}]".format(self.get_unit(hist_type, 'y')))
-            self.y_range_label.grid(row=1, column=0, columnspan=2)
+            self.unit_y.set("[{0}]".format(self.get_unit(hist_type, 'y')))
 
     def get_vars_list(self):
         if self.histogram_dim.get() == '2D':
@@ -103,6 +110,10 @@ class HistoPage(BasePage):
             cmd += ' -b ' + str(self.min_y.get())
             cmd += ' -B ' + str(self.max_y.get())
 
+        cmd = '-e ' + str(self.min_e.get())
+        cmd += ' -E ' + str(self.max_e.get())
+        cmd += ' -c ' + str(self.min_t.get())
+        cmd += ' -C ' + str(self.max_t.get())
         return cmd
 
     def get_data(self):
@@ -114,6 +125,9 @@ class HistoPage(BasePage):
             data += '\nBins (y) = {bins_y}\nRange (y) = {min_y} - {max_y} [{unit_y}]'.format(
                 bins_y=self.bins_y.get(), min_y=self.min_y.get(),
                 max_y=self.max_y.get(), unit_y=self.get_unit(self.histogram_type.get(), 'y'))
+
+        data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.min_e.get(), self.max_e.get())
+        data += '\nTime cutoff: {0} - {1} [s]'.format(self.min_t.get(), self.max_t.get())
 
         return data
 

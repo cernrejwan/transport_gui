@@ -6,49 +6,29 @@ class StatisticsPage(BasePage):
         BasePage.__init__(self, parent, controller, "Statistics")
 
         # vars:
-        self.vars_list = ['min_e', 'max_e', 'min_t', 'max_t', 'iters']
-        self.max_iters = len(self.controller.get_input_files())
-        self.iters = IntVar(self, int(kwargs.get('iters', self.max_iters)))
-        self.min_e = StringVar(self, kwargs['min_e'])
-        self.max_e = StringVar(self, kwargs['max_e'])
-        self.min_t = StringVar(self, kwargs['min_t'])
-        self.max_t = StringVar(self, kwargs['max_t'])
+        self.vars_list = ['iters', 'input_source']
+        self.input_source = StringVar(self, kwargs['input_source'])
+        self.max_iters = IntVar(self, len(self.controller.get_input_files(self.input_source.get())))
+        self.iters = IntVar(self, int(kwargs.get('iters', 1)))
 
         # gui
-        Label(self.frame, text="Number of files for statistics (1 to {0})".format(self.max_iters)).grid(row=0, column=0)
-        Entry(self.frame, textvariable=self.iters).grid(row=0, column=1)
-
-        Label(self.frame, text="Energy cutoff [eV]").grid(row=1, columnspan=2)
-        time_frame = Frame(self.frame)
-        Label(time_frame, text="min:").pack(side=LEFT)
-        Entry(time_frame, textvariable=self.min_e).pack(side=LEFT)
-        Label(time_frame, text="max:").pack(side=LEFT)
-        Entry(time_frame, textvariable=self.max_e).pack(side=LEFT)
-        time_frame.grid(row=2, columnspan=4)
-
-        Label(self.frame, text="Time cutoff [s]").grid(row=3, columnspan=2)
-        time_frame = Frame(self.frame)
-        Label(time_frame, text="min:").pack(side=LEFT)
-        Entry(time_frame, textvariable=self.min_t).pack(side=LEFT)
-        Label(time_frame, text="max:").pack(side=LEFT)
-        Entry(time_frame, textvariable=self.max_t).pack(side=LEFT)
-        time_frame.grid(row=4, columnspan=4)
-
-    def get_cmd(self):
-        cmd = '-e ' + str(self.min_e.get())
-        cmd += ' -E ' + str(self.max_e.get())
-        cmd += ' -c ' + str(self.min_t.get())
-        cmd += ' -C ' + str(self.max_t.get())
-        return cmd
+        Label(self.frame, text="Select input files source:").grid(row=0, column=0)
+        OptionMenu(self.frame, self.input_source, *["FLUKA", "FLUKA + MCNP"], command=self.set_source).grid(row=0, column=1)
+        Label(self.frame, text="Available files:").grid(row=1, column=0)
+        Label(self.frame, textvariable=self.max_iters).grid(row=1, column=1)
+        Label(self.frame, text="Number of files for statistics:").grid(row=2, column=0)
+        Entry(self.frame, textvariable=self.iters).grid(row=2, column=1)
 
     def get_data(self):
-        data = 'Number of statistics: {iters}'.format(iters=self.iters.get())
-        data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.min_e.get(), self.max_e.get())
-        data += '\nTime cutoff: {0} - {1} [eV]'.format(self.min_t.get(), self.max_t.get())
+        data = 'Input files source: ' + self.input_source.get()
+        data += '\nNumber of statistics: ' + str(self.iters.get())
         return data
 
+    def set_source(self, source):
+        self.max_iters.set(len(self.controller.get_input_files(source)))
+
     def finalize(self):
-        if self.iters.get() not in range(1, self.max_iters + 1):
+        if self.iters.get() not in range(1, self.max_iters.get() + 1):
             self.controller.raise_error_message('Number of files for statistics must be between 1 and ' + str(self.max_iters))
             return False
         return True

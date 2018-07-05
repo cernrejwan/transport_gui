@@ -6,9 +6,8 @@ class GeneralPage(BasePage):
         BasePage.__init__(self, parent, controller, "General Configs", has_prev=False)
 
         # vars:
-        self.vars_list = ['ear', 'collimation', 'output_dir', 'input_source']
+        self.vars_list = ['ear', 'collimation', 'output_dir']
         self.ear = StringVar(self, kwargs['ear'])
-        self.input_source = StringVar(self, kwargs['input_source'])
         self.collimation = StringVar(self, kwargs['collimation'])
         self.user_collimation_file = StringVar(self, kwargs.get('user_collimation_file', ''))
         self.output_dir = StringVar(self, kwargs.get('output_dir', os.path.expanduser('~')))
@@ -20,8 +19,6 @@ class GeneralPage(BasePage):
         # gui:
         Label(self.frame, text="Select experiment area:").grid(row=0, column=0)
         OptionMenu(self.frame, self.ear, "EAR1", "EAR2", command=controller.set_ear).grid(row=0, column=1)
-        Label(self.frame, text="Select input files source:").grid(row=1, column=0)
-        OptionMenu(self.frame, self.input_source, "FLUKA", "FLUKA + MCNP").grid(row=1, column=1)
         Label(self.frame, text="Select collimation input file:").grid(row=3, column=0)
         self.collim_option = OptionMenu(self.frame, self.collimation, *currList, command=self.set_other_file)
         self.collim_option.grid(row=3, column=1)
@@ -77,7 +74,6 @@ class GeneralPage(BasePage):
 
     def get_data(self):
         data = "Experimental Area: " + self.ear.get()
-        data += '\nInput files source: ' + self.input_source.get()
         data += '\nCollimation file: ' + self.collimation.get()
         data += '\nOutput directory: ' + self.output_dir.get()
         return data
