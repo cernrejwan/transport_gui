@@ -95,10 +95,11 @@ class ShapePage(BasePage):
         return data
 
     def get_vars_list(self):
+        self.vars_list = ['shape', 'step']
         if self.shape.get() == "Circular":
-            self.vars_list = ['shape', 'radius_min', 'radius_max', 'radius_step']
+            self.vars_list += ['radius_min', 'radius_max', 'circle_x0', 'circle_y0']
         else:
-            self.vars_list = ['shape', 'rect_x1', 'rect_x2', 'rect_y1', 'rect_y2']
+            self.vars_list += ['rect_x1', 'rect_x2', 'rect_y1', 'rect_y2']
         return self.vars_list
 
     def finalize(self):
