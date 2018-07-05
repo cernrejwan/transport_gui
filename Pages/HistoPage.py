@@ -44,10 +44,10 @@ class HistoPage(BasePage):
         Label(self.table, text="x").grid(row=1, column=0)
         Label(self.table, textvariable=self.unit_x).grid(row=1, column=1)
         for i, var in enumerate([self.bins_x, self.min_x, self.max_x]):
-            Entry(self.table, textvariable=var).grid(row=1, column=i+2)
+            Entry(self.table, textvariable=var, width=15).grid(row=1, column=i+2)
 
         self.y_values = [Label(self.table, text="y"), Label(self.table, textvariable=self.unit_y)]
-        self.y_values += [Entry(self.table, textvariable=var) for var in [self.bins_y, self.min_y, self.max_y]]
+        self.y_values += [Entry(self.table, textvariable=var, width=15) for var in [self.bins_y, self.min_y, self.max_y]]
         self.grid_y(self.histogram_dim.get() == '2D')
         self.table.pack()
 

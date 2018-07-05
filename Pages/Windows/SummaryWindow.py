@@ -24,7 +24,7 @@ class SummaryWindow:
             num_rows = self.get_summary(curr_row, F.get_data(), F.title, F.get_cmd())
             curr_row += num_rows
 
-        Button(self.frame, text="Exit", command=self.parent.destroy).pack(side=BOTTOM)
+        Button(self.parent, text="Exit", command=self.parent.destroy).pack(side=BOTTOM)
 
     def get_summary(self, row, data, title, cmd):
         if not data:
