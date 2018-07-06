@@ -11,6 +11,7 @@ class ShapePage(BasePage):
 
         self.radius_min = DoubleVar(self, kwargs['radius_min'])
         self.radius_max = DoubleVar(self, kwargs['radius_max'])
+        self.change_center = IntVar(0)
         self.circle_x0 = DoubleVar(self, kwargs['circle_x0'])
         self.circle_y0 = DoubleVar(self, kwargs['circle_y0'])
 
@@ -35,11 +36,14 @@ class ShapePage(BasePage):
         Entry(self.circ_frame, textvariable=self.radius_min).grid(row=1, column=1)
         Entry(self.circ_frame, textvariable=self.radius_max).grid(row=1, column=2)
 
-        Label(self.circ_frame, text="x").grid(row=2, column=1)
-        Label(self.circ_frame, text="y").grid(row=2, column=2)
-        Label(self.circ_frame, text="Center of disk [cm]").grid(row=3, column=0)
-        Entry(self.circ_frame, textvariable=self.circle_x0).grid(row=3, column=1)
-        Entry(self.circ_frame, textvariable=self.circle_y0).grid(row=3, column=2)
+        Checkbutton(self.circ_frame, text="Change target center?", variable=self.change_center,
+                    command=self.show_center).grid(row=2, columnspan=2, sticky="W")
+        self.center_values = [
+            (Label(self.circ_frame, text="x"), 3, 1), (Label(self.circ_frame, text="y"), 3, 2),
+            (Label(self.circ_frame, text="Center of disk [cm]"), 4, 0),
+            (Entry(self.circ_frame, textvariable=self.circle_x0), 4, 1),
+            (Entry(self.circ_frame, textvariable=self.circle_y0), 4, 2)
+        ]
 
         self.rect_frame = Frame(self.frame)
         Label(self.rect_frame, text="Set rectangule's coordinates [cm]").grid(row=0, columnspan=4)
@@ -67,12 +71,20 @@ class ShapePage(BasePage):
             self.circ_frame.pack_forget()
             self.rect_frame.pack()
 
+    def show_center(self):
+        for value, i, j in self.center_values:
+            if self.change_center.get():
+                value.grid(row=i, column=j)
+            else:
+                value.grid_forget()
+
     def get_cmd(self):
         if self.shape.get() == "Circular":
             cmd = '-r ' + str(self.radius_min.get())
-            cmd += ' -R ' + str(self.radius_min.get())
-            cmd += ' -w ' + str(self.circle_x0.get())
-            cmd += ' -W ' + str(self.circle_y0.get())
+            cmd += ' -R ' + str(self.radius_max.get())
+            if self.change_center.get():
+                cmd += ' -w ' + str(self.circle_x0.get())
+                cmd += ' -W ' + str(self.circle_y0.get())
         else:
             cmd = '--rectangular'
             cmd += ' -u ' + str(self.rect_x1.get())
