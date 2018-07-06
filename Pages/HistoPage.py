@@ -21,6 +21,7 @@ class HistoPage(BasePage):
         self.min_y = StringVar(self, kwargs['min_y'])
         self.max_y = StringVar(self, kwargs['max_y'])
 
+        self.use_cutoffs = IntVar(0)
         self.min_e = StringVar(self, kwargs['min_e'])
         self.max_e = StringVar(self, kwargs['max_e'])
         self.min_t = StringVar(self, kwargs['min_t'])
@@ -52,18 +53,24 @@ class HistoPage(BasePage):
         self.table.pack()
 
         Label(self.frame, text="Cutoff", font=self.title_font).pack()
-        cutoff_frame = Frame(self.frame)
-        Label(cutoff_frame, text="min").grid(row=0, column=1)
-        Label(cutoff_frame, text="max").grid(row=0, column=2)
+        Checkbutton(self.frame, text="Use cutoffs?", variable=self.use_cutoffs, command=self.show_cutoff_frame).pack()
+        self.cutoff_frame = Frame(self.frame)
+        Label(self.cutoff_frame, text="min").grid(row=0, column=1)
+        Label(self.cutoff_frame, text="max").grid(row=0, column=2)
 
-        Label(cutoff_frame, text="Energy [eV]").grid(row=1, column=0)
-        Entry(cutoff_frame, textvariable=self.min_e).grid(row=1, column=1)
-        Entry(cutoff_frame, textvariable=self.max_e).grid(row=1, column=2)
+        Label(self.cutoff_frame, text="Energy [eV]").grid(row=1, column=0)
+        Entry(self.cutoff_frame, textvariable=self.min_e).grid(row=1, column=1)
+        Entry(self.cutoff_frame, textvariable=self.max_e).grid(row=1, column=2)
 
-        Label(cutoff_frame, text="Time [s]").grid(row=2, column=0)
-        Entry(cutoff_frame, textvariable=self.min_t).grid(row=2, column=1)
-        Entry(cutoff_frame, textvariable=self.max_t).grid(row=2, column=2)
-        cutoff_frame.pack()
+        Label(self.cutoff_frame, text="Time [s]").grid(row=2, column=0)
+        Entry(self.cutoff_frame, textvariable=self.min_t).grid(row=2, column=1)
+        Entry(self.cutoff_frame, textvariable=self.max_t).grid(row=2, column=2)
+
+    def show_cutoff_frame(self):
+        if self.use_cutoffs.get():
+            self.cutoff_frame.pack()
+        else:
+            self.cutoff_frame.pack_forget()
 
     def grid_y(self, show):
         for i, item in enumerate(self.y_values):
@@ -110,10 +117,11 @@ class HistoPage(BasePage):
             cmd += ' -b ' + str(self.min_y.get())
             cmd += ' -B ' + str(self.max_y.get())
 
-        cmd = '-e ' + str(self.min_e.get())
-        cmd += ' -E ' + str(self.max_e.get())
-        cmd += ' -c ' + str(self.min_t.get())
-        cmd += ' -C ' + str(self.max_t.get())
+        if self.use_cutoffs.get():
+            cmd = '-e ' + str(self.min_e.get())
+            cmd += ' -E ' + str(self.max_e.get())
+            cmd += ' -c ' + str(self.min_t.get())
+            cmd += ' -C ' + str(self.max_t.get())
         return cmd
 
     def get_data(self):
@@ -126,9 +134,9 @@ class HistoPage(BasePage):
                 bins_y=self.bins_y.get(), min_y=self.min_y.get(),
                 max_y=self.max_y.get(), unit_y=self.get_unit(self.histogram_type.get(), 'y'))
 
-        data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.min_e.get(), self.max_e.get())
-        data += '\nTime cutoff: {0} - {1} [s]'.format(self.min_t.get(), self.max_t.get())
-
+        if self.use_cutoffs.get():
+            data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.min_e.get(), self.max_e.get())
+            data += '\nTime cutoff: {0} - {1} [s]'.format(self.min_t.get(), self.max_t.get())
         return data
 
     def is_yield(self, histogram_type):
