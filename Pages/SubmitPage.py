@@ -33,7 +33,7 @@ class SubmitPage(BasePage):
                 self.frame.update()
                 continue
 
-            full_cmd = transport_code + ' -d ' + input_file + ' -o ' + output_file + '-P ' + str(primaries) + ' ' + cmd
+            full_cmd = transport_code + ' -d ' + input_file + ' -o ' + output_file + ' -P ' + str(primaries) + ' ' + cmd
             with open(job_file, 'w') as f:
                 f.write(full_cmd)
 
