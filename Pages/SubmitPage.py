@@ -11,7 +11,7 @@ if ($?LS_SUBCWD) then
   set destdir=$LS_SUBCWD
 else
   set locdir=/tmp/$USER
-  set destdir={output_dir}
+  set destdir={output_dir}/
   mkdir -p $locdir 
   cd $locdir 
 endif

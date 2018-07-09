@@ -110,7 +110,7 @@ class AppManager(Tk):
 
         self.container.destroy()
         self.container = Frame(self)
-        self.container.pack()
+        self.container.pack(side="top", fill="both", expand=True)
 
         frame = SubmitPage(self.container, self, iters)
         frame.grid(row=0, column=0, sticky="nsew")
