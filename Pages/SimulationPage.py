@@ -1,7 +1,7 @@
 from BasePage import *
 
 
-class SimuParamsPage(BasePage):
+class SimulationPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Simulation")
 

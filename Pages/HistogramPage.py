@@ -2,7 +2,7 @@ from BasePage import *
 from Utils.CSVHandler import read_histogram_menus
 
 
-class HistoPage(BasePage):
+class HistogramPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Histogram")
 

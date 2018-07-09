@@ -24,7 +24,7 @@ class AppManager(Tk):
         self.pages = OrderedDict()
         frame = WelcomePage(parent=self.container, controller=self)
         self.pages.add("WelcomePage", frame)
-        frame.grid(row=0, column=0, sticky="nsew")
+        frame.grid(row=1, column=0, sticky="nsew")
 
         self.pages[self.curr_page].tkraise()
 
@@ -36,10 +36,16 @@ class AppManager(Tk):
             self.configs_dict.update(extra_configs)
 
     def init_pages(self):
-        for F in [GeneralPage, SimuParamsPage, ShapePage, HistoPage, StatisticsPage, SamplePage, SupportMainPage]:
-            frame = F(parent=self.container, controller=self, **self.configs_dict)
-            self.pages.add(F.__name__, frame)
-            frame.grid(row=0, column=0, sticky="nsew")
+        navigation_header = Frame(self.container)
+        navigation_header.grid(row=0, columnspan=8)
+
+        for F in [GeneralPage, SimulationPage, ShapePage, HistogramPage, StatisticsPage, SamplePage, SupportMainPage]:
+            page_name = F.__name__
+            page_short_name = page_name.split('Page')[0]
+            page = F(parent=self.container, controller=self, **self.configs_dict)
+            self.pages.add(page_name, page)
+            Button(navigation_header, text=page_short_name, command=self.pages[page_name].tkraise).pack(side=LEFT)
+            page.grid(row=1, column=0, sticky="nsew")
 
     def next_page(self):
         finalized = self.pages[self.curr_page].finalize()
@@ -73,7 +79,7 @@ class AppManager(Tk):
     def add_page(self, cls, page_name, **kwargs):
         page = cls(parent=self.container, controller=self, **kwargs)
         self.pages.add(page_name, page)
-        page.grid(row=0, column=0, sticky="nsew")
+        page.grid(row=1, column=0, sticky="nsew")
 
     def remove_page(self, page_name):
         if page_name in self.pages:
