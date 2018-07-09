@@ -37,15 +37,20 @@ class AppManager(Tk):
 
     def init_pages(self):
         navigation_header = Frame(self.container)
-        navigation_header.grid(row=0, columnspan=8)
+        navigation_header.grid(row=0)
 
-        for F in [GeneralPage, SimulationPage, ShapePage, HistogramPage, StatisticsPage, SamplePage, SupportMainPage]:
+        for F in [GeneralPage, SimulationPage, ShapePage, HistogramPage, StatisticsPage, SamplePage, SupportPage]:
             page_name = F.__name__
             page_short_name = page_name.split('Page')[0]
             page = F(parent=self.container, controller=self, **self.configs_dict)
             self.pages.add(page_name, page)
-            Button(navigation_header, text=page_short_name, command=self.pages[page_name].tkraise).pack(side=LEFT)
+            Button(navigation_header, text=page_short_name, command=self.pages[page_name].raise_page).pack(side=LEFT)
             page.grid(row=1, column=0, sticky="nsew")
+
+        Button(navigation_header, text='Summary', command=self.summarize).pack(side=LEFT)
+
+    def set_curr_page(self, page_name):
+        self.curr_page = self.pages.get_index(page_name)
 
     def next_page(self):
         finalized = self.pages[self.curr_page].finalize()
@@ -103,6 +108,10 @@ class AppManager(Tk):
         output_dir = self.pages["GeneralPage"].output_dir.get()
         ear = self.pages["GeneralPage"].ear.get()
 
+        self.container.destroy()
+        self.container = Frame(self)
+        self.container.pack()
+
         frame = SubmitPage(self.container, self, iters)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
@@ -111,8 +120,13 @@ class AppManager(Tk):
         frame.submit(cmd, iters, output_dir, ear)
 
     def summarize(self):
+        for page in self.pages:
+            res = page.finalize()
+            if not res:
+                return
+
         final_page = FinalPage(parent=self.container, controller=self)
-        final_page.grid(row=0, column=0, sticky="nsew")
+        final_page.grid(row=1, column=0, sticky="nsew")
         final_page.tkraise()
 
         summary_window = Toplevel(self)
@@ -131,7 +145,8 @@ class AppManager(Tk):
             configs_dict.update(F.get_vars())
         dict2csv(configs_dict, save_path)
 
-    def raise_error_message(self, message, title="Error!"):
+    def raise_error_message(self, message):
+        title = "Error!"
         error_window = Toplevel(self)
         title_font = Font(family='Helvetica', size=15, weight="bold", slant="italic")
         Label(error_window, text=title, font=title_font).pack(side="top", fill="x", pady=10)

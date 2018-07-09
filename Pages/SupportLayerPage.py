@@ -3,7 +3,7 @@ from Pages.Windows.MaterialWindow import MaterialWindow
 from Utils.SupportMaterialsHandler import *
 
 
-class SupportPage(BasePage):
+class SupportLayerPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
         self.index = kwargs['index']

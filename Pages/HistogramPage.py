@@ -97,6 +97,8 @@ class HistogramPage(BasePage):
 
     def set_hist_type(self, hist_type):
         self.unit_x.set("[{0}]".format(self.get_unit(hist_type, 'x')))
+        bit = int(self.is_yield(hist_type))
+        self.controller.switch_page("SamplePage", bit)
 
         if self.histogram_dim.get() == '2D':
             self.unit_y.set("[{0}]".format(self.get_unit(hist_type, 'y')))

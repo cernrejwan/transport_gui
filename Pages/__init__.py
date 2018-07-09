@@ -7,11 +7,11 @@ from Pages.Windows.SummaryWindow import SummaryWindow
 from SamplePage import SamplePage
 from ShapePage import ShapePage
 from SimulationPage import SimulationPage
-from SupportMainPage import SupportMainPage
-from SupportPage import SupportPage
+from SupportMainPage import SupportPage
+from SupportLayerPage import SupportLayerPage
 from WelcomePage import WelcomePage
 from SubmitPage import SubmitPage
 from StatisticsPage import StatisticsPage
 
 __all__ = ["WelcomePage", "GeneralPage", "SimulationPage", "ShapePage", "HistogramPage", "SamplePage", "SubmitPage",
-           "SupportPage", "FinalPage", "SupportMainPage", "SummaryWindow", "AtobCalculator", 'StatisticsPage']
+           "SupportLayerPage", "FinalPage", "SupportPage", "SummaryWindow", "AtobCalculator", 'StatisticsPage']

@@ -46,19 +46,19 @@ class SamplePage(BasePage):
 
         symbol = self.sample_element.get().title()
         if not element_exists(symbol):
-            self.controller.raise_error_message('Element does not exist.\nPlease check spelling.')
+            self.controller.raise_error_message('Sample element does not exist.\nPlease check spelling.')
             return False
 
         if not isotope_exists(symbol, self.sample_isotope.get()):
-            self.controller.raise_error_message('Isotope does not match to element.')
+            self.controller.raise_error_message('Sample isotope does not match to element.')
             return False
 
         if not os.path.exists(self.sample_xs_file.get()):
-            self.controller.raise_error_message('Cross section file does not exist.\nPlease try again.')
+            self.controller.raise_error_message('Sample cross section file does not exist.\nPlease try again.')
             return False
 
         if self.sample_atob.get() <= 0:
-            self.controller.raise_error_message('Atoms per barn must be greater than zero.')
+            self.controller.raise_error_message('Sample atoms per barn must be greater than zero.')
             return False
 
         return True
@@ -81,3 +81,11 @@ class SamplePage(BasePage):
         xstotal = get_xs_file(self.sample_element.get(), self.sample_isotope.get())
         atob = self.sample_atob.get()
         return '--xs {xs} --atob {atob} --xstotal {xstotal} --eff {eff}'.format(xs=xs, atob=atob, xstotal=xstotal, eff=eff)
+
+    def switch(self, bit):
+        BasePage.switch(self, bit)
+        if not bit:
+            self.frame.pack_forget()
+            Label(self, text='Sample is only valid for yield histograms.').pack()
+        else:
+            self.frame.pack()

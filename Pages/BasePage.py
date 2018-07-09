@@ -55,3 +55,7 @@ class BasePage(Frame):
 
     def switch(self, bit):
         self.show_page.set(bit)
+
+    def raise_page(self):
+        self.controller.set_curr_page(self.__class__.__name__)
+        self.tkraise()

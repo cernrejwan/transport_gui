@@ -10,6 +10,9 @@ class OrderedDict:
             index = self.keys_dict[item]
             return self.items_list[index]
 
+    def get_index(self, key):
+        return self.keys_dict[key]
+
     def add(self, key, item):
         index = len(self.items_list)
         self.items_list.append(item)

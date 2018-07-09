@@ -1,8 +1,8 @@
 from BasePage import *
-from Pages.SupportPage import SupportPage
+from Pages.SupportLayerPage import SupportLayerPage
 
 
-class SupportMainPage(BasePage):
+class SupportPage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Support")
 
@@ -51,7 +51,7 @@ class SupportMainPage(BasePage):
                 self.controller.remove_page("SupportPage" + str(i))
         else:
             for i in range(self.support_pages_exist + 1, num_layers + 1):
-                self.controller.add_page(SupportPage, "SupportPage" + str(i), index=i, **self.kwargs)
+                self.controller.add_page(SupportLayerPage, "SupportPage" + str(i), index=i, **self.kwargs)
         self.support_pages_exist = num_layers
         return True
 
