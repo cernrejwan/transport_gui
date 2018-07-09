@@ -4,6 +4,32 @@ import time
 from datetime import datetime
 
 
+template = '''
+#! /bin/tcsh
+if ($?LS_SUBCWD) then
+  set locdir=`pwd`
+  set destdir=$LS_SUBCWD
+else
+  set locdir=/tmp/$USER
+  set destdir={output_dir}
+  mkdir -p $locdir 
+  cd $locdir 
+endif
+
+echo Copying Input File
+cp {input_file}  $locdir/.
+ls -lh
+echo Start of Transport
+{transport} -d  $locdir/{ear}.bin -o  $locdir/res_{i} -P {primaries} {cmd}   
+echo Start of Transport
+ls -lh
+echo Moving Output File to Destination
+xrdcp  $locdir/res_{i} $destdir/.
+ls -lh
+echo This is the End.
+'''
+
+
 class SubmitPage(BasePage):
     def __init__(self, parent, controller, iters, **kwargs):
         BasePage.__init__(self, parent, controller, "Submission", has_prev=False)
@@ -32,15 +58,16 @@ class SubmitPage(BasePage):
                 self.frame.update()
                 continue
 
-            bash_script = "#! /bin/tcsh"
-            bash_script += "\ncp {0} .".format(input_file)
-            bash_script += '\n' + transport_code
-            bash_script += ' -d {ear}.bin -o res_{i} -P {P} '.format(ear=ear, i=i, P=primaries)
-            bash_script += cmd
-            bash_script += '\ncp res_{i} {output_dir}'.format(i=i, output_dir=output_dir)
+            # bash_script = "#! /bin/tcsh"
+            # bash_script += "\ncp {0} .".format(input_file)
+            # bash_script += '\n' + transport_code
+            # bash_script += ' -d {ear}.bin -o res_{i} -P {P} '.format(ear=ear, i=i, P=primaries)
+            # bash_script += cmd
+            # bash_script += '\ncp res_{i} {output_dir}'.format(i=i, output_dir=output_dir)
 
             with open(job_file, 'w') as f:
-                f.write(bash_script)
+                f.write(template.format(ear=ear, i=i, transport=transport_code, input_file=input_file,
+                                        output_dir=output_dir, primaries=primaries, cmd=cmd))
 
             os.system('./HTCondorSub.sh ' + job_file)
             out = subprocess.Popen(['condor_submit', job_file + '.CondorSub.sh'], stdout=subprocess.PIPE).communicate()[0]
