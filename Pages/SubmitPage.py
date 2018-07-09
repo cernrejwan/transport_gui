@@ -37,7 +37,7 @@ class SubmitPage(BasePage):
             bash_script += '\n' + transport_code
             bash_script += ' -d {ear}.bin -o res_{i} -P {P} '.format(ear=ear, i=i, P=primaries)
             bash_script += cmd
-            bash_script += '\nmv res_{i} {output_dir}'.format(i=i, output_dir=output_dir)
+            bash_script += '\ncp res_{i} {output_dir}'.format(i=i, output_dir=output_dir)
 
             with open(job_file, 'w') as f:
                 f.write(bash_script)
