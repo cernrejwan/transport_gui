@@ -24,7 +24,6 @@ class SubmitPage(BasePage):
         for i in range(iters):
             job_file = os.path.join(submit_dir, 'jobs', 'job_{0}.sh'.format(i))
             input_file = os.path.join(input_files[i], ear + '.bin')
-            output_file = os.path.join(output_dir, 'res_' + str(i))
 
             primaries = self.get_primaries(input_files[i])
             if not primaries:
@@ -33,23 +32,31 @@ class SubmitPage(BasePage):
                 self.frame.update()
                 continue
 
-            full_cmd = transport_code + ' -d ' + input_file + ' -o ' + output_file + ' -P ' + str(primaries) + ' ' + cmd
+            bash_script = "#! /bin/tcsh"
+            bash_script += "\ncp {0} .".format(input_file)
+            bash_script += '\n' + transport_code
+            bash_script += ' -d {ear}.bin -o res_{i} -P {P} '.format(ear=ear, i=i, P=primaries)
+            bash_script += cmd
+            bash_script += '\nmv res_{i} {output_dir}'.format(i=i, output_dir=output_dir)
+
             with open(job_file, 'w') as f:
-                f.write(full_cmd)
+                f.write(bash_script)
 
             os.system('./HTCondorSub.sh ' + job_file)
             out = subprocess.Popen(['condor_submit', job_file + '.CondorSub.sh'], stdout=subprocess.PIPE).communicate()[0]
-            job_id = (out.split(' ')[-1])[:-1]
+            job_id = (out.split(' ')[-1]).split('.')[0]
             self.job_ids.append(job_id)
 
             Label(self.frame, text="job_{0} submitted successfully.".format(i), justify=LEFT).pack()
             self.frame.update()
 
         Label(self.frame, text="Done!", justify=LEFT).pack()
+        Label(self.frame, text="Results will be saved to the following directory:", justify=LEFT).pack()
+        Label(self.frame, text=output_dir, justify=LEFT).pack()
         self.frame.update()
 
         with open(os.path.join(submit_dir, 'job_ids.txt'), 'w') as f:
-            f.writelines(self.job_ids)
+            f.write('\n'.join(self.job_ids))
 
     @staticmethod
     def make_submit_dir(work_dir):
