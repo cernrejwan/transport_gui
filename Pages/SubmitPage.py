@@ -4,8 +4,7 @@ import time
 from datetime import datetime
 
 
-template = '''
-#! /bin/tcsh
+template = '''#! /bin/tcsh
 if ($?LS_SUBCWD) then
   set locdir=`pwd`
   set destdir=$LS_SUBCWD
