@@ -21,8 +21,8 @@ class WelcomePage(BasePage):
         Radiobutton(self.frame, variable=self.radio, value=2, text="Load older run parameters",
                     command=self.grid_load_button).grid(sticky="w", row=2, column=0)
 
-        Radiobutton(self.frame, variable=self.radio, value=3, text="Check the status of a simulation",
-                    command=self.grid_load_button).grid(sticky="w", row=3, column=0)
+        # Radiobutton(self.frame, variable=self.radio, value=3, text="Check the status of a simulation",
+        #             command=self.grid_load_button).grid(sticky="w", row=3, column=0)
 
         self.loader_button = Button(self.frame, text="Load",
                                     command=lambda: self.controller.open_file_dialog(self.submit_dir, file_type='dir'))
