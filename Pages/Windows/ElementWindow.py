@@ -27,7 +27,7 @@ class Element:
 
     def is_valid(self):
         cumulative_sum = sum([float(frac.get()) for _, frac in self.isotopes])
-        return (cumulative_sum == 1)
+        return abs(cumulative_sum - 1) < 1e-9
 
     def is_natural(self):
         for iso, frac in self.isotopes:
@@ -62,7 +62,7 @@ class Element:
         Label(isotopes_frame, text="Isotope").grid(row=0, column=0)
         fraction = Label(isotopes_frame, text="Fraction")
         fraction.grid(row=0, column=1)
-        ToolTip(fraction, "The fraction of the isotope in percents, e.g. 99.9")
+        ToolTip(fraction, "The fraction of the isotope between 0 and 1")
 
         i = 1
         for isotope, fraction_var in self.isotopes:

@@ -54,7 +54,7 @@ class MaterialWindow:
     def show_element(self, frame, row):
         Entry(frame, textvariable=self.elements_dict[row]['symbol'], width=8).grid(row=row, column=0)
         Entry(frame, textvariable=self.elements_dict[row]['fraction'], width=8).grid(row=row, column=1)
-        Button(frame, text="Change", command=lambda: self.change_composition(row)).grid(row=row, column=2)
+        Button(frame, text="Composition", command=lambda: self.change_composition(row)).grid(row=row, column=2)
 
     def add_element_and_show(self, frame):
         row = self.curr_row
@@ -80,10 +80,10 @@ class MaterialWindow:
             self.controller.raise_error_message('Please specify at least one element.')
             return False
 
-        if self.type_var.get() == 'Mass fraction (%)':
+        if self.type_var.get() == 'Mass fraction':
             cumulative_sum = sum([element['fraction'].get() for element in self.elements_dict.values()])
-            if cumulative_sum != 100:
-                self.controller.raise_error_message('Fractions should sum up to 100%')
+            if abs(cumulative_sum - 1) > 1e-9:
+                self.controller.raise_error_message('Fractions should sum up to 1.')
                 return False
         else:   # num atoms
             if not self.elements_dict[1]['fraction'].get():
@@ -153,10 +153,10 @@ class MaterialWindow:
         self.fraction_label = Label(elements_frame, text="Mass frac")
         ToolTip(self.fraction_label, "The fraction of mass (between 0 and 1)")
         self.num_atoms_label.grid(row=0, column=1)
-        composition = Label(elements_frame, text="Composition")
-        composition.grid(row=0, column=2)
-        ToolTip(composition,
-                "Change the isotopic composition of the element\nIf not changed, the natural abundance is taken")
+        # composition = Label(elements_frame, text="Composition")
+        # composition.grid(row=0, column=2)
+        # ToolTip(composition,
+        #         "Change the isotopic composition of the element\nIf not changed, the natural abundance is taken")
 
         elements_frame.pack()
 
