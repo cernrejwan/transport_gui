@@ -35,18 +35,18 @@ class AppManager(Tk):
             self.configs_dict.update(extra_configs)
 
     def init_pages(self):
-        navigation_header = Frame(self.container)
-        navigation_header.grid(row=0)
+        self.navigation_header = Frame(self.container)
+        self.navigation_header.grid(row=0)
 
         for F in [GeneralPage, SimulationPage, ShapePage, HistogramPage, StatisticsPage, SamplePage, SupportPage]:
             page_name = F.__name__
             page_short_name = page_name.split('Page')[0]
             page = F(parent=self.container, controller=self, **self.configs_dict)
             self.pages.add(page_name, page)
-            Button(navigation_header, text=page_short_name, command=self.pages[page_name].raise_page).pack(side=LEFT)
+            Button(self.navigation_header, text=page_short_name, command=self.pages[page_name].raise_page).pack(side=LEFT)
             page.grid(row=1, column=0, sticky="nsew")
 
-        Button(navigation_header, text='Summary', command=self.summarize).pack(side=LEFT)
+        Button(self.navigation_header, text='Summary', command=self.summarize).pack(side=LEFT)
 
     def set_curr_page(self, page_name):
         self.curr_page = self.pages.get_index(page_name)
@@ -107,11 +107,10 @@ class AppManager(Tk):
         output_dir = self.pages["GeneralPage"].output_dir.get()
         ear = self.pages["GeneralPage"].ear.get()
 
-        for widget in self.container.winfo_children():
-            widget.destroy()
+        self.navigation_header.grid_forget()
 
         frame = SubmitPage(self.container, self, iters)
-        frame.grid(row=0, column=0, sticky="nsew")
+        frame.grid(row=1, column=0, sticky="nsew")
         frame.tkraise()
         frame.update()
 

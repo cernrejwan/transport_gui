@@ -9,6 +9,9 @@ class SamplePage(BasePage):
                             for key, value in kwargs.iteritems() if key.startswith("sample")])
 
         # vars:
+        histogram_page = self.controller.pages['HistogramPage']
+        self.switch(histogram_page.is_yield(histogram_page.histogram_type.get()))
+
         self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file', 'sample_atob']
 
         self.sample_element = StringVar(self, self.kwargs.get('element', ''))
