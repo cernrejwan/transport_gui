@@ -4,11 +4,12 @@ from Utils.SupportMaterialsHandler import *
 
 
 class SupportLayerPage(BasePage):
-    def __init__(self, parent, controller, **kwargs):
-        BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')))
+    def __init__(self, parent, controller, master, **kwargs):
+        BasePage.__init__(self, parent, controller, "Support " + str(kwargs.get('index')), show_navigation=False)
+        self.master = master
         self.index = kwargs['index']
-        prefix = "support" +str(self.index)
-        self.page_name = "SupportPage" +str(self.index)
+        prefix = "support" + str(self.index)
+        self.page_name = "Support " + str(self.index)
         self.kwargs = dict([('_'.join(key.split("_")[1:]), value)
                             for key, value in kwargs.iteritems() if key.startswith(prefix)])
 
@@ -25,6 +26,8 @@ class SupportLayerPage(BasePage):
         self.material_window = MaterialWindow(self, self.controller, self.material.get(), density_var=self.density, **self.kwargs)
 
         # gui:
+        Button(self.frame, text="Remove Layer", command=lambda: self.master.remove_page(self.index)).grid(row=0, columnspan=3)
+
         Label(self.frame, text="Material for the total cross section:").grid(row=1, column=0, columnspan=2)
         OptionMenu(self.frame, self.material, *self.materials_list,
                    command=self.set_material).grid(row=1, column=2)
@@ -124,6 +127,6 @@ class SupportLayerPage(BasePage):
 
     def finalize(self):
         if self.atob.get() <= 0:
-            self.controller.raise_error_message('Atoms per barn must be greater than zero.')
+            self.controller.raise_error_message(self.page_name + ' atoms per barn must be greater than zero.')
             return False
         return self.material_window.finalize()

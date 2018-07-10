@@ -7,7 +7,7 @@ from Pages.Windows.SummaryWindow import SummaryWindow
 from SamplePage import SamplePage
 from ShapePage import ShapePage
 from SimulationPage import SimulationPage
-from SupportMainPage import SupportPage
+from SupportPage import SupportPage
 from SupportLayerPage import SupportLayerPage
 from WelcomePage import WelcomePage
 from SubmitPage import SubmitPage

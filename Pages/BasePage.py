@@ -4,7 +4,7 @@ import os
 
 
 class BasePage(Frame):
-    def __init__(self, parent, controller, title, has_prev=True):
+    def __init__(self, parent, controller, title, show_title=True, has_prev=True, show_navigation=True):
         Frame.__init__(self, parent)
         self.page_name = self.__class__.__name__
         self.parent = parent
@@ -13,20 +13,23 @@ class BasePage(Frame):
 
         self.vars_list = list()
 
-        self.navigation_bar = Frame(self)
-        self.navigation_bar.pack(side=BOTTOM)
+        if show_navigation:
+            self.navigation_bar = Frame(self)
+            self.navigation_bar.pack(side=BOTTOM)
 
-        if has_prev:
-            self.prev_button = Button(self.navigation_bar, text="< Prev", command=self.controller.prev_page)
-            self.prev_button.pack(side=LEFT)
+            if has_prev:
+                self.prev_button = Button(self.navigation_bar, text="< Prev", command=self.controller.prev_page)
+                self.prev_button.pack(side=LEFT)
 
-        txt, cmd = self.get_next_button()
-        self.next_button = Button(self.navigation_bar, text=txt, command=cmd)
-        self.next_button.pack(side=RIGHT)
+            txt, cmd = self.get_next_button()
+            self.next_button = Button(self.navigation_bar, text=txt, command=cmd)
+            self.next_button.pack(side=RIGHT)
 
         self.title = title
-        self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
-        Label(self, text=title, font=self.title_font).pack(side="top", fill="x", pady=10)
+
+        if show_title:
+            self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+            Label(self, text=title, font=self.title_font).pack(side="top", fill="x", pady=10)
 
         self.frame = Frame(self)
         self.frame.pack()
