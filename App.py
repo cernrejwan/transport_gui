@@ -151,11 +151,11 @@ class AppManager(Tk):
         Button(error_window, text="OK", command=error_window.destroy).pack(side=BOTTOM)
 
     @staticmethod
-    def open_file_dialog(var, file_type):
+    def open_file_dialog(var, file_type, initialdir="~"):
         if file_type == 'dir':
-            filename = tkFileDialog.askdirectory(initialdir="~", title="Select directory")
+            filename = tkFileDialog.askdirectory(initialdir=initialdir, title="Select directory")
         else:
-            filename = tkFileDialog.askopenfilename(initialdir="~", title="Select file",
+            filename = tkFileDialog.askopenfilename(initialdir=initialdir, title="Select file",
                                                     filetypes=((file_type + " files", "*." + file_type), ("All files", "*.*")))
         var.set(filename)
 

@@ -9,18 +9,19 @@ class SamplePage(BasePage):
                             for key, value in kwargs.iteritems() if key.startswith("sample")])
 
         # vars:
-        histogram_page = self.controller.pages['HistogramPage']
-        self.switch(histogram_page.is_yield(histogram_page.histogram_type.get()))
-
         self.vars_list = ['sample_element', 'sample_isotope', 'sample_xs_file', 'sample_atob']
 
         self.sample_element = StringVar(self, self.kwargs.get('element', ''))
         self.sample_isotope = IntVar(self, self.kwargs.get('isotope', 0))
         self.sample_xs_file = StringVar(self, self.kwargs.get('xs_file', ''))
         self.sample_atob = DoubleVar(self, self.kwargs.get('atob', 0.0))
+        self.sample_efficiency_file = StringVar(self, self.kwargs.get('efficiency_file', self.controller.paths['efficiency_file']))
 
         # gui:
-        Label(self.frame, text="Please specify the sample's properties").grid(row=0, columnspan=3)
+        self.hide_label = Label(self, text='Sample is only valid for yield histograms.')
+        histogram_page = self.controller.pages['HistogramPage']
+        self.switch(histogram_page.is_yield(histogram_page.histogram_type.get()))
+
         Label(self.frame, text="Element:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.sample_element).grid(row=1, column=1)
 
@@ -37,6 +38,11 @@ class SamplePage(BasePage):
         Button(self.frame, text="Calculate",
                command=lambda: self.controller.open_atob_window(self.get_material_name(), self.sample_isotope.get(),
                                                                 self.sample_atob, **self.kwargs)).grid(row=4, column=2)
+
+        Label(self.frame, text="Efficiency file:").grid(row=5, column=0)
+        Entry(self.frame, textvariable=self.sample_efficiency_file).grid(row=5, column=1)
+        Button(self.frame, text="Select", command=lambda: self.controller.open_file_dialog(self.sample_efficiency_file,
+                                                                                           file_type='dat', initialdir=self.sample_efficiency_file.get())).grid(row=5, column=2)
 
     def get_material_name(self):
         if not isotope_exists(self.sample_element.get(), self.sample_isotope.get()):
@@ -70,16 +76,17 @@ class SamplePage(BasePage):
         if not self.show_page.get():
             return ''
 
-        data = "Sample: {sample}".format(sample=self.get_material_name())
-        data += '\nXS file: {path}'''.format(path=self.sample_xs_file.get())
+        data = "Sample: " + self.get_material_name()
+        data += '\nXS file: ' + self.sample_xs_file.get()
         data += '\nAtoms per barn: ' + str(self.sample_atob.get())
+        data += '\nEfficiency file: ' + self.sample_efficiency_file.get()
         return data
 
     def get_cmd(self):
         if not self.show_page.get():
             return ''
 
-        eff = self.controller.paths['efficiency_file']
+        eff = self.sample_efficiency_file.get()
         xs = self.sample_xs_file.get()
         xstotal = get_xs_file(self.sample_element.get(), self.sample_isotope.get())
         atob = self.sample_atob.get()
@@ -89,6 +96,7 @@ class SamplePage(BasePage):
         BasePage.switch(self, bit)
         if not bit:
             self.frame.pack_forget()
-            Label(self, text='Sample is only valid for yield histograms.').pack()
+            self.hide_label.pack()
         else:
+            self.hide_label.pack_forget()
             self.frame.pack()
