@@ -57,13 +57,6 @@ class SubmitPage(BasePage):
                 self.frame.update()
                 continue
 
-            # bash_script = "#! /bin/tcsh"
-            # bash_script += "\ncp {0} .".format(input_file)
-            # bash_script += '\n' + transport_code
-            # bash_script += ' -d {ear}.bin -o res_{i} -P {P} '.format(ear=ear, i=i, P=primaries)
-            # bash_script += cmd
-            # bash_script += '\ncp res_{i} {output_dir}'.format(i=i, output_dir=output_dir)
-
             with open(job_file, 'w') as f:
                 f.write(template.format(ear=ear, i=i, transport=transport_code, input_file=input_file,
                                         output_dir=output_dir, primaries=primaries, cmd=cmd))
@@ -78,7 +71,9 @@ class SubmitPage(BasePage):
 
         Label(self.frame, text="Done!", justify=LEFT).pack()
         Label(self.frame, text="Results will be saved to the following directory:", justify=LEFT).pack()
-        Label(self.frame, text=output_dir, justify=LEFT).pack()
+        text_dir = Text(self.frame)
+        text_dir.insert(INSERT, output_dir)
+        text_dir.pack()
         self.frame.update()
 
         with open(os.path.join(submit_dir, 'job_ids.txt'), 'w') as f:

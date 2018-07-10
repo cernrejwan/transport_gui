@@ -29,9 +29,8 @@ class AppManager(Tk):
         self.pages[self.curr_page].tkraise()
 
     def load_configs(self):
-        config_dir = self.pages["WelcomePage"].get_submit_dir()
-        if config_dir:
-            config_file = os.path.join(config_dir, 'configs.csv')
+        config_file = self.pages["WelcomePage"].get_config_file()
+        if config_file:
             extra_configs = csv2dict(config_file)
             self.configs_dict.update(extra_configs)
 
@@ -108,9 +107,8 @@ class AppManager(Tk):
         output_dir = self.pages["GeneralPage"].output_dir.get()
         ear = self.pages["GeneralPage"].ear.get()
 
-        self.container.destroy()
-        self.container = Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        for widget in self.container.winfo_children():
+            widget.destroy()
 
         frame = SubmitPage(self.container, self, iters)
         frame.grid(row=0, column=0, sticky="nsew")

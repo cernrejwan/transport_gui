@@ -24,7 +24,7 @@ class SimulationPage(BasePage):
         Entry(self.frame, textvariable=self.length).grid(row=1, column=1)
         Label(self.frame, text="[m]").grid(row=1, column=2)
 
-        Label(self.frame, text="Max angular opening for the transport:").grid(row=2, column=0)
+        Label(self.frame, text="Max angle for resampling:").grid(row=2, column=0)
         Entry(self.frame, textvariable=self.angle).grid(row=2, column=1)
         Label(self.frame, text="[degrees]").grid(row=2, column=2)
 

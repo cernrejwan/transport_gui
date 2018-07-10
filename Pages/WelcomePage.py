@@ -10,7 +10,7 @@ What would you like to do?"""
 class WelcomePage(BasePage):
     def __init__(self, parent, controller, **kwargs):
         BasePage.__init__(self, parent, controller, "Welcome!", has_prev=False)
-        self.submit_dir = StringVar(self)
+        self.config_file = StringVar(self)
         self.radio = IntVar(self, 1)
 
         # gui
@@ -25,7 +25,7 @@ class WelcomePage(BasePage):
         #             command=self.grid_load_button).grid(sticky="w", row=3, column=0)
 
         self.loader_button = Button(self.frame, text="Load",
-                                    command=lambda: self.controller.open_file_dialog(self.submit_dir, file_type='dir'))
+                                    command=lambda: self.controller.open_file_dialog(self.config_file, file_type='csv'))
 
     def grid_load_button(self):
         if self.radio.get() > 1:
@@ -34,15 +34,15 @@ class WelcomePage(BasePage):
             self.loader_button.grid_forget()
 
     def finalize(self):
-        if self.radio.get() > 1 and not self.submit_dir.get():
+        if self.radio.get() > 1 and not self.config_file.get():
             self.controller.raise_error_message("Please provide a submit directory.")
             return False
         return True
 
-    def get_submit_dir(self):
+    def get_config_file(self):
         if self.radio.get() == 1:
             return None
-        return self.submit_dir.get()
+        return self.config_file.get()
 
     def is_watch(self):
         return self.radio.get() == 3
