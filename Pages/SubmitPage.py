@@ -32,7 +32,7 @@ echo This is the End.
 class SubmitPage(BasePage):
     def __init__(self, parent, controller, iters, **kwargs):
         BasePage.__init__(self, parent, controller, "Submission", has_prev=False)
-        Label(self.frame, text="Submitting {0} jobs to HTCondor".format(iters), justify=LEFT).pack()
+        Label(self.frame, text="Submitting {0} job(s) to HTCondor".format(iters), justify=LEFT).pack()
         self.job_ids = list()
 
     def get_next_button(self):
@@ -71,7 +71,7 @@ class SubmitPage(BasePage):
 
         Label(self.frame, text="Done!", justify=LEFT).pack()
         Label(self.frame, text="Results will be saved to the following directory:", justify=LEFT).pack()
-        text_dir = Text(self.frame, height=1, width=20)
+        text_dir = Text(self.frame, height=1, width=45)
         text_dir.insert(INSERT, output_dir)
         text_dir.pack()
         self.frame.update()
