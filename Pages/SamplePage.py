@@ -31,7 +31,8 @@ class SamplePage(BasePage):
         Label(self.frame, text="Sample cross section file:").grid(row=3, column=0)
         Entry(self.frame, textvariable=self.sample_xs_file).grid(row=3, column=1)
         Button(self.frame, text="Select",
-               command=lambda: self.controller.open_file_dialog(self.sample_xs_file, file_type='xs')).grid(row=3, column=2)
+               command=lambda: self.controller.open_file_dialog(self.sample_xs_file, file_type='xs',
+                                                                initialdir=self.controller.paths['xs_files_path'])).grid(row=3, column=2)
 
         Label(self.frame, text="Atoms per barn:").grid(row=4, column=0)
         Entry(self.frame, textvariable=self.sample_atob).grid(row=4, column=1)

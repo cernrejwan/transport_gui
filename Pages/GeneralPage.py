@@ -27,7 +27,8 @@ class GeneralPage(BasePage):
         Label(self.other_collim_frame, text="Specify the path for the collimation file:").grid(row=0, column=0)
         Entry(self.other_collim_frame, textvariable=self.user_collimation_file).grid(row=0, column=1)
         Button(self.other_collim_frame, text="Select",
-               command=lambda: self.controller.open_file_dialog(self.user_collimation_file, file_type='inp')).grid(row=0, column=2)
+               command=lambda: self.controller.open_file_dialog(self.user_collimation_file, file_type='inp',
+                                                                initialdir=self.controller.paths['collimation_files_path'])).grid(row=0, column=2)
         if self.collimation.get() == "Other":
             self.set_other_file("Other")
 
