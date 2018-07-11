@@ -94,8 +94,8 @@ class AppManager(Tk):
 
     def set_ear(self, ear):
         self.pages["GeneralPage"].set_collim(ear)
-        self.pages["SimuParamsPage"].length.set(self.configs_dict[ear + '_length'])
-        self.pages["SimuParamsPage"].angle.set(self.configs_dict[ear + '_max_angle'])
+        self.pages["SimulationPage"].length.set(self.configs_dict[ear + '_length'])
+        self.pages["SimulationPage"].angle.set(self.configs_dict[ear + '_max_angle'])
 
     def get_cmd(self):
         cmds = [F.get_cmd() for F in self.pages]

@@ -19,9 +19,9 @@ class GeneralPage(BasePage):
         # gui:
         Label(self.frame, text="Select experiment area:").grid(row=0, column=0)
         OptionMenu(self.frame, self.ear, "EAR1", "EAR2", command=controller.set_ear).grid(row=0, column=1)
-        Label(self.frame, text="Select collimation input file:").grid(row=3, column=0)
+        Label(self.frame, text="Select collimation input file:").grid(row=2, column=0)
         self.collim_option = OptionMenu(self.frame, self.collimation, *currList, command=self.set_other_file)
-        self.collim_option.grid(row=3, column=1)
+        self.collim_option.grid(row=2, column=1)
 
         self.other_collim_frame = Frame(self.frame)
         Label(self.other_collim_frame, text="Specify the path for the collimation file:").grid(row=0, column=0)

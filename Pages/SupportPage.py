@@ -22,6 +22,7 @@ class SupportPage(BasePage):
 
         self.container = Frame(self)
         self.container.pack()
+        Label(self.container, text="Click the + buttons to add support layers").grid(row=0, column=0)
 
         num_layers = int(kwargs.get('support_layers', 0))
         for i in range(num_layers):
