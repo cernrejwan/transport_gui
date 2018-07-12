@@ -37,8 +37,7 @@ class JobsInspector(Frame):
     def get_output_files(submit_dir):
         output_dir = os.path.join(submit_dir, 'output')
         ls = os.listdir(output_dir)
-        print(ls)
-        result = [i.split('_')[1].split('.')[0] for i in ls]
+        result = [int(i.split('_')[1].split('.')[0]) for i in ls]
         return result
 
     def show_status(self):
