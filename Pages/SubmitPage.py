@@ -36,7 +36,7 @@ class SubmitPage(BasePage):
         self.job_ids = list()
 
     def get_next_button(self):
-        return 'Exit', self.controller.destroy
+        return 'Exit', self.controller.exit_window
 
     def submit(self, cmd, iters, work_dir, ear):
         submit_dir, jobs_dir, output_dir = self.make_submit_dir(work_dir)

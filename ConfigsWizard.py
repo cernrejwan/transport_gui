@@ -14,6 +14,7 @@ class ConfigsWizard(Frame):
         self.configs_dict = csv2dict('./Data/default_configs.csv')
 
         self.app_manager = app_manager
+        self.parent = parent
         self.curr_page = 0
 
         self.container = Frame(self)
@@ -158,3 +159,6 @@ class ConfigsWizard(Frame):
         if not save_path.endswith('.csv'):
             save_path += '.csv'
         dict2csv(data_dict, save_path)
+
+    def exit_window(self):
+        self.parent.destroy()

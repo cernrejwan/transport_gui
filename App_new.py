@@ -24,8 +24,7 @@ class AppManager(Tk):
 
     def raise_error_message(self, message, title="Error!"):
         error_window = Toplevel(self)
-        title_font = Font(family='Helvetica', size=15, weight="bold", slant="italic")
-        Label(error_window, text=title, font=title_font).pack(side="top", fill="x", pady=10)
+        Label(error_window, text=title, font=self.title_font).pack(side="top", fill="x", pady=10)
         Label(error_window, text=message).pack()
         Button(error_window, text="OK", command=error_window.destroy).pack(side=BOTTOM)
 
