@@ -1,15 +1,14 @@
 from BasePage import *
 
 
-txt = """Welcome to the transport simulation configuration wizard!
-Use it to set up parameters for a simulation and launch it,
-or to check the status of older runs.
-What would you like to do?"""
+txt = '''Welcome to the configurations wizard.
+This wizard is used to set up parameters and launch a simulation.
+What would you like to do?'''
 
 
 class WelcomePage(BasePage):
     def __init__(self, parent, controller, **kwargs):
-        BasePage.__init__(self, parent, controller, "Welcome!", has_prev=False)
+        BasePage.__init__(self, parent, controller, "Launch Simulation", has_prev=False)
         self.config_file = StringVar(self)
         self.radio = IntVar(self, 1)
 
@@ -18,11 +17,8 @@ class WelcomePage(BasePage):
         Radiobutton(self.frame, variable=self.radio, value=1, text="Set up simulation parameters manually",
                     command=self.grid_load_button).grid(sticky="w", row=1, column=0)
 
-        Radiobutton(self.frame, variable=self.radio, value=2, text="Load older run parameters",
+        Radiobutton(self.frame, variable=self.radio, value=2, text="Load previous run parameters",
                     command=self.grid_load_button).grid(sticky="w", row=2, column=0)
-
-        # Radiobutton(self.frame, variable=self.radio, value=3, text="Check the status of a simulation",
-        #             command=self.grid_load_button).grid(sticky="w", row=3, column=0)
 
         self.loader_button = Button(self.frame, text="Load",
                                     command=lambda: self.controller.open_file_dialog(self.config_file, file_type='csv'))
