@@ -35,6 +35,7 @@ class SubmitPage(BasePage):
         text_dir.insert(INSERT, submit_dir)
         text_dir.pack()
         Label(self.frame, text="Submitting {0} job(s) to HTCondor".format(iters), justify=LEFT).pack()
+        self.frame.update()
         self.job_ids = list()
 
     def get_next_button(self):

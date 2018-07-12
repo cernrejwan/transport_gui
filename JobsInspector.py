@@ -105,8 +105,10 @@ class JobsInspector(Frame):
 
         window = Toplevel(self)
         Label(window, text='Waiting for respond from HTCondor.').pack()
+        window.update()
         for i, job_id in running_jobs:
-            out = Popen('condor_rm ' + str(job_id), stdout=PIPE).communicate()[0]
+            process = Popen(['condor_rm', str(job_id)], stdout=PIPE)
+            out = process.communicate()[0]
             if out.startswith('All jobs in cluster'):
                 txt = 'job_{0} killed successfully.'.format(i)
             else:
