@@ -72,9 +72,11 @@ class JobsInspector(Frame):
             if status == 2:
                 running_jobs.append((i, job_id))
 
-        curr_row = len(ids) + 1
-        Label(self.table, text='Push the red button to kill all running jobs').grid(row=curr_row, columnspan=4)
-        Button(self.table, text='KILL', bg='red', command=lambda: self.kill_jobs(running_jobs)).grid(row=curr_row + 1, columnspan=4)
+        if len(running_jobs) > 0:
+            curr_row = len(ids) + 1
+            Label(self.table, text='Push the red button to kill all running jobs').grid(row=curr_row, columnspan=4)
+            Button(self.table, text='KILL', bg='red', command=lambda: self.kill_jobs(running_jobs)).grid(row=curr_row + 1, columnspan=4)
+
         self.table.update()
 
     def raise_warning(self, num_jobs):
@@ -94,10 +96,6 @@ class JobsInspector(Frame):
         Button(buttons_frame, text="No", command=lambda: verify(False)).grid(row=0, column=1)
 
     def kill_jobs(self, running_jobs):
-        if len(running_jobs) == 0:
-            self.app_manager.raise_error_message('No running jobs to kill.')
-            return
-
         self.raise_warning(len(running_jobs))
         if not self.verify_kill:
             return
@@ -105,9 +103,12 @@ class JobsInspector(Frame):
         window = Toplevel(self)
         Label(window, text='Waiting for respond from HTCondor.').pack()
         for i, job_id in running_jobs:
-            process = Popen('condor_rm ' + str(job_id), stdout=PIPE)
-            process.wait()
-            Label(window, text='job_{0} killed successfully.'.format(i)).pack()
+            out = Popen('condor_rm ' + str(job_id), stdout=PIPE).communicate()[0]
+            if out.startswith('All jobs in cluster'):
+                txt = 'job_{0} killed successfully.'.format(i)
+            else:
+                txt = 'Problem with killing job_{0}. Skipping.'.format(i)
+            Label(window, text=txt).pack()
             window.update()
 
         Label(window, text='Done!').pack()
