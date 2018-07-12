@@ -4,6 +4,8 @@ from Pages import *
 from Utils.OrderedDict import OrderedDict
 from Utils.CSVHandler import *
 import os
+import time
+from datetime import datetime
 
 
 class ConfigsWizard(Frame):
@@ -103,17 +105,33 @@ class ConfigsWizard(Frame):
     def submit(self):
         cmd = self.get_cmd()
         iters = self.pages["StatisticsPage"].iters.get()
-        output_dir = self.pages["GeneralPage"].output_dir.get()
+        work_dir = self.pages["GeneralPage"].output_dir.get()
         ear = self.pages["GeneralPage"].ear.get()
 
         self.navigation_header.grid_forget()
 
-        frame = SubmitPage(self.container, self, iters)
+        submit_dir = self.make_submit_dir(work_dir)
+        self.save_configs(os.path.join(submit_dir, 'configs.csv'))
+
+        frame = SubmitPage(self.container, self, iters, submit_dir)
         frame.grid(row=1, column=0, sticky="nsew")
         frame.tkraise()
         frame.update()
 
-        frame.submit(cmd, iters, output_dir, ear)
+        if self.app_manager.get_condor_q():
+            frame.submit(cmd, iters, submit_dir, ear)
+
+    @staticmethod
+    def make_submit_dir(work_dir):
+        timestamp = datetime.fromtimestamp(time.time()).strftime('%y%m%d_%H%M%S')
+        submit_dir = os.path.join(work_dir, "submit_" + timestamp)
+
+        os.mkdir(submit_dir)
+        jobs_dir = os.path.join(submit_dir, 'jobs')
+        os.mkdir(jobs_dir)
+        output_dir = os.path.join(submit_dir, 'output')
+        os.mkdir(output_dir)
+        return submit_dir
 
     def summarize(self):
         for page in self.pages:

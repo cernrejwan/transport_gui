@@ -1,7 +1,5 @@
 from BasePage import *
 import subprocess
-import time
-from datetime import datetime
 
 
 template = '''#! /bin/tcsh
@@ -30,19 +28,20 @@ echo This is the End.
 
 
 class SubmitPage(BasePage):
-    def __init__(self, parent, controller, iters, **kwargs):
+    def __init__(self, parent, controller, iters, submit_dir, **kwargs):
         BasePage.__init__(self, parent, controller, "Submission", has_prev=False)
+        Label(self.frame, text="Creating submit directory:", justify=LEFT).pack()
+        text_dir = Text(self.frame, height=1, width=45)
+        text_dir.insert(INSERT, submit_dir)
+        text_dir.pack()
         Label(self.frame, text="Submitting {0} job(s) to HTCondor".format(iters), justify=LEFT).pack()
         self.job_ids = list()
 
     def get_next_button(self):
         return 'Exit', self.controller.exit_window
 
-    def submit(self, cmd, iters, work_dir, ear):
-        submit_dir, jobs_dir, output_dir = self.make_submit_dir(work_dir)
-        save_path = os.path.join(submit_dir, 'configs.csv')
-        self.controller.save_configs(save_path)
-
+    def submit(self, cmd, iters, submit_dir, ear):
+        output_dir = os.path.join(submit_dir, 'output')
         input_files = self.controller.get_input_files()
         transport_code = self.controller.paths['transport_simulation_code']
 
@@ -70,26 +69,10 @@ class SubmitPage(BasePage):
             self.frame.update()
 
         Label(self.frame, text="Done!", justify=LEFT).pack()
-        Label(self.frame, text="Results will be saved to the following directory:", justify=LEFT).pack()
-        text_dir = Text(self.frame, height=1, width=45)
-        text_dir.insert(INSERT, submit_dir)
-        text_dir.pack()
         self.frame.update()
 
         with open(os.path.join(submit_dir, 'job_ids.txt'), 'w') as f:
             f.write('\n'.join(self.job_ids))
-
-    @staticmethod
-    def make_submit_dir(work_dir):
-        timestamp = datetime.fromtimestamp(time.time()).strftime('%y%m%d_%H%M%S')
-        submit_dir = os.path.join(work_dir, "submit_" + timestamp)
-
-        os.mkdir(submit_dir)
-        jobs_dir = os.path.join(submit_dir, 'jobs')
-        os.mkdir(jobs_dir)
-        output_dir = os.path.join(submit_dir, 'output')
-        os.mkdir(output_dir)
-        return submit_dir, jobs_dir, output_dir
 
     @staticmethod
     def get_primaries(path):

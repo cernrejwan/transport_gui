@@ -3,6 +3,7 @@ from tkFont import Font
 import tkFileDialog
 from ConfigsWizard import ConfigsWizard
 from JobsInspector import JobsInspector
+from subprocess import Popen, PIPE
 
 
 txt = """Welcome to the transport simulation configuration tool!
@@ -42,6 +43,13 @@ class AppManager(Tk):
         window = Toplevel(self)
         frame = cls(self, window)
         frame.pack()
+
+    def get_condor_q(self):
+        q = Popen(['condor_q', '-wide'], stdout=PIPE).communicate()[0]
+        if 'failed' in q.lower():
+            self.raise_error_message("Unfortunately, HTCondor is not available at the moment.\nPlease try again later.\nDon't worry, all your data is saved in the submit directory.")
+            return None
+        return q
 
 
 if __name__ == "__main__":

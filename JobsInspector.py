@@ -54,7 +54,10 @@ class JobsInspector(Frame):
             self.app_manager.raise_error_message("The specified path is not a valid submit directory/\nPlease try a different one.")
             return
 
-        q = self.get_condor_q()
+        q = self.app_manager.get_condor_q()
+        if not q:
+            return
+
         ids = self.get_job_ids(submit_dir)
         outputs = self.get_output_files(submit_dir)
         running_jobs = list()
