@@ -17,7 +17,7 @@ class JobsInspector(Frame):
         Entry(load_frame, textvariable=self.submit_dir).grid(row=1, column=0)
         Button(load_frame, text="Load", command=lambda: self.app_manager.open_file_dialog(self.submit_dir, 'dir')).grid(row=1, column=1)
         load_frame.pack()
-        Button(self, text="Show", command=self.show_status).pack()
+        Button(self, text="Update", command=self.show_status).pack()
         self.table = Frame(self)
         self.table.pack()
 
@@ -69,8 +69,10 @@ class JobsInspector(Frame):
             if status == 2:
                 running_jobs.append(id)
 
-        Label(self, text='Push the red buttom to kill all running jobs').pack()
-        Button(self, text='KILL', bg='red', command=lambda: self.kill(running_jobs)).pack()
+        curr_row = len(ids) + 1
+        Label(self.table, text='Push the red buttom to kill all running jobs').grid(row=curr_row, columnspan=4)
+        Button(self.table, text='KILL', bg='red', command=lambda: self.kill(running_jobs)).grid(row=curr_row, columnspan=4)
+        self.table.update()
 
     def raise_warning(self, num_jobs):
         message = 'Are you sure you want to kill {0} running jobs?'.format(num_jobs)
