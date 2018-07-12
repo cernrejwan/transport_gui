@@ -72,7 +72,7 @@ class SubmitPage(BasePage):
         Label(self.frame, text="Done!", justify=LEFT).pack()
         Label(self.frame, text="Results will be saved to the following directory:", justify=LEFT).pack()
         text_dir = Text(self.frame, height=1, width=45)
-        text_dir.insert(INSERT, output_dir)
+        text_dir.insert(INSERT, submit_dir)
         text_dir.pack()
         self.frame.update()
 
