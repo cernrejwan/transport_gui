@@ -69,8 +69,8 @@ class JobsInspector(Frame):
             if status == 2:
                 running_jobs.append(id)
 
-        Button(self.table, txt='Kill all running jobs', bg='red', command=lambda: self.kill(running_jobs))\
-            .grid(row=len(ids)+1, columnspan=4)
+        Label(self, text='Push the red buttom to kill all running jobs').pack()
+        Button(self, text='KILL', bg='red', command=lambda: self.kill(running_jobs)).pack()
 
     def raise_warning(self, num_jobs):
         message = 'Are you sure you want to kill {0} running jobs?'.format(num_jobs)
