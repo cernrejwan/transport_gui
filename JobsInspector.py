@@ -37,6 +37,7 @@ class JobsInspector(Frame):
     def get_output_files(submit_dir):
         output_dir = os.path.join(submit_dir, 'output')
         ls = os.listdir(output_dir)
+        print(ls)
         result = [i.split('_')[1].split('.')[0] for i in ls]
         return result
 
@@ -59,8 +60,8 @@ class JobsInspector(Frame):
         outputs = self.get_output_files(submit_dir)
         running_jobs = list()
 
-        self.table.pack_forget()
-        self.table.pack()
+        for child in self.table.winfo_children():
+            child.grid_forget()
 
         for col, txt in enumerate(['Job', 'Done', 'Running', 'Dead']):
             Label(self.table, text=txt).grid(row=0, column=col)
@@ -94,6 +95,10 @@ class JobsInspector(Frame):
         Button(buttons_frame, text="No", command=lambda: verify(False)).grid(row=0, column=1)
 
     def kill_jobs(self, running_jobs):
+        if len(running_jobs) == 0:
+            self.app_manager.raise_error_message('No running jobs to kill.')
+            return
+
         self.raise_warning(len(running_jobs))
         if not self.verify_kill:
             return

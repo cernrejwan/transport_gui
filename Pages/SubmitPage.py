@@ -19,11 +19,11 @@ echo Copying Input File
 cp {input_file}  $locdir/.
 ls -lh
 echo Start of Transport
-{transport} -d  $locdir/{ear}.bin -o  $locdir/res_{i} -P {primaries} {cmd}   
+{transport} -d  $locdir/{ear}.bin -o  $locdir/res_{i}.hist -P {primaries} {cmd}   
 echo Start of Transport
 ls -lh
 echo Moving Output File to Destination
-xrdcp  $locdir/res_{i} $destdir/.
+xrdcp  $locdir/res_{i}.hist $destdir/.
 ls -lh
 echo This is the End.
 '''
