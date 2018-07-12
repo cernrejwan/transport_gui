@@ -153,6 +153,9 @@ class ConfigsWizard(Frame):
     def raise_error_message(self, message, title="Error!"):
         self.app_manager.raise_error_message(message, title=title)
 
+    def open_file_dialog(self, var, file_type, initialdir="~"):
+        self.app_manager.open_file_dialog(var, file_type, initialdir=initialdir)
+
     @staticmethod
     def save_to_csv(data_dict):
         save_path = tkFileDialog.asksaveasfilename(initialdir="~", filetypes=(("CSV", "*.csv"),))

@@ -70,8 +70,8 @@ class JobsInspector(Frame):
                 running_jobs.append(id)
 
         curr_row = len(ids) + 1
-        Label(self.table, text='Push the red buttom to kill all running jobs').grid(row=curr_row, columnspan=4)
-        Button(self.table, text='KILL', bg='red', command=lambda: self.kill(running_jobs)).grid(row=curr_row, columnspan=4)
+        Label(self.table, text='Push the red button to kill all running jobs').grid(row=curr_row, columnspan=4)
+        Button(self.table, text='KILL', bg='red', command=lambda: self.kill(running_jobs)).grid(row=curr_row+1, columnspan=4)
         self.table.update()
 
     def raise_warning(self, num_jobs):
