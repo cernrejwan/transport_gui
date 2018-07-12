@@ -9,7 +9,7 @@ class JobsInspector(Frame):
         self.parent = parent
         self.app_manager = app_manager
         self.submit_dir = StringVar(self)
-        self.verify_kill = False
+        self.running_jobs = list()
 
         Label(self, text='Check Status', font=self.app_manager.title_font).pack(side="top", fill="x", pady=10)
         Label(self, text="Specify the submit directory for which you want to check jobs status:").pack()
@@ -60,7 +60,7 @@ class JobsInspector(Frame):
 
         ids = self.get_job_ids(submit_dir)
         outputs = self.get_output_files(submit_dir)
-        running_jobs = list()
+        self.running_jobs = list()
 
         for child in self.table.winfo_children():
             child.grid_forget()
@@ -73,40 +73,33 @@ class JobsInspector(Frame):
             Label(self.table, text=str(i)).grid(row=i+1, column=0)
             Label(self.table, text='X').grid(row=i+1, column=status)
             if status == 2:
-                running_jobs.append((i, job_id))
+                self.running_jobs.append((i, job_id))
 
-        if len(running_jobs) > 0:
+        if len(self.running_jobs) > 0:
             curr_row = len(ids) + 1
             Label(self.table, text='Push the red button to kill all running jobs').grid(row=curr_row, columnspan=4)
-            Button(self.table, text='KILL', bg='red', command=lambda: self.kill_jobs(running_jobs)).grid(row=curr_row + 1, columnspan=4)
+            Button(self.table, text='KILL', bg='red', command=self.raise_warning).grid(row=curr_row + 1, columnspan=4)
 
         self.table.update()
 
-    def raise_warning(self, num_jobs):
+    def raise_warning(self):
+        num_jobs = len(self.running_jobs)
         message = 'Are you sure you want to kill {0} running jobs?'.format(num_jobs)
-        error_window = Toplevel(self)
-        Label(error_window, text='Warning', font=self.app_manager.title_font).pack(side="top", fill="x", pady=10)
-        Label(error_window, text=message).pack()
+        warning_window = Toplevel(self)
+        Label(warning_window, text='Warning', font=self.app_manager.title_font).pack(side="top", fill="x", pady=10)
+        Label(warning_window, text=message).pack()
 
-        buttons_frame = Frame(error_window)
+        buttons_frame = Frame(warning_window)
         buttons_frame.pack(side=BOTTOM)
 
-        def verify(value):
-            self.verify_kill = value
-            error_window.destroy()
+        Button(buttons_frame, text="Yes", command=self.kill_jobs).grid(row=0, column=0)
+        Button(buttons_frame, text="No", command=warning_window.destroy).grid(row=0, column=1)
 
-        Button(buttons_frame, text="Yes", command=lambda: verify(True)).grid(row=0, column=0)
-        Button(buttons_frame, text="No", command=lambda: verify(False)).grid(row=0, column=1)
-
-    def kill_jobs(self, running_jobs):
-        self.raise_warning(len(running_jobs))
-        if not self.verify_kill:
-            return
-
+    def kill_jobs(self):
         window = Toplevel(self)
         Label(window, text='Waiting for respond from HTCondor.').pack()
         window.update()
-        for i, job_id in running_jobs:
+        for i, job_id in self.running_jobs:
             process = Popen(['condor_rm', str(job_id)], stdout=PIPE)
             out = process.communicate()[0]
             if out.startswith('All jobs in cluster'):
