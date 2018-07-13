@@ -11,11 +11,11 @@ from datetime import datetime
 class ConfigsWizard(Frame):
     def __init__(self, app_manager, parent):
         Frame.__init__(self, parent)
+        self.app_manager = app_manager
 
         self.paths = self.app_manager.paths
         self.configs_dict = csv2dict('./Data/default_configs.csv')
 
-        self.app_manager = app_manager
         self.parent = parent
         self.curr_page = 0
 

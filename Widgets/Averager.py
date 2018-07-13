@@ -14,7 +14,7 @@ class Averager(BaseWidget):
 
         loc = self.app_manager.paths['average{d}d'.format(d=d)]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
-        res_path = os.path.join((submit_dir, 'output', 'res_*'))
+        res_path = os.path.join(submit_dir, 'output', 'res_*')
         os.system(' '.join([loc, out_path, res_path]))
 
     def hist2root(self):

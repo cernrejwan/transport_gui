@@ -28,7 +28,6 @@ class JobsInspector(BaseWidget):
         if not submit_dir:
             return
 
-        ls = os.listdir(submit_dir)
         q = self.app_manager.get_condor_q()
         if not q:
             return
