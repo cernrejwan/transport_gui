@@ -9,7 +9,7 @@ class Averager(BaseWidget):
         self.tof_vs_e = IntVar(0)
 
         Button(self.frame, text='Average 1D', command=lambda: self.average(1)).pack()
-        Button(self.frame, text='Average 1D', command=lambda: self.average(2)).pack()
+        Button(self.frame, text='Average 2D', command=lambda: self.average(2)).pack()
         Button(self.frame, text='Create ROOT file', command=self.create_root).pack()
 
     def average(self, d):
@@ -46,6 +46,7 @@ class Averager(BaseWidget):
         if not os.path.exists(out_file):
             self.app_manager.raise_error_message(
                 'The file out.hist file does not exist in submit directory.\nPlease run the averade 1\\2D first, and then try again.')
+            return
 
         loc = self.app_manager.paths['hist2root']
         cmd = loc + ' -F ' + out_file
