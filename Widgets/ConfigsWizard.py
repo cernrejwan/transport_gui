@@ -12,7 +12,7 @@ class ConfigsWizard(Frame):
     def __init__(self, app_manager, parent):
         Frame.__init__(self, parent)
 
-        self.paths = csv2dict('./Data/paths.csv')
+        self.paths = self.app_manager.paths
         self.configs_dict = csv2dict('./Data/default_configs.csv')
 
         self.app_manager = app_manager

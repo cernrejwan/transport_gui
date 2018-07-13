@@ -1,10 +1,9 @@
-from Tkinter import *
-from tkFont import Font
 import tkFileDialog
-from ConfigsWizard import ConfigsWizard
-from JobsInspector import JobsInspector
+from Tkinter import *
 from subprocess import Popen, PIPE
-
+from tkFont import Font
+from Widgets import *
+from Utils.CSVHandler import csv2dict
 
 txt = """Welcome to the transport simulation configuration tool!
 Use it to launch a simulation, check its status or view its output.
@@ -16,12 +15,15 @@ class AppManager(Tk):
         Tk.__init__(self, *args, **kwargs)
         self.title("Transport Simulation")
 
+        self.paths = csv2dict('./Data/paths.csv')
+
         self.title_font = Font(family='Helvetica', size=18, weight="bold", slant="italic")
         Label(self, text='Welcome!', font=self.title_font).pack(side="top", fill="x", pady=10)
 
         Label(self, text=txt, justify=LEFT).pack()
         Button(self, text='Launch simulation', command=lambda: self.launch(ConfigsWizard)).pack()
         Button(self, text='Check status', command=lambda: self.launch(JobsInspector)).pack()
+        Button(self, text='Create plots', command=lambda: self.launch(Averager)).pack()
         Button(self, text='Exit', command=self.destroy).pack()
 
     def raise_error_message(self, message, title="Error!"):

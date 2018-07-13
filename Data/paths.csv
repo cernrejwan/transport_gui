@@ -6,3 +6,6 @@ xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
 collimation_files_path,/eos/experiment/ntof/simul/transport/input/
 transport_simulation_code,/eos/experiment/ntof/simul/transport/transport
 efficiency_file,/afs/cern.ch/work/m/msabateg/public/FLUKA/FLUKA_transport_lxplus/xs_extended/efftest.dat
+average1d,/afs/cern.ch/user/n/ntofsimu/public/PlotProcessing/averager/average.py
+average2d,/afs/cern.ch/user/n/ntofsimu/public/PlotProcessing/averager/average2d.py
+hist2root,/afs/cern.ch/user/n/ntofsimu/public/PlotProcessing/histToRoot/histToRootTransport
