@@ -8,11 +8,10 @@ class Averager(BaseWidget):
         self.s2ns = IntVar(0)
         self.tof_vs_e = IntVar(0)
 
-        Button(self.frame, text='Average 1D', command=lambda: self.average(1)).pack()
-        Button(self.frame, text='Average 2D', command=lambda: self.average(2)).pack()
+        Button(self.frame, text='Average', command=self.average).pack()
         Button(self.frame, text='Create ROOT file', command=self.create_root).pack()
 
-    def average(self, d):
+    def average(self):
         submit_dir = self.get_submit_dir()
         if not submit_dir:
             return
@@ -22,6 +21,11 @@ class Averager(BaseWidget):
         if len(res) < 2:
             self.app_manager.raise_error_message('Must be at least 2 files for the average.')
             return
+
+        with open(res[0],'r') as f:
+            hist_type = f.readline()
+        _, num = hist_type.split(' ')
+        d = 2 if int(num) > 1 else 1
 
         loc = self.app_manager.paths['average{d}d'.format(d=d)]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
