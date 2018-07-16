@@ -56,3 +56,5 @@ def read_paths():
             abs_paths[key] = os.path.join(par_dir, value[2:])
     paths.update(abs_paths)
     return paths
+
+paths = read_paths()

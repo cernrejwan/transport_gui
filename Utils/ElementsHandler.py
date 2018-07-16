@@ -1,6 +1,5 @@
 from CSVHandler import *
 
-paths = read_paths()
 symbols = read_symbols(paths['symbols_path'])
 abundance = read_abundance(paths['abundance_path'])
 

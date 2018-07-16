@@ -1,4 +1,3 @@
-import os
 from CSVHandler import *
 
 
@@ -19,4 +18,4 @@ def init_support_materials_menu(support_materials_path):
     return support_materials_dict
 
 
-support_materials = init_support_materials_menu('./Data/support_materials/')
+support_materials = init_support_materials_menu(paths['support_materials_path'])
