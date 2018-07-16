@@ -1,0 +1,5 @@
+name,unit,min,max,bins
+Energy,eV,1.00E-03,1.00E+09,1200
+Tof,s,1.00E-09,1,900
+Lambda,cm,-200,700,9000
+Profile,cm,-6,6,120

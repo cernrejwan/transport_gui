@@ -20,7 +20,7 @@ class SamplePage(BasePage):
         # gui:
         self.hide_label = Label(self, text='Sample is only valid for yield histograms.')
         histogram_page = self.controller.pages['HistogramPage']
-        self.switch(histogram_page.is_yield(histogram_page.histogram_type.get()))
+        self.switch(histogram_page.is_yield.get())
 
         Label(self.frame, text="Element:").grid(row=1, column=0)
         Entry(self.frame, textvariable=self.sample_element).grid(row=1, column=1)
