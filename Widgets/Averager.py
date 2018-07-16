@@ -24,7 +24,7 @@ class Averager(BaseWidget):
 
         with open(res[0], 'r') as f:
             hist_type = f.readline()
-        _, num = hist_type.split(' ')
+        num = hist_type.split(' ')[-1]
         d = 2 if int(num) > 1 else 1
 
         loc = self.app_manager.paths['average{d}d'.format(d=d)]
