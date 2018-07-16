@@ -9,7 +9,7 @@ class StatisticsPage(BasePage):
         self.vars_list = ['iters', 'input_source']
         self.input_source = StringVar(self, kwargs['input_source'])
         self.max_iters = IntVar(self, len(self.controller.get_input_files(self.input_source.get())))
-        self.iters = IntVar(self, int(kwargs.get('iters', 1)))
+        self.iters = IntVar(self, int(kwargs.get('iters', 2)))
 
         # gui
         Label(self.frame, text="Select input files source:").grid(row=0, column=0)
@@ -29,6 +29,6 @@ class StatisticsPage(BasePage):
 
     def finalize(self):
         if self.iters.get() not in range(1, self.max_iters.get() + 1):
-            self.controller.raise_error_message('Number of files for statistics must be between 1 and ' + str(self.max_iters))
+            self.controller.raise_error_message('Number of files for statistics must be between 2 and ' + str(self.max_iters))
             return False
         return True

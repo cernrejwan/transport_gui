@@ -34,6 +34,7 @@ class AppManager(Tk):
 
     @staticmethod
     def open_file_dialog(var, file_type, initialdir="~"):
+        initialdir = var.get() if var.get() else initialdir
         if file_type == 'dir':
             filename = tkFileDialog.askdirectory(initialdir=initialdir, title="Select directory")
         else:

@@ -17,6 +17,12 @@ class Averager(BaseWidget):
         if not submit_dir:
             return
 
+        ls = os.listdir(os.path.join(submit_dir, 'output'))
+        res = [i for i in ls if i.startswith('res')]
+        if len(res) < 2:
+            self.app_manager.raise_error_message('Number of output files must be bigger than 2 in order to use the averager')
+            return
+
         loc = self.app_manager.paths['average{d}d'.format(d=d)]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
         res_path = os.path.join(submit_dir, 'output', 'res_*')
