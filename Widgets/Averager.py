@@ -60,9 +60,9 @@ class Averager(BaseWidget):
         loc = self.app_manager.paths['hist2root']
         cmd = [loc, '-F', out_file]
         if self.s2ns.get():
-            cmd += ['-s', 1]
+            cmd += ['-s', '1']
         if self.tof_vs_e.get():
-            cmd += ['-S', 1]
+            cmd += ['-S', '1']
         process = Popen(cmd, stdout=PIPE)
         process.wait()
         self.app_manager.raise_error_message('The ROOT file is now saved to the output directory.', title='Done!')
