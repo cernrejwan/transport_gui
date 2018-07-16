@@ -54,7 +54,7 @@ class MaterialWindow:
     def show_element(self, frame, row):
         Entry(frame, textvariable=self.elements_dict[row]['symbol'], width=8).grid(row=row, column=0)
         Entry(frame, textvariable=self.elements_dict[row]['fraction'], width=8).grid(row=row, column=1)
-        Button(frame, text="Composition", command=lambda: self.change_composition(row)).grid(row=row, column=2)
+        Button(frame, text="Iso abund.", command=lambda: self.change_composition(row)).grid(row=row, column=2)
 
     def add_element_and_show(self, frame):
         row = self.curr_row
@@ -131,7 +131,7 @@ class MaterialWindow:
 
     def get_data(self):
         data = "Material: " + self.get_material_name()
-        data += '\nMolecular mass: {0} * 1.66e-24 g'.format(round(self.get_total_mass(), 1))
+        data += '\nMolecular mass: {0}'.format(round(self.get_total_mass(), 1))
         return data
 
     def show(self, window):
@@ -146,17 +146,13 @@ class MaterialWindow:
         Label(frame, text="(hover over the headers for explanation)").pack()
 
         elements_frame = Frame(frame)
-        symbol = Label(elements_frame, text="Element")
+        symbol = Label(elements_frame, text="Element (e.g. Au)")
         symbol.grid(row=0, column=0)
         ToolTip(symbol, "The chemical symbol of the element\nfor example for carbon use C")
         self.num_atoms_label = Label(elements_frame, text="Num atoms")
         self.fraction_label = Label(elements_frame, text="Mass frac")
         ToolTip(self.fraction_label, "The fraction of mass (between 0 and 1)")
         self.num_atoms_label.grid(row=0, column=1)
-        # composition = Label(elements_frame, text="Composition")
-        # composition.grid(row=0, column=2)
-        # ToolTip(composition,
-        #         "Change the isotopic composition of the element\nIf not changed, the natural abundance is taken")
 
         elements_frame.pack()
 

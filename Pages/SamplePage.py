@@ -28,7 +28,7 @@ class SamplePage(BasePage):
         Label(self.frame, text="Isotope (atomic mass):").grid(row=2, column=0)
         Entry(self.frame, textvariable=self.sample_isotope).grid(row=2, column=1)
 
-        Label(self.frame, text="Sample cross section file:").grid(row=3, column=0)
+        Label(self.frame, text="Sample cross section file:\n(two columns format, no header lines)").grid(row=3, column=0)
         Entry(self.frame, textvariable=self.sample_xs_file).grid(row=3, column=1)
         Button(self.frame, text="Select",
                command=lambda: self.controller.open_file_dialog(self.sample_xs_file, file_type='xs',
