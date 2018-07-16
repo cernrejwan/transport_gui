@@ -1,5 +1,5 @@
-input_fluka,/eos/experiment/ntof/simul/data/
-input_mcnp,.
+input_fluka,/eos/experiment/ntof/simul/data_fluka/
+input_mcnp,/eos/experiment/ntof/simul/data/
 support_materials_path,./Data/support_materials/
 histogram_menus_path,./Data/histogram_menus.csv
 xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
