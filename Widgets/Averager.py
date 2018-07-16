@@ -22,7 +22,7 @@ class Averager(BaseWidget):
             self.app_manager.raise_error_message('Must be at least 2 files for the average.')
             return
 
-        with open(res[0],'r') as f:
+        with open(res[0], 'r') as f:
             hist_type = f.readline()
         _, num = hist_type.split(' ')
         d = 2 if int(num) > 1 else 1
@@ -31,7 +31,7 @@ class Averager(BaseWidget):
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
         process = Popen([loc, out_path] + res, stdout=PIPE)
         process.wait()
-        self.app_manager.raise_error_message('The average histogram was saved to the output folder under out.hist', title='Done!')
+        self.app_manager.raise_error_message('The average histogram for {d}D was saved to the output folder under out.hist'.format(d=d), title='Done!')
 
     def create_root(self):
         submit_dir = self.get_submit_dir()
@@ -54,7 +54,7 @@ class Averager(BaseWidget):
         out_file = os.path.join(submit_dir, 'output', 'out.hist')
         if not os.path.exists(out_file):
             self.app_manager.raise_error_message(
-                'The file out.hist file does not exist in submit directory.\nPlease run the averade 1\\2D first, and then try again.')
+                'The file out.hist file does not exist.\nPlease run the average first, and then try again.')
             return
 
         loc = self.app_manager.paths['hist2root']
