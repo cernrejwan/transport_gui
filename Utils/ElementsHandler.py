@@ -1,8 +1,8 @@
 from CSVHandler import *
 
-paths = csv2dict('./Data/paths.csv')
-symbols = read_symbols('./Data/elements/symbols.csv')
-abundance = read_abundance('./Data/elements/abundance.csv')
+paths = read_paths()
+symbols = read_symbols(paths['symbols_path'])
+abundance = read_abundance(paths['abundance_path'])
 
 unit_mass = 1.66053904e-24
 cm2barn = 1e24

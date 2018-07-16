@@ -1,4 +1,5 @@
 from collections import defaultdict
+import os
 
 
 def read_csv(filename, header=False):
@@ -42,3 +43,16 @@ def read_histogram_menus(filename):
         res_dict[name] = dict([('dim', item[0]), ('cmd', item[2]), ('unit_x', item[3]), ('unit_y', item[4]),
                                ('yield', int(item[5]))])
     return res_dict
+
+
+def read_paths():
+    loc_dir = os.path.dirname(os.path.realpath(__file__))
+    par_dir = os.path.abspath(os.path.join(loc_dir, os.pardir))
+    paths_file = 'Data/paths.csv'
+    paths = csv2dict(os.path.join(par_dir, paths_file))
+    abs_paths = dict()
+    for key, value in paths.iteritems():
+        if value.startswith('./'):
+            abs_paths[key] = os.path.join(par_dir, value[2:])
+    paths.update(abs_paths)
+    return paths
