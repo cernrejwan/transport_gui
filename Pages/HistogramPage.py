@@ -99,10 +99,14 @@ class HistogramPage(BasePage):
         self.types_menu = OptionMenu(self.header, self.histogram_type, *curr_menu, command=self.set_hist_type)
         self.types_menu.grid(row=0, column=2)
         self.grid_y(hist_dim == '2D')
+        self.set_yield(hist_dim)
+
+    def set_yield(self, hist_dim):
         if hist_dim == '1D':
             self.check_yield.grid(row=0, column=3)
         else:
             self.is_yield.set(0)
+            self.controller.switch_page("SamplePage", 0)
             self.check_yield.grid_forget()
 
     def set_hist_type(self, hist_type):
