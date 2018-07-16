@@ -25,8 +25,7 @@ class Averager(BaseWidget):
 
         loc = self.app_manager.paths['average{d}d'.format(d=d)]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
-        res_path = os.path.join(submit_dir, 'output', 'res_*')
-        process = Popen([loc, out_path, res_path], stdout=PIPE)
+        process = Popen([loc, out_path, ' '.join(res)], stdout=PIPE)
         process.wait()
         self.app_manager.raise_error_message('The average histogram was saved to the output folder under out.hist', title='Done!')
 
