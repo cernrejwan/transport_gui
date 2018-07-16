@@ -3,8 +3,6 @@ from Tkinter import *
 from subprocess import Popen, PIPE
 from tkFont import Font
 from Widgets import *
-from Utils.CSVHandler import paths
-import os
 
 txt = """Welcome to the transport simulation configuration tool!
 Use it to launch a simulation, check its status or view its output.
@@ -15,8 +13,6 @@ class AppManager(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
         self.title("Transport Simulation")
-
-        self.paths = paths
 
         self.title_font = Font(family='Helvetica', size=18, weight="bold", slant="italic")
         Label(self, text='Welcome!', font=self.title_font).pack(side="top", fill="x", pady=10)

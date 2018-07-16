@@ -13,8 +13,8 @@ class ConfigsWizard(Frame):
         Frame.__init__(self, parent)
         self.app_manager = app_manager
 
-        self.paths = self.app_manager.paths
-        self.configs_dict = csv2dict('./Data/default_configs.csv')
+        self.paths = paths
+        self.configs_dict = csv2dict(paths['default_configs_path'])
 
         self.parent = parent
         self.curr_page = 0
@@ -164,8 +164,8 @@ class ConfigsWizard(Frame):
         if not input_source:
             input_source = self.pages['StatisticsPage'].input_source.get()
         source = 'input_fluka' if input_source == 'FLUKA' else 'input_mcnp'
-        ls = os.listdir(self.paths[source])
-        input_files = [os.path.join(self.paths[source], f) for f in ls if f.endswith('_')]
+        ls = os.listdir(paths[source])
+        input_files = [os.path.join(paths[source], f) for f in ls if f.endswith('_')]
         return sorted(input_files)
 
     def raise_error_message(self, message, title="Error!"):
