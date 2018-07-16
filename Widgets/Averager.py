@@ -18,9 +18,9 @@ class Averager(BaseWidget):
             return
 
         ls = os.listdir(os.path.join(submit_dir, 'output'))
-        res = [i for i in ls if i.startswith('res')]
+        res = [os.path.join(submit_dir, 'output', i) for i in ls if i.startswith('res')]
         if len(res) < 2:
-            self.app_manager.raise_error_message('Number of output files must be bigger than 2 in order to use the averager')
+            self.app_manager.raise_error_message('Must be at least 2 files for the average.')
             return
 
         loc = self.app_manager.paths['average{d}d'.format(d=d)]
