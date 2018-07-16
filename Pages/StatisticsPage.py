@@ -28,7 +28,7 @@ class StatisticsPage(BasePage):
         self.max_iters.set(len(self.controller.get_input_files(source)))
 
     def finalize(self):
-        if self.iters.get() not in range(1, self.max_iters.get() + 1):
+        if self.iters.get() not in range(2, self.max_iters.get() + 1):
             self.controller.raise_error_message('Number of files for statistics must be between 2 and ' + str(self.max_iters))
             return False
         return True
