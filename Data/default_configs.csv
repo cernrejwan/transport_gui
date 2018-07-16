@@ -22,8 +22,4 @@ EAR2_max_angle,2.5
 EAR1_length,185
 EAR2_length,19.5
 gravity,0
-min_e,0
-max_e,10000
-min_t,0
-max_t,10000
 input_source,FLUKA

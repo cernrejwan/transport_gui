@@ -18,16 +18,19 @@ class HistogramPage(BasePage):
         self.x_vars = dict()
         self.y_vars = dict()
         for key in ['bins', 'min', 'max']:
-            self.x_vars[key] = StringVar(self)
-            self.y_vars[key] = StringVar(self)
+            self.x_vars[key] = StringVar(self, kwargs.get(key + '_x', 0))
+            self.y_vars[key] = StringVar(self, kwargs.get(key + '_y', 0))
 
         self.text_x = StringVar(self)
         self.text_y = StringVar(self)
         self.set_hist_type(self.histogram_type.get())
 
         self.use_cutoffs = IntVar(0)
-        self.e_vars = {'min': StringVar(self, kwargs['min_e']), 'max': StringVar(self, kwargs['max_e'])}
-        self.t_vars = {'min': StringVar(self, kwargs['min_t']), 'max': StringVar(self, kwargs['max_t'])}
+        self.cutoffs = dict()
+        for label in ['e', 't']:
+            self.cutoffs[label] = dict()
+            for var in ['min', 'max']:
+                self.cutoffs[label][var] = StringVar(self, kwargs.get(var + '_' + label, ''))
 
         # gui:
         self.header = Frame(self.frame)
@@ -42,15 +45,13 @@ class HistogramPage(BasePage):
         self.header.pack()
 
         self.table = Frame(self.frame)
-        for i, txt in enumerate(["bins", "min", "max"]):
-            Label(self.table, text=txt).grid(row=0, column=i+2)
-
         Label(self.table, textvariable=self.text_x).grid(row=1, column=0)
-        for i, var in enumerate(self.x_vars.values()):
-            Entry(self.table, textvariable=var, width=15).grid(row=1, column=i+1)
+        for i, var in enumerate(["bins", "min", "max"]):
+            Label(self.table, text=var).grid(row=0, column=i+1)
+            Entry(self.table, textvariable=self.x_vars[var], width=15).grid(row=1, column=i + 1)
 
         self.y_values = [Label(self.table, textvariable=self.text_y)]
-        self.y_values += [Entry(self.table, textvariable=var, width=15) for var in self.y_vars.values()]
+        self.y_values += [Entry(self.table, textvariable=self.y_vars[var], width=15) for var in ["bins", "min", "max"]]
         self.grid_y(self.histogram_dim.get() == '2D')
         self.table.pack()
 
@@ -60,10 +61,14 @@ class HistogramPage(BasePage):
         Label(self.cutoff_frame, text="min").grid(row=0, column=1)
         Label(self.cutoff_frame, text="max").grid(row=0, column=2)
 
-        for i, text, vars_dict in zip([1, 2], ["Energy [eV]", "Tof [s]"], [self.e_vars, self.t_vars]):
+        for i, text, label in zip([1, 2], ["Energy [eV]", "Tof [s]"], ['e', 't']):
             Label(self.cutoff_frame, text=text).grid(row=i, column=0)
-            Entry(self.cutoff_frame, textvariable=vars_dict['min']).grid(row=i, column=1)
-            Entry(self.cutoff_frame, textvariable=vars_dict['max']).grid(row=i, column=2)
+            Entry(self.cutoff_frame, textvariable=self.cutoffs[label]['min']).grid(row=i, column=1)
+            Entry(self.cutoff_frame, textvariable=self.cutoffs[label]['max']).grid(row=i, column=2)
+
+        if 'min_e' in kwargs:
+            self.use_cutoffs.set(1)
+            self.show_cutoff_frame()
 
     def show_cutoff_frame(self):
         if self.use_cutoffs.get():
@@ -97,6 +102,7 @@ class HistogramPage(BasePage):
         if hist_dim == '1D':
             self.check_yield.grid(row=0, column=3)
         else:
+            self.is_yield.set(0)
             self.check_yield.grid_forget()
 
     def set_hist_type(self, hist_type):
@@ -116,13 +122,8 @@ class HistogramPage(BasePage):
 
         params = self.types[hist_type]
         text_var.set('{name} [{unit}]'.format(name=hist_type, unit=params['unit']))
-        for var, key in zip(vars_dict.values(), ['bins', 'min', 'max']):
-            var.set(params[key])
-
-    def get_vars_list(self):
-        if self.histogram_dim.get() == '2D':
-            self.vars_list.extend(['bins_y', 'min_y', 'max_y'])
-        return self.vars_list
+        for key in ['bins', 'min', 'max']:
+            vars_dict[key].set(params[key])
 
     def get_cmd(self):
         cmd = '-T' + self.menus[self.histogram_type.get()]['cmd']
@@ -135,16 +136,15 @@ class HistogramPage(BasePage):
                 cmd += arg + str(self.y_vars[var].get())
 
         if self.use_cutoffs.get():
-            for arg, var in zip([' -e ', ' -E '], ['min', 'max']):
-                cmd += arg + str(self.e_vars[var].get())
-
-            for arg, var in zip([' -c ', ' -C '], ['min', 'max']):
-                cmd += arg + str(self.t_vars[var].get())
+            for label, args_list in zip(['e', 't'], [[' -e ', ' -E '], [' -c ', ' -C ']]):
+                for arg, var in zip(args_list, ['min', 'max']):
+                    if self.cutoffs[label][var].get():
+                        cmd += arg + str(self.cutoffs[label][var].get())
         return cmd
 
     def get_data(self):
         data = 'Histogram: ' + self.histogram_type.get()
-        if self.is_yield.get():
+        if self.histogram_dim.get() == '1D' and self.is_yield.get():
             data += ' (yield)'
         data += '\nBins (x) = {bins_x}\nRange (x) = {min_x} - {max_x} [{unit_x}]'.format(
                 bins_x=self.x_vars['bins'].get(), min_x=self.x_vars['min'].get(),
@@ -156,10 +156,27 @@ class HistogramPage(BasePage):
                 max_y=self.y_vars['max'].get(), unit_y=self.get_unit(self.histogram_type.get(), 'y'))
 
         if self.use_cutoffs.get():
-            data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.e_vars['min'].get(), self.e_vars['max'].get())
-            data += '\nTime cutoff: {0} - {1} [s]'.format(self.t_vars['min'].get(), self.t_vars['max'].get())
+            if self.cutoffs['e']['min'].get() or self.cutoffs['e']['max'].get():
+                data += '\nEnergy cutoff: {0} - {1} [eV]'.format(self.cutoffs['e']['min'].get(), self.cutoffs['e']['max'].get())
+
+            if self.cutoffs['t']['min'].get() or self.cutoffs['t']['max'].get():
+                data += '\nTime cutoff: {0} - {1} [s]'.format(self.cutoffs['t']['min'].get(), self.cutoffs['t']['max'].get())
         return data
 
     def finalize(self):
         self.controller.switch_page("SamplePage", self.is_yield.get())
         return True
+
+    def get_vars(self):
+        result = dict([(var, getattr(self, var).get()) for var in self.vars_list])  # dim & type
+        for var in ['bins', 'min', 'max']:
+            result[var + '_x'] = self.x_vars[var].get()
+            if self.histogram_dim.get() == '2D':
+                result[var + '_y'] = self.y_vars[var].get()
+
+        if self.use_cutoffs.get():
+            for label in ['e', 't']:
+                for var in ['min', 'max']:
+                    if self.cutoffs[label][var].get():
+                        result[var + '_' + label] = self.cutoffs[label][var].get()
+        return result
