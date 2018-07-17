@@ -7,13 +7,13 @@ class HistogramPage(BasePage):
         BasePage.__init__(self, parent, controller, "Histogram")
 
         # vars:
-        self.vars_list = ['histogram_dim', 'histogram_type']
+        self.vars_list = ['histogram_dim', 'histogram_type', 'is_yield']
         self.histogram_dim = StringVar(self, kwargs['histogram_dim'])
         self.menus = read_histogram_menus()
         self.types = read_histogram_types()
         curr_menu = self.get_menu_for_dim(self.histogram_dim.get())
         self.histogram_type = StringVar(self, kwargs.get('histogram_type', curr_menu[0]))
-        self.is_yield = IntVar(0)
+        self.is_yield = IntVar(kwargs.get('is_yield', 0))
 
         self.x_vars = dict()
         self.y_vars = dict()
@@ -172,7 +172,7 @@ class HistogramPage(BasePage):
         return True
 
     def get_vars(self):
-        result = dict([(var, getattr(self, var).get()) for var in self.vars_list])  # dim & type
+        result = dict([(var, getattr(self, var).get()) for var in self.vars_list])  # dim & type & is_yield
         for var in ['bins', 'min', 'max']:
             result[var + '_x'] = self.x_vars[var].get()
             if self.histogram_dim.get() == '2D':

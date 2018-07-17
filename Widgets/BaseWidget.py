@@ -14,7 +14,7 @@ class BaseWidget(Frame):
         Label(self, text="Specify the submit directory for which you want to check jobs status:").pack()
         load_frame = Frame(self)
         Entry(load_frame, textvariable=self.submit_dir, width=45).grid(row=1, column=0)
-        Button(load_frame, text="Load", command=lambda: self.app_manager.open_file_dialog(self.submit_dir, 'dir')).grid(row=1, column=1)
+        Button(load_frame, text="Load", command=self.open_file_dialog).grid(row=1, column=1)
         load_frame.pack()
 
         self.frame = Frame(self)
@@ -41,3 +41,6 @@ class BaseWidget(Frame):
                 "The specified path is not a valid submit directory.\nPlease try a different one.")
             return
         return submit_dir
+
+    def open_file_dialog(self):
+        self.app_manager.open_file_dialog(self.submit_dir, 'dir')
