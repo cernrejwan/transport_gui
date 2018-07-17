@@ -15,7 +15,7 @@ class StatisticsPage(BasePage):
         # gui
         Label(self.frame, text="Select input files source:").grid(row=0, column=0)
         OptionMenu(self.frame, self.input_source, *["FLUKA", "FLUKA + MCNP"], command=self.set_source).grid(row=0, column=1)
-        Label(self.frame, text="Number of available files for the source:").grid(row=1, column=0)
+        Label(self.frame, text="Number of available source files:").grid(row=1, column=0)
         Label(self.frame, textvariable=self.max_iters).grid(row=1, column=1)
         Label(self.frame, text='Number of preliminaries in each file:').grid(row=2, column=0)
         Label(self.frame, textvariable=self.num_prelim).grid(row=2, column=1)
