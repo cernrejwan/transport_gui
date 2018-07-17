@@ -61,7 +61,7 @@ class SubmitPage(BasePage):
                 f.write(template.format(ear=ear, i=i, transport=transport_code, input_file=input_file,
                                         output_dir=output_dir, primaries=primaries, cmd=cmd))
 
-            os.system(self.controller.paths['HTCondorSub'] + job_file)
+            os.system(self.controller.paths['HTCondorSub'] + ' ' + job_file)
             out = subprocess.Popen(['condor_submit', job_file + '.CondorSub.sh'], stdout=subprocess.PIPE).communicate()[0]
             job_id = (out.split(' ')[-1]).split('.')[0]
             self.job_ids.append(job_id)
