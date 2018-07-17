@@ -1,5 +1,4 @@
 from BaseWidget import *
-from subprocess import Popen, PIPE
 from Utils.CSVHandler import csv2dict, paths
 
 allow_rebinning = True
@@ -40,8 +39,7 @@ class Averager(BaseWidget):
 
         loc = paths['average{d}'.format(d=self.configs['histogram_dim'].lower())]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
-        process = Popen([loc, out_path] + res, stdout=PIPE)
-        process.wait()
+        out = self.app_manager.system([loc, out_path] + res)
         self.app_manager.raise_error_message(
             'The average histogram for {name} was saved to the output folder under out.hist'.format(name=self.configs['histogram_type']), title='Done!')
 
@@ -111,6 +109,5 @@ class Averager(BaseWidget):
         loc = paths['hist2root']
         cmd = [loc, '-F', out_file]
         cmd += self.get_rebinning_cmd()
-        process = Popen(cmd, stdout=PIPE)
-        process.wait()
+        out = self.app_manager.system(cmd)
         self.app_manager.raise_error_message('The ROOT file is now saved to the output directory.', title='Done!')

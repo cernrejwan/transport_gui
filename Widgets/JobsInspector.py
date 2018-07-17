@@ -1,4 +1,3 @@
-from subprocess import Popen, PIPE
 from BaseWidget import *
 
 
@@ -76,8 +75,7 @@ class JobsInspector(BaseWidget):
         Label(window, text='Waiting for respond from HTCondor.').pack()
         window.update()
         for i, job_id in self.running_jobs:
-            process = Popen(['condor_rm', str(job_id)], stdout=PIPE)
-            out = process.communicate()[0]
+            out = self.app_manager.system(['condor_rm', str(job_id)])
             if out.startswith('All jobs in cluster'):
                 txt = 'job_{0} killed successfully.'.format(i)
             else:

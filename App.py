@@ -45,11 +45,18 @@ class AppManager(Tk):
         frame.pack()
 
     def get_condor_q(self):
-        q = Popen(['condor_q', '-wide'], stdout=PIPE).communicate()[0]
+        q = self.system(['condor_q', '-wide'])
         if 'failed' in q.lower():
             self.raise_error_message("Unfortunately, HTCondor is not available at the moment.\nPlease try again later.\nDon't worry, all your data is saved in the submit directory.")
             return None
         return q
+
+    @staticmethod
+    def system(cmd):
+        print(' '.join(cmd))
+        out = Popen(cmd, stdout=PIPE).communicate()
+        print(out)
+        return out[0]
 
 
 if __name__ == "__main__":

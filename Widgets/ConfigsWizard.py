@@ -113,7 +113,7 @@ class ConfigsWizard(Frame):
         submit_dir = self.make_submit_dir(work_dir)
         self.save_configs(os.path.join(submit_dir, 'configs.csv'))
 
-        frame = SubmitPage(self.container, self, iters, submit_dir)
+        frame = SubmitPage(self.container, self, self.app_manager, iters, submit_dir)
         frame.grid(row=1, column=0, sticky="nsew")
         frame.tkraise()
         frame.update()

@@ -1,5 +1,4 @@
 from BasePage import *
-import subprocess
 
 
 template = '''#! /bin/tcsh
@@ -28,8 +27,9 @@ echo This is the End.
 
 
 class SubmitPage(BasePage):
-    def __init__(self, parent, controller, iters, submit_dir, **kwargs):
+    def __init__(self, parent, controller, app_manager, iters, submit_dir, **kwargs):
         BasePage.__init__(self, parent, controller, "Submission", has_prev=False)
+        self.app_manager = app_manager
         Label(self.frame, text="Creating submit directory:", justify=LEFT).pack()
         text_dir = Text(self.frame, height=1, width=45)
         text_dir.insert(INSERT, submit_dir)
@@ -62,7 +62,7 @@ class SubmitPage(BasePage):
                                         output_dir=output_dir, primaries=primaries, cmd=cmd))
 
             os.system(self.controller.paths['HTCondorSub'] + ' ' + job_file)
-            out = subprocess.Popen(['condor_submit', job_file + '.CondorSub.sh'], stdout=subprocess.PIPE).communicate()[0]
+            out = self.app_manager.system(['condor_submit', job_file + '.CondorSub.sh'])
             job_id = (out.split(' ')[-1]).split('.')[0]
             self.job_ids.append(job_id)
 
