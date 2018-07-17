@@ -1,6 +1,6 @@
 from BaseWidget import *
 from subprocess import Popen, PIPE
-from Utils.CSVHandler import csv2dict
+from Utils.CSVHandler import csv2dict, paths
 
 allow_rebinning = True
 
@@ -38,7 +38,7 @@ class Averager(BaseWidget):
             self.app_manager.raise_error_message('Must be at least 2 files for the average.')
             return
 
-        loc = self.app_manager.paths['average{d}'.format(d=self.configs['histogram_dim'].lower())]
+        loc = paths['average{d}'.format(d=self.configs['histogram_dim'].lower())]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
         process = Popen([loc, out_path] + res, stdout=PIPE)
         process.wait()
@@ -108,7 +108,7 @@ class Averager(BaseWidget):
                 'The file out.hist file does not exist.\nPlease run the average first, and then try again.')
             return
 
-        loc = self.app_manager.paths['hist2root']
+        loc = paths['hist2root']
         cmd = [loc, '-F', out_file]
         cmd += self.get_rebinning_cmd()
         process = Popen(cmd, stdout=PIPE)
