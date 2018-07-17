@@ -136,7 +136,7 @@ class HistogramPage(BasePage):
             cmd += arg + str(self.x_vars[var].get())
 
         if self.histogram_dim.get() == "2D":
-            for arg, var in zip([' -m ', ' -b ', ' -N '], ['bins', 'min', 'max']):
+            for arg, var in zip([' -m ', ' -b ', ' -B '], ['bins', 'min', 'max']):
                 cmd += arg + str(self.y_vars[var].get())
 
         if self.use_cutoffs.get():
