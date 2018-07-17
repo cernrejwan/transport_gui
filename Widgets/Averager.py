@@ -1,5 +1,6 @@
 from BaseWidget import *
 from Utils.CSVHandler import csv2dict, paths
+import ROOT
 
 allow_rebinning = True
 
@@ -17,6 +18,7 @@ class Averager(BaseWidget):
         Label(self.frame, textvariable=self.histogram_name).pack()
         Button(self.frame, text='Average', command=self.average).pack()
         Button(self.frame, text='Create ROOT file', command=self.open_rebinning_window if allow_rebinning else self.convert).pack()
+        Button(self.frame, text='Plot', command=self.plot).pack()
 
     def open_file_dialog(self):
         BaseWidget.open_file_dialog(self)
@@ -117,3 +119,8 @@ class Averager(BaseWidget):
             self.app_manager.raise_error_message('The ROOT file is now saved to the output directory.', title='Done!')
         else:
             self.app_manager.raise_error_message('The following error raised while calculating the average:\n' + out)
+
+    def plot(self):
+        submit_dir = self.get_submit_dir()
+        f = ROOT.TFile(os.path.join(submit_dir, 'output', 'out.hist.root'))
+        f.histfluka.Draw()
