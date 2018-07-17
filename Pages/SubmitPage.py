@@ -72,7 +72,7 @@ class SubmitPage(BasePage):
         Label(self.frame, text="Done!", justify=LEFT).pack()
         self.frame.update()
 
-        with open(os.path.join(submit_dir, 'job_ids.txt'), 'w') as f:
+        with open(os.path.join(submit_dir, 'jobs', 'job_ids.txt'), 'w') as f:
             f.write('\n'.join(self.job_ids))
 
     @staticmethod

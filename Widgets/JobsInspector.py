@@ -11,7 +11,7 @@ class JobsInspector(BaseWidget):
 
     @staticmethod
     def get_job_ids(submit_dir):
-        filename = os.path.join(submit_dir, 'job_ids.txt')
+        filename = os.path.join(submit_dir, 'jobs', 'job_ids.txt')
         with open(filename, 'r') as f:
             ids = f.readlines()
         return [id.strip() for id in ids]
