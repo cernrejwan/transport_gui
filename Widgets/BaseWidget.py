@@ -32,12 +32,12 @@ class BaseWidget(Frame):
     def get_submit_dir(self):
         submit_dir = self.submit_dir.get()
         if not submit_dir or not os.path.exists(submit_dir):
-            self.app_manager.raise_error_message('Submit directory does not exist\nPlease specify another one.')
+            self.app_manager.raise_error_message('Submit directory does not exist.\nPlease specify another one.')
             return
 
         ls = os.listdir(submit_dir)
-        if 'job_ids.txt' not in ls or 'output' not in ls:
+        if 'jobs' not in ls or 'output' not in ls:
             self.app_manager.raise_error_message(
-                "The specified path is not a valid submit directory/\nPlease try a different one.")
+                "The specified path is not a valid submit directory.\nPlease try a different one.")
             return
         return submit_dir
