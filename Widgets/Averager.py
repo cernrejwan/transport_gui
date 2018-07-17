@@ -40,8 +40,11 @@ class Averager(BaseWidget):
         loc = paths['average{d}'.format(d=self.configs['histogram_dim'].lower())]
         out_path = os.path.join(submit_dir, 'output', 'out.hist')
         out = self.app_manager.system([loc, out_path] + res)
-        self.app_manager.raise_error_message(
+        if 'saved' in out.lower():
+            self.app_manager.raise_error_message(
             'The average histogram for {name} was saved to the output folder under out.hist'.format(name=self.configs['histogram_type']), title='Done!')
+        else:
+            self.app_manager.raise_error_message('The following error raised while calculating the average:\n' + out)
 
     def open_rebinning_window(self):
         self.rebinning_window = Toplevel(self)
@@ -107,7 +110,10 @@ class Averager(BaseWidget):
             return
 
         loc = paths['hist2root']
-        cmd = [loc, '-F', out_file]
+        cmd = [loc, '-I', out_file]
         cmd += self.get_rebinning_cmd()
         out = self.app_manager.system(cmd)
-        self.app_manager.raise_error_message('The ROOT file is now saved to the output directory.', title='Done!')
+        if 'saved' in out.lower():
+            self.app_manager.raise_error_message('The ROOT file is now saved to the output directory.', title='Done!')
+        else:
+            self.app_manager.raise_error_message('The following error raised while calculating the average:\n' + out)
