@@ -54,9 +54,9 @@ class AppManager(Tk):
     @staticmethod
     def system(cmd):
         print(' '.join(cmd))
-        out = Popen(cmd, stdout=PIPE).communicate()
+        out = Popen(cmd, stdout=PIPE).communicate()[0]
         print(out)
-        return out[0]
+        return out
 
 
 if __name__ == "__main__":
