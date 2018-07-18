@@ -1,4 +1,5 @@
 from BaseWidget import *
+from Utils.CircularButton import CircularButton
 
 
 class JobsInspector(BaseWidget):
@@ -51,7 +52,7 @@ class JobsInspector(BaseWidget):
         if len(self.running_jobs) > 0:
             curr_row = len(ids) + 1
             Label(self.table, text='Push the red button to kill all running jobs').grid(row=curr_row, columnspan=4)
-            Button(self.table, text='KILL', bg='red', command=self.raise_warning).grid(row=curr_row + 1, columnspan=4)
+            CircularButton(self.table, 100, 'red', command=self.raise_warning).grid(row=curr_row + 1, columnspan=4)
 
         self.table.update()
 
