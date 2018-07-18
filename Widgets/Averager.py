@@ -122,5 +122,6 @@ class Averager(BaseWidget):
 
     def plot(self):
         submit_dir = self.get_submit_dir()
+        print(os.path.join(submit_dir, 'output', 'out.hist.root'))
         f = ROOT.TFile(os.path.join(submit_dir, 'output', 'out.hist.root'))
         f.histfluka.Draw()
