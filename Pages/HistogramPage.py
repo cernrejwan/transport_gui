@@ -18,12 +18,12 @@ class HistogramPage(BasePage):
         self.x_vars = dict()
         self.y_vars = dict()
         for key in ['bins', 'min', 'max']:
-            self.x_vars[key] = StringVar(self, kwargs.get(key + '_x', 0))
-            self.y_vars[key] = StringVar(self, kwargs.get(key + '_y', 0))
+            self.x_vars[key] = StringVar(self)
+            self.y_vars[key] = StringVar(self)
 
         self.text_x = StringVar(self)
         self.text_y = StringVar(self)
-        self.set_hist_type(self.histogram_type.get())
+        self.set_hist_type(self.histogram_type.get(), kwargs=kwargs)
 
         self.use_cutoffs = IntVar(0)
         self.cutoffs = dict()
@@ -109,14 +109,14 @@ class HistogramPage(BasePage):
             self.controller.switch_page("SamplePage", 0)
             self.check_yield.grid_forget()
 
-    def set_hist_type(self, hist_type):
+    def set_hist_type(self, hist_type, kwargs=None):
         curr_dict = self.menus[hist_type]
-        self.set_axis_type('x', curr_dict['name_x'])
+        self.set_axis_type('x', curr_dict['name_x'], kwargs)
 
         if self.histogram_dim.get() == '2D':
-            self.set_axis_type('y', curr_dict['name_y'])
+            self.set_axis_type('y', curr_dict['name_y'], kwargs)
 
-    def set_axis_type(self, axis, hist_type):
+    def set_axis_type(self, axis, hist_type, kwargs=None):
         if axis == 'x':
             vars_dict = self.x_vars
             text_var = self.text_x
@@ -127,7 +127,11 @@ class HistogramPage(BasePage):
         params = self.types[hist_type]
         text_var.set('{name} [{unit}]'.format(name=hist_type, unit=params['unit']))
         for key in ['bins', 'min', 'max']:
-            vars_dict[key].set(params[key])
+            if kwargs and key + '_' + axis in kwargs:
+                curr = kwargs[key + '_' + axis]
+            else:
+                curr = params[key]
+            vars_dict[key].set(curr)
 
     def get_cmd(self):
         cmd = '-T' + self.menus[self.histogram_type.get()]['cmd']
