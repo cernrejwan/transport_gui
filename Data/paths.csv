@@ -7,7 +7,8 @@ abundance_path,./Data/elements/abundance.csv
 histogram_menus_path,./Data/histogram_menus.csv
 histogram_types_path,./Data/histogram_types.csv
 default_configs_path,./Data/default_configs.csv
-HTCondorSub,./Data/HTCondorSub.sh
+HTCondorSub,./Scripts/HTCondorSub.sh
+PlotROOT,./Scripts/PlotROOT.py
 xs_files_path,/afs/cern.ch/user/n/ntofsimu/public/transport/totalXS/
 transport_simulation_code,/eos/experiment/ntof/simul/transport/transport
 efficiency_file,./Data/eff.dat

@@ -121,7 +121,5 @@ class Averager(BaseWidget):
             self.app_manager.raise_error_message('The following error raised while calculating the average:\n' + out)
 
     def plot(self):
-        submit_dir = self.get_submit_dir()
-        print(os.path.join(submit_dir, 'output', 'out.hist.root'))
-        f = ROOT.TFile(os.path.join(submit_dir, 'output', 'out.hist.root'))
-        f.histfluka.Draw()
+        root_file = os.path.join(self.get_submit_dir(), 'output', 'out.hist.root')
+        self.app_manager.system(['python', paths['PlotROOT'], root_file])
