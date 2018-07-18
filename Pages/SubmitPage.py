@@ -63,6 +63,14 @@ class SubmitPage(BasePage):
 
             os.system(self.controller.paths['HTCondorSub'] + ' ' + job_file)
             out = self.app_manager.system(['condor_submit', job_file + '.CondorSub.sh'])
+
+            if 'submitted' not in out.lower():
+                self.controller.raise_error_message(
+                    'The following error was raised while submitting job_{0}:\n'.format(i) + out)
+                Label(self.frame, text="Problem with job_{0}. Skipping.".format(i), justify=LEFT).pack()
+                self.frame.update()
+                continue
+
             job_id = (out.split(' ')[-1]).split('.')[0]
             self.job_ids.append(job_id)
 
