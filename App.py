@@ -58,6 +58,23 @@ class AppManager(Tk):
         print('Output: ' + out + '\n')
         return out
 
+    def raise_warning(self, message, func_yes):
+        def OK():
+            window.destroy()
+            func_yes()
+
+        window = Toplevel(self)
+        Label(window, text='Warning', font=self.title_font).pack(side="top", fill="x", pady=10)
+        Label(window, text=message).pack()
+
+        buttons_frame = Frame(window)
+        buttons_frame.pack(side=BOTTOM)
+
+        Button(buttons_frame, text="Yes", command=OK).grid(row=0, column=0)
+        Button(buttons_frame, text="No", command=window.destroy).grid(row=0, column=1)
+
+
+
 
 if __name__ == "__main__":
     app = AppManager()

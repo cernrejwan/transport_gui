@@ -58,18 +58,9 @@ class JobsInspector(BaseWidget):
     def raise_warning(self):
         num_jobs = len(self.running_jobs)
         message = 'Are you sure you want to kill {0} running jobs?'.format(num_jobs)
-        self.warning_window = Toplevel(self)
-        Label(self.warning_window, text='Warning', font=self.app_manager.title_font).pack(side="top", fill="x", pady=10)
-        Label(self.warning_window, text=message).pack()
-
-        buttons_frame = Frame(self.warning_window)
-        buttons_frame.pack(side=BOTTOM)
-
-        Button(buttons_frame, text="Yes", command=self.kill_jobs).grid(row=0, column=0)
-        Button(buttons_frame, text="No", command=self.warning_window.destroy).grid(row=0, column=1)
+        self.app_manager.raise_warning(message, self.kill_jobs)
 
     def kill_jobs(self):
-        self.warning_window.destroy()
         window = Toplevel(self)
         Label(window, text='Killing jobs...', font=self.app_manager.title_font).pack(side='top', fill="x", pady=10)
         Label(window, text='Waiting for respond from HTCondor.').pack()

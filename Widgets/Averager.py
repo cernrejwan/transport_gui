@@ -1,6 +1,5 @@
 from BaseWidget import *
 from Utils.CSVHandler import csv2dict, paths
-import ROOT
 
 allow_rebinning = True
 
@@ -122,4 +121,9 @@ class Averager(BaseWidget):
 
     def plot(self):
         root_file = os.path.join(self.get_submit_dir(), 'output', 'out.hist.root')
-        os.system('python ' + paths['PlotROOT'] + ' ' + root_file)
+
+        def func_yes():
+            os.system('python ' + paths['PlotROOT'] + ' ' + root_file)
+            self.app_manager.destroy()
+
+        self.app_manager.raise_warning('This will plot the histogram and close the app.\nAre you sure?', func_yes)
