@@ -7,4 +7,4 @@ f = ROOT.TFile(filename)
 f.histfluka.Draw()
 
 while True:
-    x = 1
+    pass

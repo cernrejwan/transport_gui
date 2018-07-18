@@ -122,4 +122,4 @@ class Averager(BaseWidget):
 
     def plot(self):
         root_file = os.path.join(self.get_submit_dir(), 'output', 'out.hist.root')
-        self.app_manager.system(['python', paths['PlotROOT'], root_file])
+        os.system('python ' + paths['PlotROOT'] + ' ' + root_file)
