@@ -13,7 +13,7 @@ class HistogramPage(BasePage):
         self.types = read_histogram_types()
         curr_menu = self.get_menu_for_dim(self.histogram_dim.get())
         self.histogram_type = StringVar(self, kwargs.get('histogram_type', curr_menu[0]))
-        self.is_yield = IntVar(int(kwargs.get('is_yield', 0)))
+        self.is_yield = IntVar(self, int(kwargs.get('is_yield', 0)))
 
         self.x_vars = dict()
         self.y_vars = dict()
