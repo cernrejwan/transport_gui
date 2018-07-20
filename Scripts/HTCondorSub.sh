@@ -16,7 +16,7 @@ echo 'arguments             = ' >> $fileName
 echo 'output                = ' $HToutputfileName >> $fileName
 echo 'error                 = ' $HTerrputfileName >> $fileName
 echo 'log                   = ' $HTlogputfileName >> $fileName
-echo '+JobFlavour           = "workday" ' >> $fileName
+echo '+JobFlavour           = "tomorrow" ' >> $fileName
 echo 'queue' >> $fileName
 
 chmod +x $1

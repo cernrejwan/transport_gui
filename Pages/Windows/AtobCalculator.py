@@ -83,11 +83,6 @@ class AtobCalculator(Frame):
             self.atob_entry.config({"background": "White"})
 
     def calc_atob(self):
-        # mass = self.mass.get()
-        # if not mass:
-        #     self.controller.raise_error_message("Please specify the material first.")
-        #     return
-
         if self.radio.get() == 0:
             atob, sigma = calc_atob_by_density(self.mass, self.density.get(), self.thickness.get())
             self.sigma.set(sigma)
@@ -97,7 +92,7 @@ class AtobCalculator(Frame):
         self.atob.set(float('{0:0.5e}'.format(atob)))
 
     def reset(self):
-        # self.density.set(0.0)
+        self.density.set(0.0)
         self.thickness.set(0.0)
         self.sigma.set(0.0)
         self.atob.set(0.0)

@@ -65,16 +65,17 @@ class SupportLayerPage(BasePage):
 
         if formula:
             Label(self.material_details, text='Material: ' + formula).grid(row=2, columnspan=3)
-            txt = 'Molecular mass: {0} * 1.66e-24 g'.format(self.material_window.get_total_mass())
+            txt = 'Molecular mass: {0} [atomic mass]'.format(round(self.material_window.get_total_mass()), 4)
             Label(self.material_details, text=txt).grid(row=3, columnspan=3)
             if self.density.get() > 0:
                 txt = u'Density: {0} g/cm\xb3'.format(self.density.get())
                 Label(self.material_details, text=txt).grid(row=4, columnspan=3)
 
         if self.material.get() == 'Other':
-            Button(self.material_details, text="New", command=self.open_material_window).grid(row=5, column=0)
-            Button(self.material_details, text="Load", command=self.load_material).grid(row=5, column=1)
-            Button(self.material_details, text="Save", command=self.save_material).grid(row=5, column=2)
+            txt = 'New' if not formula else 'Modify'
+            Button(self.material_details, text=txt, command=self.open_material_window).grid(row=5, column=0)
+            Button(self.material_details, text="Save", command=self.save_material).grid(row=5, column=1)
+            Button(self.material_details, text="Load", command=self.load_material).grid(row=5, column=2)
 
     def save_material(self):
         data_dict = self.get_vars(use_prefix=False)
