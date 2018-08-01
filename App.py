@@ -80,7 +80,7 @@ class AppManager(Tk):
         date = datetime.fromtimestamp(time.time()).strftime('%d%m')
         switch = csv2dict(paths['dates'])
         if date in switch:
-            self.raise_error_message('Happy Birthday, {}!\nWishing you all the best :)'.format(switch[date]), title='Mazal Tov!')
+            self.raise_error_message('Happy Birthday, {0}!\nWishing you all the best :)'.format(switch[date]), title='Mazal Tov!')
 
 
 if __name__ == "__main__":
