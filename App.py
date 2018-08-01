@@ -3,6 +3,9 @@ from Tkinter import *
 from subprocess import Popen, PIPE
 from tkFont import Font
 from Widgets import *
+from Utils.CSVHandler import paths, csv2dict
+from datetime import datetime
+import time
 
 txt = """Welcome to the transport simulation configuration tool!
 Use it to launch a simulation, check its status or view its output.
@@ -73,9 +76,14 @@ class AppManager(Tk):
         Button(buttons_frame, text="Yes", command=OK).grid(row=0, column=0)
         Button(buttons_frame, text="No", command=window.destroy).grid(row=0, column=1)
 
-
+    def check_date(self):
+        date = datetime.fromtimestamp(time.time()).strftime('%d%m')
+        switch = csv2dict(paths['dates'])
+        if date in switch:
+            self.raise_error_message('Happy Birthday, {}!\nWishing you all the best :)'.format(switch[date]), title='Mazal Tov!')
 
 
 if __name__ == "__main__":
     app = AppManager()
+    app.check_date()
     app.mainloop()
